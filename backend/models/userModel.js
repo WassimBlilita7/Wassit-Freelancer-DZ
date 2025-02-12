@@ -19,13 +19,25 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         required: true,
     },
+    otp : {
+        type: String,
+
+    },
+    otpExpires : {
+        type: Date
+    },
+    isVerified : {
+        type: Boolean,
+        default: false
+    },
     profile: {
         firstName: { type: String },
         lastName: { type: String },
         bio : { type: String },
         skills: { type: [String] },
         companyName: { type: String },
-        webSite : { type: String },}
+        webSite : { type: String },
+    }
 });
 
 const User = mongoose.model('User', userSchema);

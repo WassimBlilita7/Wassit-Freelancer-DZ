@@ -1,11 +1,13 @@
 import express from "express";
-import { login, logout, signup } from "../controllers/authController.js";
+import { login, logout, signup, verifyOTP } from "../controllers/authController.js";
 
 const router = express.Router();
 
-router.get("/signup", signup);
+router.post("/signup", signup);
+//router.get("/signup/google", signupWithGoogle);
+router.post("/verify-otp", verifyOTP);
 router.get("/login", login);
-router.get("/logout", logout);
+router.post("/logout", logout);
 
 
 

@@ -4,6 +4,7 @@ import { login, logout, signup } from "../controllers/authController.js";
 const router = express.Router();
 
 router.get("/signup", signup);
+//router.get("/signup/google", signupWithGoogle);
 router.get("/login", login);
 router.get("/logout", logout);
 

@@ -98,6 +98,10 @@ export async function login(req, res) {
     if (!user) {
       return res.status(404).json({ message: "Utilisateur non trouvé" });
     }
+
+    if(user.isOAuthUser){
+      return res.status(400).json({message:"Veuillez vous connecter avec Google"})
+    }
     const isMatch = await bcryptjs.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: "Mot de passe incorrect" });

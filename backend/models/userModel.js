@@ -13,30 +13,35 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true
+        required: function() {
+            return !this.isOAuthUser; // Requis seulement pour les non-OAuth
+        }
+    },
+    isOAuthUser: {
+        type: Boolean,
+        default: false
     },
     isFreelancer: {
         type: Boolean,
         required: true,
     },
-    otp : {
+    otp: {
         type: String,
-
     },
-    otpExpires : {
+    otpExpires: {
         type: Date
     },
-    isVerified : {
+    isVerified: {
         type: Boolean,
         default: false
     },
     profile: {
         firstName: { type: String },
         lastName: { type: String },
-        bio : { type: String },
+        bio: { type: String },
         skills: { type: [String] },
         companyName: { type: String },
-        webSite : { type: String },
+        webSite: { type: String },
     }
 });
 

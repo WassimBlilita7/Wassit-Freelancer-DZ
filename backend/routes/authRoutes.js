@@ -1,13 +1,38 @@
+// routes/authRoutes.js
 import express from "express";
+import passport from "passport";
 import { login, logout, signup, verifyOTP } from "../controllers/authController.js";
+import { configureGoogleAuth } from "../config/googleAuthConfig.js";
+import { generateTokenAndSetCookie } from "../utils/generateToken.js";
 
 const router = express.Router();
 
+configureGoogleAuth();
+
 router.post("/signup", signup);
-//router.get("/signup/google", signupWithGoogle);
+
 router.post("/verify-otp", verifyOTP);
+
 router.post("/login", login);
+
 router.post("/logout", logout);
 
+router.get(
+  "/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+router.get(
+  "/google/callback",
+  passport.authenticate("google", { session:false,failureRedirect: "/login" }),
+  (req, res) => {
+    const { user, token } = req.user;
+
+    generateTokenAndSetCookie(user._id, res);
+
+    // Rediriger l'utilisateur vers une page de profil ou une autre route
+    res.redirect("/profile");
+  }
+);
 
 export default router;

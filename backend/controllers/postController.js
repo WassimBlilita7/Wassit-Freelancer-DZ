@@ -9,6 +9,10 @@ export const createPost = async (req, res) => {
 
         const client = await User.findById(clientId);
 
+        if(!title || !description || !skillsRequired || !budget || !duration) {
+            return res.status(400).json({message: "Veuillez remplir tous les champs"});
+        }
+
         if(!client || client.isFreelancer) {
             return res.status(404).json({message: "Seuls les clients peuvent créer des offres"});
         }

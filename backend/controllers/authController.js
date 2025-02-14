@@ -17,8 +17,9 @@ export async function signup(req, res) {
     if (!emailRegex.test(email)) {
       return res.status(400).json({ message: "Email invalide" });
     }
-    if (password.length < 6) {
-      return res.status(400).json({ message: "Le mot de passe doit contenir au moins 6 caractères" });
+    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{6,}$/;
+    if(!passwordRegex.test(password)){
+      return res.status(400).json({message:"Le mot de passe doit contenir au moins 6 caractères, une lettre majuscule, une lettre minuscule et un chiffre"})
     }
 
     // Vérifier si l'utilisateur existe déjà

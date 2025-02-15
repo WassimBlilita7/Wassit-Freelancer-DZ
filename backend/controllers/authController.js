@@ -17,8 +17,9 @@ export async function signup(req, res) {
     if (!emailRegex.test(email)) {
       return res.status(400).json({ message: "Email invalide" });
     }
-    if (password.length < 6) {
-      return res.status(400).json({ message: "Le mot de passe doit contenir au moins 6 caractères" });
+    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{6,}$/;
+    if(!passwordRegex.test(password)){
+      return res.status(400).json({message:"Le mot de passe doit contenir au moins 6 caractères, une lettre majuscule, une lettre minuscule et un chiffre"})
     }
 
     // Vérifier si l'utilisateur existe déjà
@@ -109,7 +110,7 @@ export async function login(req, res) {
     if (!user.isVerified) {
       return res.status(400).json({ message: "Veuillez vérifier votre compte en cliquant sur le lien envoyé à votre adresse e-mail" });
     }
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET , {expiresIn: "24h"});
+    const token = generateTokenAndSetCookie(user._id, res);
     const userData = {
       id: user._id,
       username: user.username,
@@ -127,10 +128,9 @@ export async function login(req, res) {
 // Déconnexion
 export async function logout(req, res) {
   try {
-    res.clearCookie("jwt-FreelanceerDZ");
+    res.clearCookie("jwt-freelancerDZ"); // Utiliser le même nom de cookie
     res.status(200).json({ message: "Déconnexion réussie" });
   } catch (error) {
     res.status(500).json({ message: "Erreur serveur" });
-    
   }
 }

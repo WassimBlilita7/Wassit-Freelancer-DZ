@@ -17,7 +17,7 @@ const postSchema = new mongoose.Schema({
     },
     budget: {
         type: Number,
-        required: true
+        required: true,
     },
     duration: {
         type: String,

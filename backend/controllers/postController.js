@@ -96,3 +96,84 @@ export const applyToPost = async (req, res) => {
     }
 };
 
+export const updatePost = async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const {title,description,skillsRequired,budget,duration} = req.body;
+
+        const post = await Post.findById(postId);
+        if(!post){
+            return res.status(404).json({message: "Offre non trouvée"});
+        }
+
+        if(post.client.toString() !== req.user.id) {
+            return res.status(401).json({message: "Vous n'êtes pas autorisé à modifier cette offre"});
+        }
+
+        post.title = title || post.title;
+        post.description = description || post.description;
+        post.skillsRequired = skillsRequired || post.skillsRequired;
+        post.budget = budget || post.budget;
+        post.duration = duration || post.duration;
+
+        await post.save();
+
+        res.status(200).json({message: "Offre mise à jour avec succès" , post});
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Erreur serveur" });
+    }
+};
+
+export const deletePost = async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const post = await Post.findById(postId);
+
+        if(!post){
+            return res.status(404).json({message: "Offre non trouvée"});
+        }
+
+        if(post.client.toString() !== req.user.id) {
+            return res.status(401).json({message: "Vous n'êtes pas autorisé à supprimer cette offre"});
+        }
+
+        await Post.findByIdAndDelete(postId);
+        res.status(200).json({message: "Offre supprimée avec succès"});
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Erreur serveur" });
+    }
+};
+
+export const updateApplicationStatus = async (req, res) => {
+    try {
+        const postId = req.params.postId;
+        const applicationId = req.params.applicationId;
+        const {status} = req.body;
+
+        const post = await Post.findById(postId);
+        if(!post){
+            return res.status(404).json({message: "Offre non trouvée"});
+        }
+
+        if(post.client.toString() !== req.user.id) {
+            return res.status(401).json({message: "Vous n'êtes pas autorisé à modifier cette offre"});
+        }
+
+        const application = post.applications.id(applicationId) ;
+        if(!application) {
+            return res.status(404).json({message: "Application non trouvée"});
+        }
+
+        application.status = status || application.status;
+
+        await post.save();
+
+        res.status(200).json({message: "Statut de l'application mis à jour avec succès" , post});
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Erreur serveur" });
+    }
+};

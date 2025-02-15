@@ -128,7 +128,7 @@ export async function login(req, res) {
 // Déconnexion
 export async function logout(req, res) {
   try {
-    res.clearCookie("jwt-FreelanceerDZ");
+    res.clearCookie("jwt-FreelancerDZ");
     res.status(200).json({ message: "Déconnexion réussie" });
   } catch (error) {
     res.status(500).json({ message: "Erreur serveur" });

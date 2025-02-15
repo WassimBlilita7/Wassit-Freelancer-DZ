@@ -177,3 +177,40 @@ export const updateApplicationStatus = async (req, res) => {
         res.status(500).json({ message: "Erreur serveur" });
     }
 };
+
+export const updateFreelancerApplication = async (req, res) => {
+    try {
+        const postId = req.params.postId;
+        const applicationId = req.params.applicationId;
+        const {cv,coverLetter,bidAmount} = req.body;
+        const freelancerId = req.user.id;
+
+
+        const post = await Post.findById(postId);
+
+        if(!post){
+            return res.status(404).json({message: "Offre non trouvée"});
+        }
+
+        const application = post.applications.id(applicationId);
+
+        if(!application) {
+            return res.status(404).json({message: "Application non trouvée"});
+        }
+
+        if(application.freelancer.toString() !== freelancerId) {
+            return res.status(401).json({message: "Vous n'êtes pas autorisé à modifier cette application"});
+        }
+
+        application.cv = cv || application.cv;
+        application.coverLetter = coverLetter || application.coverLetter;
+        application.bidAmount = bidAmount || application.bidAmount;
+
+        await post.save();
+
+        res.status(200).json({message: "Application mise à jour avec succès" , post});
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Erreur serveur" });
+    }
+};

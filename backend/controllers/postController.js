@@ -75,6 +75,10 @@ export const applyToPost = async (req, res) => {
             return res.status(404).json({message: "Offre non trouvée"});
         }
 
+        if(post.status === "accepted") {
+            return res.status(400).json({message: "Cette offre est déjà acceptée. Vous ne pouvez pas postuler"});
+        }
+
         // si le freelancer a déjà postulé
         const hasApplied = post.applications.find(application => application.freelancer.toString() === freelancerId);
         if(hasApplied) {

@@ -3,6 +3,7 @@ import authRoutes from "./routes/authRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
+import skillRoutes from "./routes/skillRoutes.js"
 import { ENV_VARS } from "./config/envVars.js";
 import { connectDB } from "./config/db.js";
 import passport from "passport";
@@ -19,6 +20,7 @@ app.use("/api/v1/auth",authRoutes);
 app.use("/api/v1/post",postRoutes);
 app.use("/api/v1/review",reviewRoutes);
 app.use("/api/v1/message",messageRoutes);
+app.use("/api/v1/skill",skillRoutes);
 
 
 app.listen(PORT, () => {

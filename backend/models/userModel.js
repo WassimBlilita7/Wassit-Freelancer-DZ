@@ -39,7 +39,10 @@ const userSchema = new mongoose.Schema({
         firstName: { type: String },
         lastName: { type: String },
         bio: { type: String },
-        skills: { type: [String] },
+        skills: [{
+            type : mongoose.Schema.Types.ObjectId ,
+            ref : 'Skill'
+        }],
         companyName: { type: String },
         webSite: { type: String },
     }

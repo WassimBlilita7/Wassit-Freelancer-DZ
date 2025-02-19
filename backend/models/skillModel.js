@@ -10,10 +10,10 @@ const skillSchema = new mongoose.Schema({
     maxlength: 50
   },
   category: {
-    type: String,
-    enum: ['Programmation', 'Design', 'Business', 'Langue', 'Autre'],
-    default: 'Programmation'
-  },
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Category", 
+    required: true,
+},
   createdAt: {
     type: Date,
     default: Date.now

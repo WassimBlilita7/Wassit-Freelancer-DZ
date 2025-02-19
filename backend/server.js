@@ -4,11 +4,12 @@ import postRoutes from "./routes/postRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
 import skillRoutes from "./routes/skillRoutes.js"
+import categoryRoutes from "./routes/categoryRoutes.js"
 import { ENV_VARS } from "./config/envVars.js";
 import { connectDB } from "./config/db.js";
 import passport from "passport";
 import cookieParser from "cookie-parser";
-import { configureGoogleAuth } from "./config/googleAuthConfig.js";
+
 const app = express();
 
 
@@ -21,6 +22,7 @@ app.use("/api/v1/post",postRoutes);
 app.use("/api/v1/review",reviewRoutes);
 app.use("/api/v1/message",messageRoutes);
 app.use("/api/v1/skill",skillRoutes);
+app.use("/api/v1/category",categoryRoutes);
 
 
 app.listen(PORT, () => {

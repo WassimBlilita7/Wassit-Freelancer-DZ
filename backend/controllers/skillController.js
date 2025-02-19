@@ -1,41 +1,51 @@
 import Skill from "../models/skillModel.js";
 import User from "../models/userModel.js";
+import Category from "../models/categoryModel.js";
 import mongoose from "mongoose";
 
 export const createSkill = async (req, res) => {
-    const { name, category } = req.body;
-    const userId = req.user._id; 
-
+    const { name, category: categoryName } = req.body; 
+    const userId = req.user._id;
+  
     try {
-        const existingSkill = await Skill.findOne({ name });
-        if (existingSkill) {
-            return res.status(400).json({ message: "Skill est existée déja" });
-        }
-
-        const newSkill = new Skill({
-            name,
-            category,
-        });
-
-        await newSkill.save();
-
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).json({ message: "Utilisateur non trouvé" });
-        }
-
-        if (!user.isFreelancer) {
-            return res.status(400).json({ message: "Seul les freelancers qui peuvent ajouter des Skills" });
-        }
-
-        user.profile.skills.push(newSkill._id);
-        await user.save();
-
-        res.status(201).json(newSkill);
+      const existingSkill = await Skill.findOne({ name });
+      if (existingSkill) {
+        return res.status(400).json({ message: "Cette compétence existe déjà" });
+      }
+  
+      if (!categoryName || typeof categoryName !== 'string' || categoryName.trim() === '') {
+        return res.status(400).json({ message: "Veuillez fournir un nom de catégorie valide" });
+      }
+  
+      const category = await Category.findOne({ name: categoryName.trim() });
+      if (!category) {
+        return res.status(400).json({ message: "La catégorie spécifiée n'existe pas" });
+      }
+  
+      const newSkill = new Skill({
+        name,
+        category: category._id, 
+      });
+  
+      await newSkill.save();
+  
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({ message: "Utilisateur non trouvé" });
+      }
+  
+      if (!user.isFreelancer) {
+        return res.status(400).json({ message: "Seuls les freelances peuvent ajouter des compétences" });
+      }
+  
+      user.profile.skills.push(newSkill._id);
+      await user.save();
+  
+      res.status(201).json(newSkill);
     } catch (error) {
-        res.status(500).json({ message: "Erreuer Serveur", error: error.message });
+      res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
-};
+  };
 export const getAllSkills = async (req, res)=>{
     try {
         const skills = await Skill.find();

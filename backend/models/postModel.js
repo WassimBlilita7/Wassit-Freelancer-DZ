@@ -29,6 +29,11 @@ const postSchema = new mongoose.Schema({
         ref: 'User', // Référence à l'utilisateur (client) qui a posté l'offre
         required: true
     },
+    category: { // Nouveau champ pour la catégorie
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category', 
+        required: true 
+    },
     createdAt: {
         type: Date,
         default: Date.now

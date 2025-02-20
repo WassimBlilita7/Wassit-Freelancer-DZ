@@ -4,12 +4,15 @@ const userSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        minlength: 5,
+        maxlength: 20
     },
     email: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
     },
     password: {
         type: String,
@@ -45,7 +48,11 @@ const userSchema = new mongoose.Schema({
         }],
         companyName: { type: String },
         webSite: { type: String },
-    }
+    },
+    notifications: [{ 
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Notification",
+      }],
 });
 
 const User = mongoose.model('User', userSchema);

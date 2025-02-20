@@ -1,6 +1,7 @@
 import Post from "../models/postModel.js";
 import User from "../models/userModel.js";
 import Category from "../models/categoryModel.js";
+import Notification from "../models/notificationModel.js";
 import mongoose from "mongoose";
 
 export const createPost = async (req, res) => {
@@ -110,6 +111,18 @@ export const applyToPost = async (req, res) => {
         });
 
         await post.save();
+        const notification = new Notification({
+            recipient: post.client,
+            sender: freelancerId,
+            post: postId,
+            type: "new_application",
+            message: `${freelancer.username} a postulé à votre offre "${post.title}"`,
+          });
+
+          await notification.save();
+         await User.findByIdAndUpdate(post.client, {
+      $push: { notifications: notification._id },
+    });
         res.status(200).json({message: "Postulé avec succès" , post});
     } catch (error) {
         console.error(error);
@@ -190,6 +203,22 @@ export const updateApplicationStatus = async (req, res) => {
         application.status = status || application.status;
 
         await post.save();
+
+        if (status === "accepted") {
+            const notification = new Notification({
+              recipient: application.freelancer,
+              sender: req.user.id,
+              post: postId,
+              type: "application_accepted",
+              message: `Votre candidature pour "${post.title}" a été acceptée par ${req.user.username}`,
+            });
+            await notification.save();
+      
+            // Ajouter la notification au freelancer
+            await User.findByIdAndUpdate(application.freelancer, {
+              $push: { notifications: notification._id },
+            });
+          }
 
         res.status(200).json({message: "Statut de l'application mis à jour avec succès" , post});
 

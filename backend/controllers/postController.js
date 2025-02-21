@@ -1,20 +1,37 @@
 import Post from "../models/postModel.js";
 import User from "../models/userModel.js";
+import Category from "../models/categoryModel.js";
+import Notification from "../models/notificationModel.js";
+import mongoose from "mongoose";
 
 export const createPost = async (req, res) => {
-
     try {
-        const {title , description , skillsRequired , budget , duration} = req.body;
+        const { title, description, skillsRequired, budget, duration, category: categoryInput } = req.body;
         const clientId = req.user.id;
 
-        const client = await User.findById(clientId);
-
-        if(!title || !description || !skillsRequired || !budget || !duration) {
-            return res.status(400).json({message: "Veuillez remplir tous les champs"});
+        if (!title || !description || !skillsRequired || !budget || !duration || !categoryInput) {
+            return res.status(400).json({ message: "Veuillez remplir tous les champs, y compris la catégorie" });
         }
 
-        if(!client || client.isFreelancer) {
-            return res.status(404).json({message: "Seuls les clients peuvent créer des offres"});
+        const client = await User.findById(clientId);
+        if (!client || client.isFreelancer) {
+            return res.status(404).json({ message: "Seuls les clients peuvent créer des offres" });
+        }
+
+        let categoryId;
+
+        if (mongoose.Types.ObjectId.isValid(categoryInput)) {
+            const categoryExists = await Category.findById(categoryInput);
+            if (!categoryExists) {
+                return res.status(400).json({ message: "L'ID de la catégorie spécifiée n'existe pas" });
+            }
+            categoryId = categoryInput;
+        } else {
+            const category = await Category.findOne({ name: categoryInput.trim() });
+            if (!category) {
+                return res.status(400).json({ message: "La catégorie spécifiée n'existe pas" });
+            }
+            categoryId = category._id;
         }
 
         const newPost = new Post({
@@ -23,14 +40,15 @@ export const createPost = async (req, res) => {
             skillsRequired,
             budget,
             duration,
-            client: clientId
+            client: clientId,
+            category: categoryId // Utiliser l'ID de la catégorie trouvé
         });
 
         await newPost.save();
-        res.status(201).json({message: "Offre créée avec succès" , post: newPost});
+        res.status(201).json({ message: "Offre créée avec succès", post: newPost });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Erreur serveur" });
+        res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
 };
 
@@ -93,6 +111,18 @@ export const applyToPost = async (req, res) => {
         });
 
         await post.save();
+        const notification = new Notification({
+            recipient: post.client,
+            sender: freelancerId,
+            post: postId,
+            type: "new_application",
+            message: `${freelancer.username} a postulé à votre offre "${post.title}"`,
+          });
+
+          await notification.save();
+         await User.findByIdAndUpdate(post.client, {
+      $push: { notifications: notification._id },
+    });
         res.status(200).json({message: "Postulé avec succès" , post});
     } catch (error) {
         console.error(error);
@@ -174,6 +204,22 @@ export const updateApplicationStatus = async (req, res) => {
 
         await post.save();
 
+        if (status === "accepted") {
+            const notification = new Notification({
+              recipient: application.freelancer,
+              sender: req.user.id,
+              post: postId,
+              type: "application_accepted",
+              message: `Votre candidature pour "${post.title}" a été acceptée par ${req.user.username}`,
+            });
+            await notification.save();
+      
+            // Ajouter la notification au freelancer
+            await User.findByIdAndUpdate(application.freelancer, {
+              $push: { notifications: notification._id },
+            });
+          }
+
         res.status(200).json({message: "Statut de l'application mis à jour avec succès" , post});
 
     } catch (error) {
@@ -216,5 +262,46 @@ export const updateFreelancerApplication = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Erreur serveur" });
+    }
+};
+
+export const searchPosts = async (req, res) => {
+    try {
+        const { title, category: categoryInput } = req.body;
+
+        if (!title && !categoryInput) {
+            return res.status(400).json({ message: "Veuillez fournir un titre ou une catégorie pour la recherche" });
+        }
+
+        let filter = { status: "open" };
+
+        if (title) {
+            filter.title = { $regex: title, $options: "i" };
+        }
+
+        if (categoryInput) {
+            // Chercher la catégorie par nom
+            const category = await Category.findOne({ name: { $regex: new RegExp(`^${categoryInput.trim()}$`, 'i') } });
+            if (!category) {
+                return res.status(400).json({ message: "La catégorie spécifiée n'existe pas" });
+            }
+
+            // Chercher les posts dont la catégorie correspond
+            filter.category = category._id;
+        }
+
+        const posts = await Post.find(filter)
+            .populate("client", "username email")
+            .populate("applications.freelancer", "username email")
+            .populate("category", "name");
+
+        if (posts.length === 0) {
+            return res.status(404).json({ message: "Aucune offre trouvée correspondant aux critères" });
+        }
+
+        res.status(200).json({ posts });
+    } catch (error) {
+        console.error("Erreur dans searchPosts :", error);
+        res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
 };

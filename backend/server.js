@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import authRoutes from "./routes/authRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
@@ -19,6 +20,13 @@ app.use(express.json());
 app.use(cookieParser()); 
 
 app.use(passport.initialize());
+
+app.use(
+    cors({
+      origin: "http://localhost:3000", // Port par défaut de Vite
+      credentials: true,
+    })
+  );
 
 app.use("/api/v1/auth",authRoutes);
 app.use("/api/v1/post",postRoutes);

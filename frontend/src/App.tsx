@@ -7,11 +7,11 @@ import { Login } from "./pages/Login";
 import { Logout } from "./pages/Logout";
 import { SignupWithGoogle } from "./pages/SignupWithGoogle";
 import { ToastProvider } from "./components/common/ToastProvider";
-import { ThemeProvider } from "./context/ThemeContext"; // Import du ThemeProvider
+import { ThemeProvider } from "./context/ThemeContext";
 
 function AppContent() {
   const location = useLocation();
-  const hideHeaderAndFooter = ["/signup", "/login"].includes(location.pathname);
+  const hideHeaderAndFooter = ["/signup", "/login", "/verify-otp"].includes(location.pathname); // Ajout de /verify-otp
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "var(--background)" }}>
@@ -25,7 +25,11 @@ function AppContent() {
           <Route path="/signup-with-google" element={<SignupWithGoogle />} />
         </Routes>
       </main>
-      
+      {!hideHeaderAndFooter && (
+        <footer className="p-4 text-center" style={{ backgroundColor: "var(--card)", color: "var(--muted)" }}>
+          © 2025 Freelance DZ - Tous droits réservés
+        </footer>
+      )}
     </div>
   );
 }
@@ -33,7 +37,7 @@ function AppContent() {
 function App() {
   return (
     <Router>
-      <ThemeProvider> {/* Enveloppe l'application */}
+      <ThemeProvider>
         <ToastProvider />
         <AppContent />
       </ThemeProvider>

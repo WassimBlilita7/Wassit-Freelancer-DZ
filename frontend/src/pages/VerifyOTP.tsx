@@ -6,10 +6,9 @@ import { verifyOTP, VerifyOTPData } from "../api/api";
 import { Button } from "../components/ui/button";
 import { Label } from "../components/ui/label";
 import { CustomTextField } from "../components/common/CustomTextField";
-import { CustomOTPInput } from "../components/common/CustomOTPInput"; // Nouveau composant
+import { CustomOTPInput } from "../components/common/CustomOTPInput";
 import { Loader } from "../components/common/Loader";
 import { motion } from "framer-motion";
-import verifyOtpBgImage from "../assets/otp.png"; // Image (remplacez si nécessaire)
 
 export const VerifyOTP = () => {
   const [formData, setFormData] = useState<VerifyOTPData>({ email: "", otp: "" });
@@ -39,80 +38,70 @@ export const VerifyOTP = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-x-hidden">
-      <div className="w-full max-w-4xl flex flex-col md:flex-row items-center">
-        {/* Côté gauche : Formulaire */}
-        <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-          className="w-full md:w-3/5 p-8 z-10"
-        >
-          <div className="pb-6 text-center">
-            <h1 className="text-3xl font-bold" style={{ color: "var(--text)" }}>
-              Vérification OTP
-            </h1>
-            <p className="mt-2" style={{ color: "var(--muted)", fontSize: "16px" }}>
-              Entrez le code OTP envoyé à votre email pour vérifier votre compte.
-            </p>
+    <div className="min-h-screen flex items-center justify-center">
+      {/* Conteneur centré */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="w-full max-w-md p-8" // Taille ajustée pour un UI centré et compact
+      >
+        <div className="pb-6 text-center">
+          <h1 className="text-3xl font-bold" style={{ color: "var(--text)" }}>
+            Vérification OTP
+          </h1>
+          <p className="mt-2" style={{ color: "var(--muted)", fontSize: "16px" }}>
+            Entrez le code OTP envoyé à votre email pour vérifier votre compte.
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-3">
+            <Label htmlFor="email" style={{ color: "var(--text)", fontSize: "16px" }}>
+              Email
+            </Label>
+            <CustomTextField
+              id="email"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Entrez votre email"
+              icon="email"
+              required
+              disabled={loading}
+            />
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-3">
-              <Label htmlFor="email" style={{ color: "var(--text)", fontSize: "16px" }}>
-                Email
-              </Label>
-              <CustomTextField
-                id="email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="Entrez votre email"
-                icon="email"
-                required
-                disabled={loading}
-              />
-            </div>
-
-            <div className="space-y-3">
-              <Label style={{ color: "var(--text)", fontSize: "16px" }}>
-                Code OTP
-              </Label>
-              <CustomOTPInput
-                length={6}
-                value={formData.otp}
-                onChange={handleOTPChange}
-                disabled={loading}
-              />
-            </div>
-
-            <Button
-              type="submit"
-              className="w-full py-6 text-lg"
-              style={{ backgroundColor: "var(--primary)", color: "#FFFFFF" }}
+          <div className="space-y-3">
+            <Label style={{ color: "var(--text)", fontSize: "16px" }}>
+              Code OTP
+            </Label>
+            <CustomOTPInput
+              length={6}
+              value={formData.otp}
+              onChange={handleOTPChange}
               disabled={loading}
-            >
-              Vérifier
-            </Button>
+            />
+          </div>
 
-            <p className="text-sm text-center" style={{ color: "var(--muted)" }}>
-              Pas reçu de code ?{" "}
-              <a href="/signup" style={{ color: "var(--secondary)" }} className="hover:underline">
-                Renvoyer
-              </a>
-            </p>
-          </form>
-        </motion.div>
+          <Button
+            type="submit"
+            className="w-full py-6 text-lg"
+            style={{ backgroundColor: "var(--primary)", color: "#FFFFFF" }}
+            disabled={loading}
+          >
+            Vérifier
+          </Button>
 
-        {/* Côté droit : Image fixée */}
-        <div
-          className="hidden md:block fixed top-0 right-0 w-2/7 h-full bg-cover bg-center z-0"
-          style={{
-            backgroundImage: `url(${verifyOtpBgImage})`,
-          }}
-        />
-      </div>
+          <p className="text-sm text-center" style={{ color: "var(--muted)" }}>
+            Pas reçu de code ?{" "}
+            <a href="/signup" style={{ color: "var(--secondary)" }} className="hover:underline">
+              Renvoyer
+            </a>
+          </p>
+        </form>
+      </motion.div>
 
       {loading && <Loader />}
     </div>

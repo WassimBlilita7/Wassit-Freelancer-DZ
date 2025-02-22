@@ -1,9 +1,10 @@
 // routes/authRoutes.js
 import express from "express";
 import passport from "passport";
-import { login, logout, signup, verifyOTP } from "../controllers/authController.js";
+import { authCheck, login, logout, signup, verifyOTP } from "../controllers/authController.js";
 import { configureGoogleAuth } from "../config/googleAuthConfig.js";
 import { generateTokenAndSetCookie } from "../utils/generateToken.js";
+import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
@@ -16,6 +17,8 @@ router.post("/verify-otp", verifyOTP);
 router.post("/login", login);
 
 router.post("/logout", logout);
+
+router.get("/check" , protect , authCheck);
 
 router.get(
   "/google",
@@ -31,7 +34,7 @@ router.get(
     generateTokenAndSetCookie(user._id, res);
 
     // Rediriger l'utilisateur vers une page de profil ou une autre route
-    res.redirect("/profile");
+    res.redirect("http://localhost:3000/");
   }
 );
 

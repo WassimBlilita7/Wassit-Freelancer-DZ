@@ -4,12 +4,12 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { verifyOTP, VerifyOTPData } from "../api/api";
 import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../components/ui/card";
+import { CustomTextField } from "../components/common/CustomTextField";
+import { CustomOTPInput } from "../components/common/CustomOTPInput"; // Nouveau composant
 import { Loader } from "../components/common/Loader";
-import { FaEnvelope, FaKey } from "react-icons/fa";
 import { motion } from "framer-motion";
+import verifyOtpBgImage from "../assets/otp.png"; // Image (remplacez si nécessaire)
 
 export const VerifyOTP = () => {
   const [formData, setFormData] = useState<VerifyOTPData>({ email: "", otp: "" });
@@ -17,8 +17,11 @@ export const VerifyOTP = () => {
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, email: e.target.value }));
+  };
+
+  const handleOTPChange = (otp: string) => {
+    setFormData((prev) => ({ ...prev, otp }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -36,85 +39,81 @@ export const VerifyOTP = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-      >
-        <Card className="w-full max-w-md" style={{ backgroundColor: "var(--card)" }}>
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold" style={{ color: "var(--text)" }}>
+    <div className="min-h-screen flex items-center justify-center relative overflow-x-hidden">
+      <div className="w-full max-w-4xl flex flex-col md:flex-row items-center">
+        {/* Côté gauche : Formulaire */}
+        <motion.div
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="w-full md:w-3/5 p-8 z-10"
+        >
+          <div className="pb-6 text-center">
+            <h1 className="text-3xl font-bold" style={{ color: "var(--text)" }}>
               Vérification OTP
-            </CardTitle>
-            <CardDescription style={{ color: "var(--muted)" }}>
-              Entrez le code OTP envoyé à votre email
-            </CardDescription>
-          </CardHeader>
-          <form onSubmit={handleSubmit}>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email" style={{ color: "var(--text)" }}>
-                  Email
-                </Label>
-                <div className="relative">
-                  <FaEnvelope className="absolute left-3 top-1/2 transform -translate-y-1/2" style={{ color: "var(--muted)" }} />
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="Entrez votre email"
-                    className="pl-10"
-                    style={{ backgroundColor: "var(--background)", borderColor: "var(--muted)", color: "var(--text)" }}
-                    required
-                    disabled={loading}
-                  />
-                </div>
-              </div>
+            </h1>
+            <p className="mt-2" style={{ color: "var(--muted)", fontSize: "16px" }}>
+              Entrez le code OTP envoyé à votre email pour vérifier votre compte.
+            </p>
+          </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="otp" style={{ color: "var(--text)" }}>
-                  Code OTP
-                </Label>
-                <div className="relative">
-                  <FaKey className="absolute left-3 top-1/2 transform -translate-y-1/2" style={{ color: "var(--muted)" }} />
-                  <Input
-                    id="otp"
-                    name="otp"
-                    type="text"
-                    value={formData.otp}
-                    onChange={handleChange}
-                    placeholder="Entrez le code OTP"
-                    className="pl-10"
-                    style={{ backgroundColor: "var(--background)", borderColor: "var(--muted)", color: "var(--text)" }}
-                    required
-                    maxLength={6}
-                    disabled={loading}
-                  />
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter className="flex flex-col space-y-4">
-              <Button
-                type="submit"
-                className="w-full"
-                style={{ backgroundColor: "var(--primary)", color: "#FFFFFF" }}
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-3">
+              <Label htmlFor="email" style={{ color: "var(--text)", fontSize: "16px" }}>
+                Email
+              </Label>
+              <CustomTextField
+                id="email"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Entrez votre email"
+                icon="email"
+                required
                 disabled={loading}
-              >
-                Vérifier
-              </Button>
-              <p className="text-sm text-center" style={{ color: "var(--muted)" }}>
-                Pas reçu de code ?{" "}
-                <a href="/signup" style={{ color: "var(--secondary)" }} className="hover:underline">
-                  Renvoyer
-                </a>
-              </p>
-            </CardFooter>
+              />
+            </div>
+
+            <div className="space-y-3">
+              <Label style={{ color: "var(--text)", fontSize: "16px" }}>
+                Code OTP
+              </Label>
+              <CustomOTPInput
+                length={6}
+                value={formData.otp}
+                onChange={handleOTPChange}
+                disabled={loading}
+              />
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full py-6 text-lg"
+              style={{ backgroundColor: "var(--primary)", color: "#FFFFFF" }}
+              disabled={loading}
+            >
+              Vérifier
+            </Button>
+
+            <p className="text-sm text-center" style={{ color: "var(--muted)" }}>
+              Pas reçu de code ?{" "}
+              <a href="/signup" style={{ color: "var(--secondary)" }} className="hover:underline">
+                Renvoyer
+              </a>
+            </p>
           </form>
-        </Card>
-      </motion.div>
+        </motion.div>
+
+        {/* Côté droit : Image fixée */}
+        <div
+          className="hidden md:block fixed top-0 right-0 w-2/7 h-full bg-cover bg-center z-0"
+          style={{
+            backgroundImage: `url(${verifyOtpBgImage})`,
+          }}
+        />
+      </div>
+
       {loading && <Loader />}
     </div>
   );

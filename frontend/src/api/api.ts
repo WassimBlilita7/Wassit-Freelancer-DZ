@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import axios from "axios";
 
 const API_URL = "http://localhost:5000/api/v1";
@@ -43,4 +44,13 @@ export const loginUser = async (data: LoginData) => {
 export const logoutUser = async () => {
   const response = await api.post("/auth/logout");
   return response.data;
+};
+
+export const checkAuth = async () => {
+  try {
+    const response = await api.get("/auth/check");
+    return response.data;
+  } catch (e) {
+    throw new Error("Non authentifié");
+  }
 };

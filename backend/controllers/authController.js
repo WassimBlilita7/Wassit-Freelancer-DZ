@@ -64,6 +64,10 @@ export async function signup(req, res) {
 export async function verifyOTP(req, res) {
   try {
     const { email, otp } = req.body;
+    if (!otp || !/^\d{6}$/.test(otp)) {
+      return res.status(400).json({ message: "L'OTP doit être un code de 6 chiffres" });
+    }
+
 
     const user = await User.findOne({ email });
     if (!user) {
@@ -133,4 +137,23 @@ export async function logout(req, res) {
   } catch (error) {
     res.status(500).json({ message: "Erreur serveur" });
   }
-}
+};
+
+export async function authCheck(req, res) {
+  try {
+    // Le middleware protect a déjà vérifié le token et ajouté req.user
+    const user = req.user;
+    res.status(200).json({
+      message: "Utilisateur authentifié",
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        isFreelancer: user.isFreelancer,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+};
+

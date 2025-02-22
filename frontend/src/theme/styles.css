@@ -17,7 +17,7 @@
 :root.dark {
   --primary: #C40D6C;      /* Indigo plus clair pour contraste */
   --secondary: #34D399;    /* Vert clair pour les accents */
-  --background: #1F2937;   /* Gris foncé pour le fond */
+  --background: #1B1B1B;   /* Gris foncé pour le fond */
   --card: #374151;         /* Gris moyen pour les cartes */
   --text: #F3F4F6;         /* Gris clair pour le texte principal */
   --muted: #9CA3AF;        /* Gris clair moyen pour le texte secondaire */

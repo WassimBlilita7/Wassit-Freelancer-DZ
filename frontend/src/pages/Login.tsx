@@ -113,7 +113,7 @@ export const Login = () => {
 
         {/* Côté droit : Image fixée */}
         <div
-          className="hidden md:block fixed top-0 right-0 w-2/5 h-full bg-cover bg-center z-0"
+          className="hidden md:block fixed top-0 right-0 w-7/20 h-full bg-cover bg-center z-0"
           style={{
             backgroundImage: `url(${loginBgImage})`,
           }}

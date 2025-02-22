@@ -55,7 +55,7 @@ export const Signup = () => {
               Inscription
             </h1>
             <p className="mt-2" style={{ color: "var(--muted)", fontSize: "16px" }}>
-              Créez votre compte Freelance DZ pour commencer votre aventure.
+              Créez votre compte DZFreelance pour commencer votre aventure.
             </p>
           </div>
 
@@ -150,7 +150,7 @@ export const Signup = () => {
 
         {/* Côté droit : Image fixée */}
         <div
-          className="hidden md:block fixed top-0 right-0 w-2/5 h-full bg-cover bg-center z-0"
+          className="hidden md:block fixed top-0 right-0 w-7/20 h-full bg-cover bg-center z-0"
           style={{
             backgroundImage: `url(${signupBgImage})`,
           }}

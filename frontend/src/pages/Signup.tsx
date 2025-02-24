@@ -1,4 +1,3 @@
-// src/pages/Signup.tsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -11,11 +10,16 @@ import { Loader } from "../components/common/Loader";
 import { motion } from "framer-motion";
 import signupBgImage from "../assets/signupPicture.png";
 
+interface SignupFormData extends SignupData {
+  confirmPassword: string;
+}
+
 export const Signup = () => {
-  const [formData, setFormData] = useState<SignupData>({
+  const [formData, setFormData] = useState<SignupFormData>({
     username: "",
     email: "",
     password: "",
+    confirmPassword: "",
     isFreelancer: false,
   });
   const [loading, setLoading] = useState<boolean>(false);
@@ -29,8 +33,17 @@ export const Signup = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
+    // Validation côté client pour confirmPassword
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Les mots de passe ne correspondent pas", { id: "signup" });
+      setLoading(false);
+      return;
+    }
+
     try {
-      const response = await signupUser(formData);
+      const { confirmPassword, ...signupPayload } = formData; // Exclure confirmPassword
+      const response = await signupUser(signupPayload);
       toast.success(response.message, { id: "signup" });
       setTimeout(() => navigate("/verify-otp"), 2000);
     } catch (err: any) {
@@ -43,7 +56,6 @@ export const Signup = () => {
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-x-hidden">
       <div className="w-full max-w-4xl flex flex-col md:flex-row items-center">
-        {/* Côté gauche : Formulaire */}
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
@@ -55,7 +67,7 @@ export const Signup = () => {
               Inscription
             </h1>
             <p className="mt-2" style={{ color: "var(--muted)", fontSize: "16px" }}>
-              Créez votre compte DZFreelance pour commencer votre aventure.
+              Créez votre compte pour commencer votre aventure.
             </p>
           </div>
 
@@ -114,11 +126,31 @@ export const Signup = () => {
               />
             </div>
 
+            <div className="space-y-3">
+              <Label htmlFor="confirmPassword" style={{ color: "var(--text)", fontSize: "16px" }}>
+                Confirmer le mot de passe
+              </Label>
+              <CustomTextField
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                placeholder="Confirmez votre mot de passe"
+                icon="password"
+                required
+                minLength={6}
+                disabled={loading}
+              />
+            </div>
+
             <div className="flex items-center space-x-3">
               <CustomCheckbox
                 id="isFreelancer"
                 checked={formData.isFreelancer}
-                onCheckedChange={(checked) => setFormData((prev) => ({ ...prev, isFreelancer: !!checked }))}
+                onCheckedChange={(checked) =>
+                  setFormData((prev) => ({ ...prev, isFreelancer: !!checked }))
+                }
                 disabled={loading}
               />
               <Label
@@ -148,12 +180,9 @@ export const Signup = () => {
           </form>
         </motion.div>
 
-        {/* Côté droit : Image fixée */}
         <div
-          className="hidden md:block fixed top-0 right-0 w-7/20 h-full bg-cover bg-center z-0"
-          style={{
-            backgroundImage: `url(${signupBgImage})`,
-          }}
+          className="hidden md:block fixed top-0 right-0 w-2/5 h-full bg-cover bg-center z-0"
+          style={{ backgroundImage: `url(${signupBgImage})` }}
         />
       </div>
 

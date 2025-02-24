@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -25,7 +24,7 @@ export const Login = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await loginUser(formData);
+      await loginUser(formData);
       toast.success("Connexion réussie !", { id: "login" });
       setTimeout(() => navigate("/"), 2000);
     } catch (err: any) {

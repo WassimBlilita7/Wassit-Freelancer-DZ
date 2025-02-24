@@ -4,11 +4,10 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { verifyOTP, VerifyOTPData } from "../api/api";
 import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../components/ui/card";
+import { CustomTextField } from "../components/common/CustomTextField";
+import { CustomOTPInput } from "../components/common/CustomOTPInput";
 import { Loader } from "../components/common/Loader";
-import { FaEnvelope, FaKey } from "react-icons/fa";
 import { motion } from "framer-motion";
 
 export const VerifyOTP = () => {
@@ -17,8 +16,11 @@ export const VerifyOTP = () => {
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, email: e.target.value }));
+  };
+
+  const handleOTPChange = (otp: string) => {
+    setFormData((prev) => ({ ...prev, otp }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -37,84 +39,70 @@ export const VerifyOTP = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center">
+      {/* Conteneur centré */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
+        className="w-full max-w-md p-8" // Taille ajustée pour un UI centré et compact
       >
-        <Card className="w-full max-w-md" style={{ backgroundColor: "var(--card)" }}>
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold" style={{ color: "var(--text)" }}>
-              Vérification OTP
-            </CardTitle>
-            <CardDescription style={{ color: "var(--muted)" }}>
-              Entrez le code OTP envoyé à votre email
-            </CardDescription>
-          </CardHeader>
-          <form onSubmit={handleSubmit}>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email" style={{ color: "var(--text)" }}>
-                  Email
-                </Label>
-                <div className="relative">
-                  <FaEnvelope className="absolute left-3 top-1/2 transform -translate-y-1/2" style={{ color: "var(--muted)" }} />
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="Entrez votre email"
-                    className="pl-10"
-                    style={{ backgroundColor: "var(--background)", borderColor: "var(--muted)", color: "var(--text)" }}
-                    required
-                    disabled={loading}
-                  />
-                </div>
-              </div>
+        <div className="pb-6 text-center">
+          <h1 className="text-3xl font-bold" style={{ color: "var(--text)" }}>
+            Vérification OTP
+          </h1>
+          <p className="mt-2" style={{ color: "var(--muted)", fontSize: "16px" }}>
+            Entrez le code OTP envoyé à votre email pour vérifier votre compte.
+          </p>
+        </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="otp" style={{ color: "var(--text)" }}>
-                  Code OTP
-                </Label>
-                <div className="relative">
-                  <FaKey className="absolute left-3 top-1/2 transform -translate-y-1/2" style={{ color: "var(--muted)" }} />
-                  <Input
-                    id="otp"
-                    name="otp"
-                    type="text"
-                    value={formData.otp}
-                    onChange={handleChange}
-                    placeholder="Entrez le code OTP"
-                    className="pl-10"
-                    style={{ backgroundColor: "var(--background)", borderColor: "var(--muted)", color: "var(--text)" }}
-                    required
-                    maxLength={6}
-                    disabled={loading}
-                  />
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter className="flex flex-col space-y-4">
-              <Button
-                type="submit"
-                className="w-full"
-                style={{ backgroundColor: "var(--primary)", color: "#FFFFFF" }}
-                disabled={loading}
-              >
-                Vérifier
-              </Button>
-              <p className="text-sm text-center" style={{ color: "var(--muted)" }}>
-                Pas reçu de code ?{" "}
-                <a href="/signup" style={{ color: "var(--secondary)" }} className="hover:underline">
-                  Renvoyer
-                </a>
-              </p>
-            </CardFooter>
-          </form>
-        </Card>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-3">
+            <Label htmlFor="email" style={{ color: "var(--text)", fontSize: "16px" }}>
+              Email
+            </Label>
+            <CustomTextField
+              id="email"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Entrez votre email"
+              icon="email"
+              required
+              disabled={loading}
+            />
+          </div>
+
+          <div className="space-y-3">
+            <Label style={{ color: "var(--text)", fontSize: "16px" }}>
+              Code OTP
+            </Label>
+            <CustomOTPInput
+              length={6}
+              value={formData.otp}
+              onChange={handleOTPChange}
+              disabled={loading}
+            />
+          </div>
+
+          <Button
+            type="submit"
+            className="w-full py-6 text-lg"
+            style={{ backgroundColor: "var(--primary)", color: "#FFFFFF" }}
+            disabled={loading}
+          >
+            Vérifier
+          </Button>
+
+          <p className="text-sm text-center" style={{ color: "var(--muted)" }}>
+            Pas reçu de code ?{" "}
+            <a href="/signup" style={{ color: "var(--secondary)" }} className="hover:underline">
+              Renvoyer
+            </a>
+          </p>
+        </form>
       </motion.div>
+
       {loading && <Loader />}
     </div>
   );

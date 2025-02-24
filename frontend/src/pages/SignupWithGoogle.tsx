@@ -1,34 +1,25 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import toast from "react-hot-toast";
-import { logoutUser, checkAuth } from "../api/api";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../components/ui/card";
 import { Loader } from "../components/common/Loader";
+import { FaGoogle } from "react-icons/fa";
 import { motion } from "framer-motion";
 
-export const Logout = () => {
+export const SignupWithGoogle = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    const handleLogout = async () => {
-      setLoading(true);
-      try {
-        await checkAuth();
-        const response = await logoutUser();
-        toast.success(response.message || "Déconnexion réussie !", { id: "logout" });
-        setTimeout(() => navigate("/login"), 2000);
-      } catch (err: any) {
-        toast.error("Aucun compte connecté à déconnecter", { id: "logout" });
-        setTimeout(() => navigate("/login"), 2000);
-      } finally {
-        setLoading(false);
-      }
-    };
-    handleLogout();
-  }, [navigate]);
+  const handleGoogleSignup = () => {
+    setLoading(true);
+    try {
+      // Rediriger vers l'endpoint Google OAuth du backend
+      window.location.href = "http://localhost:5000/api/v1/auth/google";
+    } catch (err) {
+      toast.error("Erreur lors de la redirection vers Google", { id: "google-signup" });
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center">
@@ -40,26 +31,33 @@ export const Logout = () => {
         <Card className="w-full max-w-md" style={{ backgroundColor: "var(--card)" }}>
           <CardHeader>
             <CardTitle className="text-2xl font-bold" style={{ color: "var(--text)" }}>
-              Déconnexion
+              Inscription avec Google
             </CardTitle>
             <CardDescription style={{ color: "var(--muted)" }}>
-              Vous êtes en train de vous déconnecter de votre compte.
+              Utilisez votre compte Google pour vous inscrire rapidement.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-center" style={{ color: "var(--text)" }}>
-              {loading ? "Déconnexion en cours..." : "Vous serez redirigé vers la page de connexion."}
+              Cliquez sur le bouton ci-dessous pour vous inscrire avec Google.
             </p>
           </CardContent>
-          <CardFooter className="flex justify-center">
+          <CardFooter className="flex flex-col space-y-4">
             <Button
-              variant="outline"
-              onClick={() => navigate("/")}
+              className="w-full flex items-center justify-center space-x-2"
+              onClick={handleGoogleSignup}
               disabled={loading}
-              style={{ borderColor: "var(--muted)", color: "var(--text)" }}
+              style={{ backgroundColor: "var(--primary)", color: "#FFFFFF" }}
             >
-              Retour à l'accueil
+              <FaGoogle className="w-5 h-5" />
+              <span>S'inscrire avec Google</span>
             </Button>
+            <p className="text-sm text-center" style={{ color: "var(--muted)" }}>
+              Préférez une inscription classique ?{" "}
+              <a href="/signup" style={{ color: "var(--secondary)" }} className="hover:underline">
+                Inscrivez-vous ici
+              </a>
+            </p>
           </CardFooter>
         </Card>
       </motion.div>

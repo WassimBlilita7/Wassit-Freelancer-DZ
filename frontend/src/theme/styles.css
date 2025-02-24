@@ -1,8 +1,9 @@
 /* src/theme/styles.css */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
-:root {
-  --primary: #4F46E5;      /* Indigo vif pour les boutons */
+/* Thème clair par défaut */
+:root, :root.light {
+  --primary: #2770D1;      /* Indigo vif pour les boutons */
   --secondary: #10B981;    /* Vert émeraude pour les accents */
   --background: #F3F4F6;   /* Gris clair pour le fond */
   --card: #FFFFFF;         /* Blanc pour les cartes */
@@ -12,9 +13,31 @@
   --success: #34D399;      /* Vert clair pour les succès */
 }
 
+/* Thème sombre */
+:root.dark {
+  --primary: #C40D6C;      /* Indigo plus clair pour contraste */
+  --secondary: #34D399;    /* Vert clair pour les accents */
+  --background: #1B1B1B;   /* Gris foncé pour le fond */
+  --card: #374151;         /* Gris moyen pour les cartes */
+  --text: #F3F4F6;         /* Gris clair pour le texte principal */
+  --muted: #9CA3AF;        /* Gris clair moyen pour le texte secondaire */
+  --error: #F87171;        /* Rouge clair pour les erreurs */
+  --success: #6EE7B7;      /* Vert clair pour les succès */
+}
+
+/* Appliquer les styles globalement à html et body */
 html,
 body {
   font-family: "Inter", sans-serif;
   background-color: var(--background);
   color: var(--text);
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  transition: background-color 0.3s ease, color 0.3s ease; /* Transition fluide */
+}
+
+/* S'assurer que les éléments enfants héritent */
+* {
+  color: inherit;
 }

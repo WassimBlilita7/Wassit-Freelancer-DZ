@@ -1,22 +1,22 @@
-import otpGenerator from "otp-generator";
+// utils/otpUtils.js
 
-// Générer un OTP
-export const generateOTP = () => {
-  return otpGenerator.generate(6, {
-    digits: true,
-    alphabets: false,
-    upperCase: false,
-    specialChars: false,
-  });
-};
-
-// Valider un OTP
-export const validateOTP = (userOTP, storedOTP, otpExpires) => {
-  if (userOTP !== storedOTP) {
-    return { isValid: false, message: "Code OTP invalide" };
+// Génère un OTP de 6 chiffres uniquement
+export function generateOTP() {
+  const digits = "0123456789";
+  let otp = "";
+  for (let i = 0; i < 6; i++) {
+    otp += digits[Math.floor(Math.random() * 10)];
   }
+  return otp;
+}
+
+// Valide l'OTP
+export function validateOTP(inputOTP, userOTP, otpExpires) {
   if (Date.now() > otpExpires) {
-    return { isValid: false, message: "Code OTP expiré" };
+    return { isValid: false, message: "Le code OTP a expiré" };
   }
-  return { isValid: true, message: "Code OTP valide" };
-};
+  if (inputOTP !== userOTP) {
+    return { isValid: false, message: "Code OTP incorrect" };
+  }
+  return { isValid: true, message: "OTP valide" };
+}

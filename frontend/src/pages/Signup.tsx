@@ -42,7 +42,7 @@ export const Signup = () => {
     }
 
     try {
-      const { confirmPassword, ...signupPayload } = formData; // Exclure confirmPassword
+      const signupPayload: SignupData = formData; 
       const response = await signupUser(signupPayload);
       toast.success(response.message, { id: "signup" });
       setTimeout(() => navigate("/verify-otp"), 2000);

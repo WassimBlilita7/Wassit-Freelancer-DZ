@@ -23,7 +23,7 @@ app.use(passport.initialize());
 
 app.use(
     cors({
-      origin: "http://localhost:3000", // Port par défaut de Vite
+      origin: "http://46.202.131.115", // Port par défaut de Vite
       credentials: true,
     })
   );

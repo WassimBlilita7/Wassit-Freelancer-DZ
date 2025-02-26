@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import axios from "axios";
 
-const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000/api/v1";
+const API_URL = "http://localhost:5000/api/v1";
 
 const api = axios.create({
   baseURL: API_URL,
@@ -38,7 +38,7 @@ export interface LoginData {
 
 export const loginUser = async (data: LoginData) => {
   const response = await api.post("/auth/login", data);
-  return response.data;
+  return response.data; 
 };
 
 export const logoutUser = async () => {

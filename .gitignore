@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+
+# Ignorer .env à la racine (backend)
+backend/.env
+
+# Ignorer .env dans le dossier frontend
+frontend/.env

@@ -25,7 +25,7 @@ dist-ssr
 
 
 # Ignorer .env à la racine (backend)
-backend/.env
+/.env
 
 # Ignorer .env dans le dossier frontend
 frontend/.env

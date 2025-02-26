@@ -23,7 +23,7 @@ app.use(passport.initialize());
 
 app.use(
     cors({
-      origin: "http://46.202.131.115", // Port par défaut de Vite
+      origin: "http://localhost:3000", // Port par défaut de Vite
       credentials: true,
     })
   );
@@ -36,6 +36,8 @@ app.use("/api/v1/skill",skillRoutes);
 app.use("/api/v1/category",categoryRoutes);
 app.use("/api/v1/notification",notificationRoutes);
 
+console.log("GOOGLE_CLIENT_ID:", process.env.GOOGLE_CLIENT_ID);
+console.log("GOOGLE_CLIENT_SECRET:", process.env.GOOGLE_CLIENT_SECRET);
 
 app.listen(PORT, () => {
     console.log(`Le serveur est lancé sur le port ${PORT}`);

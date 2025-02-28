@@ -7,6 +7,7 @@ import { FaSun, FaMoon, FaUserCircle, FaBars } from "react-icons/fa";
 import { useTheme } from "../../context/ThemeContext";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { motion } from "framer-motion";
+import logo from "../../assets/logo/logo-transparent-png.png"; // Import du logo
 
 export const Header = () => {
   const { theme, toggleTheme } = useTheme();
@@ -37,8 +38,13 @@ export const Header = () => {
       style={{ backgroundColor: "var(--card)" }}
     >
       <nav className="container mx-auto p-4 flex justify-between items-center">
-        <Link to="/" className="text-xl font-bold" style={{ color: "var(--text)" }}>
-          Freelance DZ
+        <Link to="/" className="flex items-center">
+          <img
+            src={logo}
+            alt="Freelance DZ Logo"
+            className="h-13 w-auto" // Ajuste la taille selon tes besoins
+            style={{ filter: theme === "dark" ? "invert(1)" : "none" }} // Optionnel : ajuste pour le thème sombre
+          />
         </Link>
 
         {/* Menu Desktop */}

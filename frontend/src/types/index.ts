@@ -1,3 +1,4 @@
+//frontend\src\types\index.ts
 export interface SignupData {
     username: string;
     email: string;

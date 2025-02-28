@@ -27,7 +27,6 @@ dist-ssr
 
 # Ignorer .env à la racine (backend)
 /.env
-backend/utils/generateToken.js
 
 # Ignorer .env dans le dossier frontend
 frontend/.env

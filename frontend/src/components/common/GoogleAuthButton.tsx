@@ -3,11 +3,12 @@
 import { FcGoogle } from "react-icons/fc"; // Icône Google colorée de react-icons
 import toast from "react-hot-toast";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5005/api/v1";
 export const GoogleAuthButton = () => {
   const handleGoogleAuth = () => {
     try {
       // Rediriger vers l'endpoint Google OAuth du backend
-      window.location.href = "http://localhost:5000/api/v1/auth/google";
+      window.location.href = `${API_URL}/auth/google`;
     } catch (err) {
       toast.error("Erreur lors de la redirection vers Google", { id: "google-auth" });
     }

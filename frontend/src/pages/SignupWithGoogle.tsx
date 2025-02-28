@@ -7,6 +7,8 @@ import { Loader } from "../components/common/Loader";
 import { FaGoogle } from "react-icons/fa";
 import { motion } from "framer-motion";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5005/api/v1";
+
 export const SignupWithGoogle = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -14,7 +16,7 @@ export const SignupWithGoogle = () => {
     setLoading(true);
     try {
       // Rediriger vers l'endpoint Google OAuth du backend
-      window.location.href = "http://localhost:5000/api/v1/auth/google";
+      window.location.href = `${API_URL}/auth/google`;
     } catch (err) {
       toast.error("Erreur lors de la redirection vers Google", { id: "google-signup" });
       setLoading(false);

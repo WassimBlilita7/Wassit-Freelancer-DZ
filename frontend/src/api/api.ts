@@ -75,3 +75,13 @@ export const resetPassword = async (data: { email: string; resetOTP: string; new
   const response = await api.post("/auth/reset-password", data);
   return response.data;
 };
+
+export const getProfile = async (): Promise<ApiResponse> => {
+  const response = await api.get("/auth/profile");
+  return response.data;
+};
+
+export const updateProfile = async (profileData: Partial<PostData["profile"]>): Promise<ApiResponse> => {
+  const response = await api.put("/auth/profile", profileData);
+  return response.data;
+};

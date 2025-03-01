@@ -24,7 +24,17 @@ export interface SignupData {
       username: string;
       email: string;
       isFreelancer: boolean;
+      profile?: ProfileData;
     };
+  }
+
+  export interface ProfileData {
+    firstName?: string;
+    lastName?: string;
+    bio?: string;
+    skills?: string[]; // Références aux IDs des compétences, mais ici on utilisera des chaînes pour simplifier
+    companyName?: string;
+    webSite?: string;
   }
 
   export interface PostData {
@@ -32,8 +42,9 @@ export interface SignupData {
     description: string;
     skillsRequired: string[];
     budget: number;
-    duration: "short-term" | "long-term" | "ongoing"; // Enum basé sur postModel.js
-    category: string; // Nom de la catégorie
+    duration: "short-term" | "long-term" | "ongoing";
+    category: string;
+    profile?: ProfileData; // Ajout facultatif si utilisé ailleurs
   }
   
   // Interface pour une catégorie (basé sur categoryModel.js)

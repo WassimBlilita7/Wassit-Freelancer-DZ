@@ -218,4 +218,59 @@ export async function resetPassword(req, res) {
   } catch (error) {
     res.status(500).json({ message: "Erreur serveur", error: error.message });
   }
-}
+};
+
+export async function getProfile(req, res) {
+  try {
+    const user = await User.findById(req.user._id).select("-password -otp -otpExpires -resetOTP -resetOTPExpires");
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+    res.status(200).json({
+      message: "Profil récupéré avec succès",
+      userData: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        isFreelancer: user.isFreelancer,
+        profile: user.profile,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Erreur serveur", error: error.message });
+  }
+};
+
+export async function updateProfile(req, res) {
+  try {
+    const { firstName, lastName, bio, skills, companyName, webSite } = req.body;
+
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+
+    // Mettre à jour uniquement les champs fournis
+    if (firstName !== undefined) user.profile.firstName = firstName;
+    if (lastName !== undefined) user.profile.lastName = lastName;
+    if (bio !== undefined) user.profile.bio = bio;
+    if (skills !== undefined) user.profile.skills = skills;
+    if (companyName !== undefined) user.profile.companyName = companyName;
+    if (webSite !== undefined) user.profile.webSite = webSite;
+
+    await user.save();
+
+    res.status(200).json({
+      message: "Profil mis à jour avec succès",
+      userData: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        isFreelancer: user.isFreelancer,
+        profile: user.profile,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Erreur serveur", error: error.message });
+  }
+};

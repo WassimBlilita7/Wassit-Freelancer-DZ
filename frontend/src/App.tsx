@@ -8,8 +8,9 @@ import { Logout } from "./pages/Logout";
 import { SignupWithGoogle } from "./pages/SignupWithGoogle";
 import { Home } from "./pages/home/Home";
 import { NewProject } from "./pages/NewProject";
-import { ForgotPassword } from "./pages/ForgotPassword"; // Nouvelle importation
-import { ResetPassword } from "./pages/ResetPassword"; // Nouvelle importation
+import { ForgotPassword } from "./pages/ForgotPassword";
+import { ResetPassword } from "./pages/ResetPassword";
+import { Profile } from "./pages/Profile"; // Nouvelle importation
 import { ToastProvider } from "./components/common/ToastProvider";
 import { ThemeProvider } from "./context/ThemeContext";
 
@@ -29,8 +30,9 @@ function AppContent() {
           <Route path="/logout" element={<Logout />} />
           <Route path="/signup-with-google" element={<SignupWithGoogle />} />
           <Route path="/new-project" element={<NewProject />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} /> {/* Nouvelle route */}
-          <Route path="/reset-password" element={<ResetPassword />} /> {/* Nouvelle route */}
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/profile" element={<Profile />} /> {/* Nouvelle route */}
           <Route path="*" element={<div>404 - Page non trouvée</div>} />
         </Routes>
       </main>

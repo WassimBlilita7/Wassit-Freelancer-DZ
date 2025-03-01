@@ -1,3 +1,4 @@
+// src/App.tsx
 import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
 import { Header } from "./components/layout/Header";
 import { Signup } from "./pages/Signup";
@@ -6,6 +7,7 @@ import { Login } from "./pages/Login";
 import { Logout } from "./pages/Logout";
 import { SignupWithGoogle } from "./pages/SignupWithGoogle";
 import { Home } from "./pages/home/Home";
+import { NewProject } from "./pages/NewProject"; // Nouvelle importation
 import { ToastProvider } from "./components/common/ToastProvider";
 import { ThemeProvider } from "./context/ThemeContext";
 
@@ -24,7 +26,8 @@ function AppContent() {
           <Route path="/login" element={<Login />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="/signup-with-google" element={<SignupWithGoogle />} />
-          <Route path="*" element={<div>404 - Page non trouvée</div>} /> {/* Gestion 404 */}
+          <Route path="/new-project" element={<NewProject />} /> {/* Nouvelle route */}
+          <Route path="*" element={<div>404 - Page non trouvée</div>} />
         </Routes>
       </main>
       {!hideHeaderAndFooter && (

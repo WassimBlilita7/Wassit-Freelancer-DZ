@@ -26,3 +26,20 @@ export interface SignupData {
       isFreelancer: boolean;
     };
   }
+
+  export interface PostData {
+    title: string;
+    description: string;
+    skillsRequired: string[];
+    budget: number;
+    duration: "short-term" | "long-term" | "ongoing"; // Enum basé sur postModel.js
+    category: string; // Nom de la catégorie
+  }
+  
+  // Interface pour une catégorie (basé sur categoryModel.js)
+  export interface Category {
+    _id: string;
+    name: string;
+    description?: string;
+    createdAt?: string; // Date en string au format ISO après parsing JSON
+  }

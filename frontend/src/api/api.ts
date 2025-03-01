@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { Category, PostData } from "@/types";
 import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL ||   "http://localhost:5000/api/v1";
@@ -53,4 +54,14 @@ export const checkAuth = async () => {
   } catch (e) {
     throw new Error("Non authentifié");
   }
+};
+
+export const createPost = async (data: PostData) => {
+  const response = await api.post("/post/createPost", data);
+  return response.data;
+};
+
+export const fetchCategories = async (): Promise<Category[]> => {
+  const response = await api.get("/category");
+  return response.data;
 };

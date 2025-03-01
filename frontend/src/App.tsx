@@ -7,13 +7,15 @@ import { Login } from "./pages/Login";
 import { Logout } from "./pages/Logout";
 import { SignupWithGoogle } from "./pages/SignupWithGoogle";
 import { Home } from "./pages/home/Home";
-import { NewProject } from "./pages/NewProject"; // Nouvelle importation
+import { NewProject } from "./pages/NewProject";
+import { ForgotPassword } from "./pages/ForgotPassword"; // Nouvelle importation
+import { ResetPassword } from "./pages/ResetPassword"; // Nouvelle importation
 import { ToastProvider } from "./components/common/ToastProvider";
 import { ThemeProvider } from "./context/ThemeContext";
 
 function AppContent() {
   const location = useLocation();
-  const hideHeaderAndFooter = ["/signup", "/login", "/verify-otp" ].includes(location.pathname);
+  const hideHeaderAndFooter = ["/signup", "/login", "/verify-otp", "/forgot-password", "/reset-password"].includes(location.pathname);
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "var(--background)" }}>
@@ -26,7 +28,9 @@ function AppContent() {
           <Route path="/login" element={<Login />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="/signup-with-google" element={<SignupWithGoogle />} />
-          <Route path="/new-project" element={<NewProject />} /> {/* Nouvelle route */}
+          <Route path="/new-project" element={<NewProject />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} /> {/* Nouvelle route */}
+          <Route path="/reset-password" element={<ResetPassword />} /> {/* Nouvelle route */}
           <Route path="*" element={<div>404 - Page non trouvée</div>} />
         </Routes>
       </main>

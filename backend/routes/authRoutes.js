@@ -1,7 +1,7 @@
 // routes/authRoutes.js
 import express from "express";
 import passport from "passport";
-import { authCheck, login, logout, signup, verifyOTP } from "../controllers/authController.js";
+import { authCheck, forgotPassword, login, logout, resetPassword, signup, verifyOTP } from "../controllers/authController.js";
 import { configureGoogleAuth } from "../config/googleAuthConfig.js";
 import { generateTokenAndSetCookie } from "../utils/generateToken.js";
 import { protect } from "../middleware/authMiddleware.js";
@@ -37,5 +37,8 @@ router.get(
     res.redirect("http://localhost:3000/");
   }
 );
+
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password", resetPassword);
 
 export default router;

@@ -1,4 +1,4 @@
-//frontend\src\pages\Logout.tsx
+// src/pages/Login.tsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -6,12 +6,14 @@ import { loginUser, LoginData } from "../api/api";
 import { Button } from "../components/ui/button";
 import { Label } from "../components/ui/label";
 import { CustomTextField } from "../components/common/CustomTextField";
-import { GoogleAuthButton } from "../components/common/GoogleAuthButton" // Nouveau composant
+import { GoogleAuthButton } from "../components/common/GoogleAuthButton";
 import { Loader } from "../components/common/Loader";
 import { motion } from "framer-motion";
+import { useTheme } from "../context/ThemeContext"; // Ajouté pour accéder au thème
 import loginBgImage from "../assets/signupPicture.png";
 
 export const Login = () => {
+  const { theme } = useTheme(); // Ajouté pour définir theme
   const [formData, setFormData] = useState<LoginData>({ email: "", password: "" });
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -38,7 +40,6 @@ export const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-x-hidden">
       <div className="w-full max-w-4xl flex flex-col md:flex-row items-center">
-        {/* Côté gauche : Formulaire */}
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
@@ -98,7 +99,6 @@ export const Login = () => {
               Se connecter
             </Button>
 
-            {/* Bouton Google */}
             <div className="mt-4">
               <GoogleAuthButton />
             </div>
@@ -108,16 +108,21 @@ export const Login = () => {
               <a href="/signup" style={{ color: "var(--secondary)" }} className="hover:underline">
                 Inscrivez-vous
               </a>
+              {" | "}
+              <a
+                href="/forgot-password"
+                className="font-bold hover:underline"
+                style={{ color: theme === "dark" ? "#60A5FA" : "#2563EB" }} // Bleu clair en sombre, bleu vif en clair
+              >
+                Mot de passe oublié ?
+              </a>
             </p>
           </form>
         </motion.div>
 
-        {/* Côté droit : Image fixée */}
         <div
           className="hidden md:block fixed top-0 right-0 w-7/20 h-full bg-cover bg-center z-0"
-          style={{
-            backgroundImage: `url(${loginBgImage})`,
-          }}
+          style={{ backgroundImage: `url(${loginBgImage})` }}
         />
       </div>
 

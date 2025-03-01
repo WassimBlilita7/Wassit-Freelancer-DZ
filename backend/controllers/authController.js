@@ -157,3 +157,65 @@ export async function authCheck(req, res) {
   }
 };
 
+export async function forgotPassword(req, res) {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: "Veuillez fournir un email" });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+
+    // Générer un OTP pour la réinitialisation
+    const resetOTP = generateOTP();
+    const resetOTPExpires = Date.now() + 600000; // Expire dans 10 minutes
+
+    user.resetOTP = resetOTP;
+    user.resetOTPExpires = resetOTPExpires;
+    await user.save();
+
+    const emailSubject = "Réinitialisation de votre mot de passe";
+    const emailText = `Votre code de réinitialisation est : ${resetOTP}\nValable pendant 10 minutes.\nSi vous n'avez pas demandé cette réinitialisation, ignorez cet email.`;
+    await sendEmail(email, emailSubject, emailText);
+
+    res.status(200).json({ message: "Un code de réinitialisation a été envoyé à votre email." });
+  } catch (error) {
+    res.status(500).json({ message: "Erreur serveur", error: error.message });
+  }
+};
+
+export async function resetPassword(req, res) {
+  try {
+    const { email, resetOTP, newPassword } = req.body;
+
+    if (!email || !resetOTP || !newPassword) {
+      return res.status(400).json({ message: "Veuillez fournir email, code OTP et nouveau mot de passe" });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+
+    const validation = validateOTP(resetOTP, user.resetOTP, user.resetOTPExpires);
+    if (!validation.isValid) {
+      return res.status(400).json({ message: validation.message });
+    }
+
+    const salt = await bcryptjs.genSalt(10);
+    const hashedPassword = await bcryptjs.hash(newPassword, salt);
+
+    user.password = hashedPassword;
+    user.resetOTP = undefined; // Effacer l'OTP après utilisation
+    user.resetOTPExpires = undefined;
+    await user.save();
+
+    res.status(200).json({ message: "Mot de passe réinitialisé avec succès. Vous pouvez vous connecter." });
+  } catch (error) {
+    res.status(500).json({ message: "Erreur serveur", error: error.message });
+  }
+}

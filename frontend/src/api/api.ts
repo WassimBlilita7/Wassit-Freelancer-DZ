@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Category, PostData } from "@/types";
+import { ApiResponse, Category, PostData } from "@/types";
 import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL ||   "http://localhost:5000/api/v1";
@@ -63,5 +63,15 @@ export const createPost = async (data: PostData) => {
 
 export const fetchCategories = async (): Promise<Category[]> => {
   const response = await api.get("/category");
+  return response.data;
+};
+
+export const forgotPassword = async (email: string): Promise<ApiResponse> => {
+  const response = await api.post("/auth/forgot-password", { email });
+  return response.data;
+};
+
+export const resetPassword = async (data: { email: string; resetOTP: string; newPassword: string }): Promise<ApiResponse> => {
+  const response = await api.post("/auth/reset-password", data);
   return response.data;
 };

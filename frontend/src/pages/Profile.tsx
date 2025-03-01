@@ -2,7 +2,7 @@
 // src/pages/Profile.tsx
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getProfile, updateProfile, checkAuth } from "../api/api";
+import { getProfile, updateProfile } from "../api/api";
 import { ProfileData } from "../types";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
@@ -24,7 +24,7 @@ export const Profile = () => {
     const fetchProfile = async () => {
       setLoading(true);
       try {
-        const authResponse = await checkAuth();
+        
         setIsAuthenticated(true);
         const profileResponse = await getProfile();
         setProfile(profileResponse.userData?.profile || {});
@@ -44,9 +44,7 @@ export const Profile = () => {
     setProfile((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSkillsChange = (skills: string[]) => {
-    setProfile((prev) => ({ ...prev, skills }));
-  };
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -7,11 +7,8 @@ import { FaBars, FaMoon, FaSun } from "react-icons/fa";
 import { useTheme } from "../../context/ThemeContext";
 import { DropdownMenu } from "../ui/DropdownMenu";
 import { getMenuItems } from "../../data/menuItems";
-import { Player } from "@lottiefiles/react-lottie-player";
 import logo from "../../assets/logo/logo-transparent-png.png";
-import hoverAnimation from "../../assets/lottie/hover.json";
 import { motion } from "framer-motion";
-import { MenuItem } from "../ui/MenuItem";
 
 export const Header = () => {
   const { theme, toggleTheme } = useTheme();
@@ -27,7 +24,7 @@ export const Header = () => {
       try {
         const response = await checkAuth();
         setIsAuthenticated(true);
-        setIsFreelancer(response.user.isFreelancer || false);
+        setIsFreelancer(response.userData?.isFreelancer || false);
       } catch (err) {
         setIsAuthenticated(false);
         console.error("Erreur d'authentification:", err);
@@ -42,58 +39,47 @@ export const Header = () => {
 
   return (
     <header
-      className="fixed top-0 left-0 w-full shadow z-50"
+      className="fixed top-0 left-0 w-full shadow z-50 py-2" // Réduit la hauteur
       style={{
         background: theme === "light"
-          ? "linear-gradient(to right, #E5E7EB, #2770D1)" // Gris clair vers bleu vif
-          : "linear-gradient(to right, #1F2937, #C40D6C)", // Gris foncé vers magenta
+          ? "linear-gradient(to right, #E5E7EB, #2770D1)"
+          : "linear-gradient(to right, #1F2937, #C40D6C)",
       }}
     >
-      <nav className="container mx-auto p-4 flex justify-between items-center">
-        {/* Logo avec animation */}
-        <Link to="/" className="relative flex items-center">
+      <nav className="container mx-auto px-4 flex justify-between items-center">
+        <Link to="/" className="flex items-center">
           <motion.div whileHover={{ scale: 1.05 }}>
             <img
               src={logo}
               alt="Freelance DZ Logo"
-              className="h-12 w-auto"
+              className="h-8 w-auto" // Réduit la taille du logo
               style={{ filter: theme === "dark" ? "invert(1)" : "none" }}
-            />
-            <Player
-              autoplay
-              loop
-              src={hoverAnimation}
-              style={{ height: "40px", width: "40px", position: "absolute", top: "-10px", right: "-10px", opacity: 0 }}
-              className="hover:opacity-100 transition-opacity"
             />
           </motion.div>
         </Link>
 
-        {/* Menu Desktop */}
-        <div className="hidden md:flex items-center space-x-6">
+        <div className="hidden md:flex items-center space-x-4"> {/* Réduit l'espacement */}
           {isLoading ? (
-            <Player autoplay loop src={hoverAnimation} style={{ height: "30px", width: "30px" }} />
+            <span style={{ color: theme === "dark" ? "#FFFFFF" : "#333333" }}>Chargement...</span>
           ) : isAuthenticated ? (
             <>
               <Button
                 variant="ghost"
-                className="text-lg font-medium hover:text-[var(--primary)]"
+                className="text-sm hover:text-[var(--secondary)]" // Réduit la taille du texte
                 onClick={() => navigate("/dashboard")}
-                style={{ color: "#FFFFFF" }} // Texte blanc pour contraste
+                style={{ color: theme === "dark" ? "#FFFFFF" : "#333333" }}
               >
-                Tableau de bord
+                Dashboard
               </Button>
               <DropdownMenu
                 trigger={
-                  <Button variant="ghost" className="p-2">
-                    <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.5 }}>
-                      <img
-                        src={logo}
-                        alt="User Profile"
-                        className="w-8 h-8 rounded-full"
-                        style={{ filter: theme === "dark" ? "invert(1)" : "none" }}
-                      />
-                    </motion.div>
+                  <Button variant="ghost" className="p-1">
+                    <img
+                      src={logo}
+                      alt="User Profile"
+                      className="w-6 h-6 rounded-full" // Réduit la taille
+                      style={{ filter: theme === "dark" ? "invert(1)" : "none" }}
+                    />
                   </Button>
                 }
                 items={menuItems}
@@ -103,13 +89,15 @@ export const Header = () => {
             <>
               <Button
                 variant="outline"
-                style={{ borderColor: "#FFFFFF", color: "#FFFFFF" }} // Bordure et texte blancs
+                className="text-sm" // Réduit la taille
+                style={{ borderColor: theme === "dark" ? "#FFFFFF" : "#333333", color: theme === "dark" ? "#FFFFFF" : "#333333" }}
                 onClick={() => navigate("/login")}
               >
                 Connexion
               </Button>
               <Button
-                style={{ backgroundColor: "var(--secondary)", color: "#FFFFFF" }} // Utilise secondary pour contraste
+                className="text-sm" // Réduit la taille
+                style={{ backgroundColor: "var(--secondary)", color: "#FFFFFF" }}
                 onClick={() => navigate("/signup")}
               >
                 Inscription
@@ -119,84 +107,75 @@ export const Header = () => {
           <motion.button
             whileHover={{ scale: 1.1 }}
             onClick={toggleTheme}
-            className="p-2 rounded-full hover:bg-[var(--primary)]/20 transition-colors"
+            className="p-1 rounded-full hover:bg-[var(--primary)]/20"
             style={{ backgroundColor: "transparent" }}
           >
             {theme === "light" ? (
-              <FaMoon className="w-5 h-5" style={{ color: "#FFFFFF" }} />
+              <FaMoon className="w-4 h-4" style={{ color: theme === "dark" ? "#FFFFFF" : "#333333" }} />
             ) : (
-              <FaSun className="w-5 h-5" style={{ color: "#FFFFFF" }} />
+              <FaSun className="w-4 h-4" style={{ color: theme === "dark" ? "#FFFFFF" : "#333333" }} />
             )}
           </motion.button>
         </div>
 
-        {/* Menu Mobile */}
-        <div className="md:hidden flex items-center">
+        <div className="md:hidden">
           <Button variant="ghost" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            <FaBars className="w-6 h-6" style={{ color: "#FFFFFF" }} />
+            <FaBars className="w-5 h-5" style={{ color: theme === "dark" ? "#FFFFFF" : "#333333" }} />
           </Button>
         </div>
       </nav>
 
-      {/* Sidebar Mobile */}
       {isMenuOpen && (
         <motion.div
           initial={{ x: "100%" }}
           animate={{ x: 0 }}
           exit={{ x: "100%" }}
           transition={{ duration: 0.3 }}
-          className="fixed top-0 right-0 w-3/4 h-full p-6 md:hidden"
+          className="fixed top-0 right-0 w-2/3 h-full p-4 md:hidden"
           style={{
-            background: theme === "light"
-              ? "linear-gradient(to bottom, #E5E7EB, #2770D1)"
-              : "linear-gradient(to bottom, #1F2937, #C40D6C)",
+            background: theme === "light" ? "#E5E7EB" : "#1F2937",
             boxShadow: "-2px 0 10px rgba(0,0,0,0.1)",
           }}
         >
-          <div className="space-y-4">
+          <div className="space-y-3">
             {isAuthenticated ? (
               <>
                 <Button
                   variant="ghost"
-                  className="w-full text-left text-lg"
-                  style={{ color: "#FFFFFF" }}
+                  className="w-full text-left text-sm"
+                  style={{ color: theme === "dark" ? "#FFFFFF" : "#333333" }}
                   onClick={() => navigate("/dashboard")}
                 >
-                  Tableau de bord
+                  Dashboard
                 </Button>
                 {menuItems.map((item, index) => (
-                  <MenuItem
+                  <div
                     key={index}
-                    text={item.text}
-                    icon={item.icon}
-                    description={item.description}
+                    className="p-2 hover:bg-[var(--primary)]/10 rounded"
                     onClick={() => {
                       item.action();
                       setIsMenuOpen(false);
                     }}
-                  />
+                    style={{ color: theme === "dark" ? "#FFFFFF" : "#333333" }}
+                  >
+                    <item.icon className="inline mr-2 w-4 h-4" /> {item.text}
+                  </div>
                 ))}
               </>
             ) : (
               <>
                 <Button
                   variant="outline"
-                  className="w-full"
-                  style={{ borderColor: "#FFFFFF", color: "#FFFFFF" }}
-                  onClick={() => {
-                    navigate("/login");
-                    setIsMenuOpen(false);
-                  }}
+                  className="w-full text-sm"
+                  style={{ borderColor: theme === "dark" ? "#FFFFFF" : "#333333", color: theme === "dark" ? "#FFFFFF" : "#333333" }}
+                  onClick={() => { navigate("/login"); setIsMenuOpen(false); }}
                 >
                   Connexion
                 </Button>
                 <Button
-                  className="w-full"
+                  className="w-full text-sm"
                   style={{ backgroundColor: "var(--secondary)", color: "#FFFFFF" }}
-                  onClick={() => {
-                    navigate("/signup");
-                    setIsMenuOpen(false);
-                  }}
+                  onClick={() => { navigate("/signup"); setIsMenuOpen(false); }}
                 >
                   Inscription
                 </Button>
@@ -204,10 +183,10 @@ export const Header = () => {
             )}
             <Button
               onClick={toggleTheme}
-              className="w-full p-2 rounded-full hover:bg-[var(--primary)]/20 transition-colors"
-              style={{ backgroundColor: "transparent", color: "#FFFFFF" }}
+              className="w-full p-2 text-sm rounded-full hover:bg-[var(--primary)]/20"
+              style={{ backgroundColor: "transparent", color: theme === "dark" ? "#FFFFFF" : "#333333" }}
             >
-              {theme === "light" ? "Mode sombre" : "Mode clair"}
+              {theme === "light" ? "Sombre" : "Clair"}
             </Button>
           </div>
         </motion.div>

@@ -13,7 +13,7 @@ import { ThemeProvider } from "./context/ThemeContext";
 
 function AppContent() {
   const location = useLocation();
-  const hideHeaderAndFooter = ["/signup", "/login", "/verify-otp"].includes(location.pathname);
+  const hideHeaderAndFooter = ["/signup", "/login", "/verify-otp" ].includes(location.pathname);
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "var(--background)" }}>

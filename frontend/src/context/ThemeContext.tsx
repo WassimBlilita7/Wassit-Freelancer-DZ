@@ -1,15 +1,18 @@
 // src/context/ThemeContext.tsx
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
+// Définir un type strict pour le thème
+type Theme = "light" | "dark";
+
 interface ThemeContextType {
-  theme: string;
+  theme: Theme;
   toggleTheme: () => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const [theme, setTheme] = useState<string>(() => localStorage.getItem("theme") || "light");
+  const [theme, setTheme] = useState<Theme>(() => (localStorage.getItem("theme") as Theme) || "light");
 
   useEffect(() => {
     document.documentElement.classList.remove("light", "dark");
@@ -28,7 +31,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export const useTheme = () => {
+export const useTheme = (): ThemeContextType => {
   const context = useContext(ThemeContext);
   if (!context) {
     throw new Error("useTheme must be used within a ThemeProvider");

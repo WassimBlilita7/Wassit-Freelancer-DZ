@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { checkAuth } from "../../api/api";
 import { FaBars, FaMoon, FaSun } from "react-icons/fa";
-import { useTheme } from "../../context/ThemeContext";
+import { useTheme } from "../../context/ThemeContext"; // Assurez-vous que le chemin est correct
 import { DropdownMenu } from "../ui/DropdownMenu";
 import { getMenuItems } from "../../data/menuItems";
 import logo from "../../assets/logo/logo-transparent-png.png";
@@ -39,7 +39,7 @@ export const Header = () => {
 
   return (
     <header
-      className="fixed top-0 left-0 w-full shadow z-50 py-2" // Réduit la hauteur
+      className="fixed top-0 left-0 w-full shadow z-50 py-2"
       style={{
         background: theme === "light"
           ? "linear-gradient(to right, #E5E7EB, #2770D1)"
@@ -52,20 +52,20 @@ export const Header = () => {
             <img
               src={logo}
               alt="Freelance DZ Logo"
-              className="h-8 w-auto" // Réduit la taille du logo
+              className="h-8 w-auto"
               style={{ filter: theme === "dark" ? "invert(1)" : "none" }}
             />
           </motion.div>
         </Link>
 
-        <div className="hidden md:flex items-center space-x-4"> {/* Réduit l'espacement */}
+        <div className="hidden md:flex items-center space-x-4">
           {isLoading ? (
             <span style={{ color: theme === "dark" ? "#FFFFFF" : "#333333" }}>Chargement...</span>
           ) : isAuthenticated ? (
             <>
               <Button
                 variant="ghost"
-                className="text-sm hover:text-[var(--secondary)]" // Réduit la taille du texte
+                className="text-sm hover:text-[var(--secondary)]"
                 onClick={() => navigate("/dashboard")}
                 style={{ color: theme === "dark" ? "#FFFFFF" : "#333333" }}
               >
@@ -77,7 +77,7 @@ export const Header = () => {
                     <img
                       src={logo}
                       alt="User Profile"
-                      className="w-6 h-6 rounded-full" // Réduit la taille
+                      className="w-6 h-6 rounded-full"
                       style={{ filter: theme === "dark" ? "invert(1)" : "none" }}
                     />
                   </Button>
@@ -89,14 +89,14 @@ export const Header = () => {
             <>
               <Button
                 variant="outline"
-                className="text-sm" // Réduit la taille
+                className="text-sm"
                 style={{ borderColor: theme === "dark" ? "#FFFFFF" : "#333333", color: theme === "dark" ? "#FFFFFF" : "#333333" }}
                 onClick={() => navigate("/login")}
               >
                 Connexion
               </Button>
               <Button
-                className="text-sm" // Réduit la taille
+                className="text-sm"
                 style={{ backgroundColor: "var(--secondary)", color: "#FFFFFF" }}
                 onClick={() => navigate("/signup")}
               >
@@ -111,7 +111,7 @@ export const Header = () => {
             style={{ backgroundColor: "transparent" }}
           >
             {theme === "light" ? (
-              <FaMoon className="w-4 h-4" style={{ color: theme === "dark" ? "#FFFFFF" : "#333333" }} />
+              <FaMoon className="w-4 h-4"  />
             ) : (
               <FaSun className="w-4 h-4" style={{ color: theme === "dark" ? "#FFFFFF" : "#333333" }} />
             )}

@@ -4,11 +4,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { checkAuth } from "../../api/api";
 import { FaBars, FaMoon, FaSun } from "react-icons/fa";
-import { useTheme } from "../../context/ThemeContext"; // Assurez-vous que le chemin est correct
+import { useTheme } from "../../context/ThemeContext";
 import { DropdownMenu } from "../ui/DropdownMenu";
 import { getMenuItems } from "../../data/menuItems";
 import logo from "../../assets/logo/logo-transparent-png.png";
 import { motion } from "framer-motion";
+import { MobileMenu } from "./MobileMenu";
 
 export const Header = () => {
   const { theme, toggleTheme } = useTheme();
@@ -111,7 +112,7 @@ export const Header = () => {
             style={{ backgroundColor: "transparent" }}
           >
             {theme === "light" ? (
-              <FaMoon className="w-4 h-4"  />
+              <FaMoon className="w-4 h-4" style={{ color: "#333333" }} />
             ) : (
               <FaSun className="w-4 h-4" style={{ color: theme === "dark" ? "#FFFFFF" : "#333333" }} />
             )}
@@ -119,78 +120,21 @@ export const Header = () => {
         </div>
 
         <div className="md:hidden">
-          <Button variant="ghost" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+          <Button variant="ghost" onClick={() => setIsMenuOpen(true)}>
             <FaBars className="w-5 h-5" style={{ color: theme === "dark" ? "#FFFFFF" : "#333333" }} />
           </Button>
         </div>
       </nav>
 
-      {isMenuOpen && (
-        <motion.div
-          initial={{ x: "100%" }}
-          animate={{ x: 0 }}
-          exit={{ x: "100%" }}
-          transition={{ duration: 0.3 }}
-          className="fixed top-0 right-0 w-2/3 h-full p-4 md:hidden"
-          style={{
-            background: theme === "light" ? "#E5E7EB" : "#1F2937",
-            boxShadow: "-2px 0 10px rgba(0,0,0,0.1)",
-          }}
-        >
-          <div className="space-y-3">
-            {isAuthenticated ? (
-              <>
-                <Button
-                  variant="ghost"
-                  className="w-full text-left text-sm"
-                  style={{ color: theme === "dark" ? "#FFFFFF" : "#333333" }}
-                  onClick={() => navigate("/dashboard")}
-                >
-                  Dashboard
-                </Button>
-                {menuItems.map((item, index) => (
-                  <div
-                    key={index}
-                    className="p-2 hover:bg-[var(--primary)]/10 rounded"
-                    onClick={() => {
-                      item.action();
-                      setIsMenuOpen(false);
-                    }}
-                    style={{ color: theme === "dark" ? "#FFFFFF" : "#333333" }}
-                  >
-                    <item.icon className="inline mr-2 w-4 h-4" /> {item.text}
-                  </div>
-                ))}
-              </>
-            ) : (
-              <>
-                <Button
-                  variant="outline"
-                  className="w-full text-sm"
-                  style={{ borderColor: theme === "dark" ? "#FFFFFF" : "#333333", color: theme === "dark" ? "#FFFFFF" : "#333333" }}
-                  onClick={() => { navigate("/login"); setIsMenuOpen(false); }}
-                >
-                  Connexion
-                </Button>
-                <Button
-                  className="w-full text-sm"
-                  style={{ backgroundColor: "var(--secondary)", color: "#FFFFFF" }}
-                  onClick={() => { navigate("/signup"); setIsMenuOpen(false); }}
-                >
-                  Inscription
-                </Button>
-              </>
-            )}
-            <Button
-              onClick={toggleTheme}
-              className="w-full p-2 text-sm rounded-full hover:bg-[var(--primary)]/20"
-              style={{ backgroundColor: "transparent", color: theme === "dark" ? "#FFFFFF" : "#333333" }}
-            >
-              {theme === "light" ? "Sombre" : "Clair"}
-            </Button>
-          </div>
-        </motion.div>
-      )}
+      <MobileMenu
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+        menuItems={menuItems}
+        isAuthenticated={isAuthenticated}
+        toggleTheme={toggleTheme}
+        theme={theme}
+        navigate={navigate}
+      />
     </header>
   );
 };

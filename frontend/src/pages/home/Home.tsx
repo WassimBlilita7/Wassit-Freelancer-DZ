@@ -2,6 +2,7 @@
 import { HeroSection } from "../../components/home/HeroSection";
 import { FeaturesSection } from "../../components/home/FeaturesSection";
 import { CallToActionSection } from "../../components/home/CallToActionSection";
+import { StatsSection } from "../../components/home/StatsSection"; // Nouvelle section
 import { useHome } from "../../hooks/useHome";
 import { Loader } from "../../components/common/Loader";
 import { motion } from "framer-motion";
@@ -23,10 +24,11 @@ export const Home = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
-        className="container mx-auto max-w-7xl px-6 py-12" // Taille augmentée à max-w-7xl
+        className="container mx-auto max-w-7xl px-6 py-12"
       >
         <HeroSection isFreelancer={isFreelancer} navigate={navigate} />
         <FeaturesSection />
+        <StatsSection /> {/* Nouvelle section ajoutée */}
         <CallToActionSection />
       </motion.div>
     </div>

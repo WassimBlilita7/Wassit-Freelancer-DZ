@@ -120,7 +120,7 @@ export const Header = () => {
             style={{ backgroundColor: "transparent" }}
           >
             {theme === "light" ? (
-              <FaMoon className="w-4 h-4" style={{ color: theme === "dark" ? "#FFFFFF" : "#333333" }} />
+              <FaMoon className="w-4 h-4" style={{ color: "#333333" }} />
             ) : (
               <FaSun className="w-4 h-4" style={{ color: theme === "dark" ? "#FFFFFF" : "#333333" }} />
             )}

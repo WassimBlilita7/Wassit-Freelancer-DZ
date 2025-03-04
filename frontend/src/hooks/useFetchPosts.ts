@@ -15,11 +15,9 @@ export const useFetchPosts = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        // Vérifier si l'utilisateur est un freelance
         const authResponse = await checkAuth();
         setIsFreelancer(authResponse.userData?.isFreelancer || false);
 
-        // Récupérer tous les posts
         const fetchedPosts = await getAllPosts();
         console.log("useFetchPosts - Posts fetched:", fetchedPosts);
 
@@ -28,9 +26,18 @@ export const useFetchPosts = () => {
         console.log("useFetchPosts - Categories fetched:", fetchedCategories);
         setCategories(fetchedCategories);
 
+        const categoryIdsInPosts = fetchedPosts.map((post) => post.category);
+        console.log("useFetchPosts - Category IDs in posts:", categoryIdsInPosts);
+
+        const categoryIdsAvailable = fetchedCategories.map((cat) => cat._id);
+        console.log("useFetchPosts - Category IDs available:", categoryIdsAvailable);
+
         // Ajouter le nom de la catégorie à chaque post
         const postsWithCategoryNames = fetchedPosts.map((post) => {
           const category = fetchedCategories.find((cat) => cat._id === post.category);
+          if (!category) {
+            console.warn(`No category found for ID: ${post.category}`);
+          }
           return { ...post, categoryName: category?.name || "Non spécifiée" };
         });
 

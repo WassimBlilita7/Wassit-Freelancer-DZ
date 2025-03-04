@@ -67,7 +67,14 @@ export const NewProject = () => {
 
     setSubmitting(true);
     try {
-      const postData: PostData = { ...data };
+      const postData: PostData = {
+        ...data,
+        _id: "",
+        client: null,
+        status: "open",
+        createdAt: "",
+        applications: []
+      };
       const response = await createPost(postData);
       toast.success(response.message || "Offre publiée avec succès !", {
         icon: <Player autoplay src={successAnimation} style={{ height: "30px", width: "30px" }} />,

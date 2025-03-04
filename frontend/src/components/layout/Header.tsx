@@ -47,7 +47,7 @@ export const Header = () => {
           : "linear-gradient(to right, #1F2937, #C40D6C)",
       }}
     >
-      <nav className="container mx-auto px-4 flex justify-between items-center">
+      <nav className="container mx-auto px-4 flex items-center justify-between flex-wrap">
         <Link to="/" className="flex items-center">
           <motion.div whileHover={{ scale: 1.05 }}>
             <img
@@ -59,14 +59,17 @@ export const Header = () => {
           </motion.div>
         </Link>
 
-        <div className="hidden md:flex items-center space-x-4">
+        {/* Navigation principale */}
+        <div className="flex items-center space-x-2 sm:space-x-4">
           {isLoading ? (
-            <span style={{ color: theme === "dark" ? "#FFFFFF" : "#333333" }}>Chargement...</span>
+            <span className="text-sm" style={{ color: theme === "dark" ? "#FFFFFF" : "#333333" }}>
+              Chargement...
+            </span>
           ) : isAuthenticated ? (
             <>
               <Button
                 variant="ghost"
-                className="text-sm hover:text-[var(--secondary)]"
+                className="text-xs sm:text-sm hover:text-[var(--secondary)] px-2 py-1"
                 onClick={() => navigate("/dashboard")}
                 style={{ color: theme === "dark" ? "#FFFFFF" : "#333333" }}
               >
@@ -74,7 +77,7 @@ export const Header = () => {
               </Button>
               <Button
                 variant="ghost"
-                className="text-sm hover:text-[var(--secondary)]"
+                className="text-xs sm:text-sm hover:text-[var(--secondary)] px-2 py-1"
                 onClick={() => navigate("/all-posts")}
                 style={{ color: theme === "dark" ? "#FFFFFF" : "#333333" }}
               >
@@ -98,14 +101,14 @@ export const Header = () => {
             <>
               <Button
                 variant="outline"
-                className="text-sm"
+                className="text-xs sm:text-sm px-2 py-1"
                 style={{ borderColor: theme === "dark" ? "#FFFFFF" : "#333333", color: theme === "dark" ? "#FFFFFF" : "#333333" }}
                 onClick={() => navigate("/login")}
               >
                 Connexion
               </Button>
               <Button
-                className="text-sm"
+                className="text-xs sm:text-sm px-2 py-1"
                 style={{ backgroundColor: "var(--secondary)", color: "#FFFFFF" }}
                 onClick={() => navigate("/signup")}
               >
@@ -120,14 +123,15 @@ export const Header = () => {
             style={{ backgroundColor: "transparent" }}
           >
             {theme === "light" ? (
-              <FaMoon className="w-4 h-4" style={{ color: "#333333" }} />
+              <FaMoon className="w-4 h-4" style={{ color:  "#FFFFFF" }} />
             ) : (
               <FaSun className="w-4 h-4" style={{ color: theme === "dark" ? "#FFFFFF" : "#333333" }} />
             )}
           </motion.button>
         </div>
 
-        <div className="md:hidden">
+        {/* Menu burger pour petits écrans (optionnel) */}
+        <div className="sm:hidden">
           <Button variant="ghost" onClick={() => setIsMenuOpen(true)}>
             <FaBars className="w-5 h-5" style={{ color: theme === "dark" ? "#FFFFFF" : "#333333" }} />
           </Button>

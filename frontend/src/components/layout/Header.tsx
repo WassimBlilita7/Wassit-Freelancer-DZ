@@ -7,9 +7,9 @@ import { FaBars, FaMoon, FaSun } from "react-icons/fa";
 import { useTheme } from "../../context/ThemeContext";
 import { DropdownMenu } from "../ui/DropdownMenu";
 import { getMenuItems } from "../../data/menuItems";
+import { MobileMenu } from "./MobileMenu";
 import logo from "../../assets/logo/logo-transparent-png.png";
 import { motion } from "framer-motion";
-import { MobileMenu } from "./MobileMenu";
 
 export const Header = () => {
   const { theme, toggleTheme } = useTheme();
@@ -72,6 +72,14 @@ export const Header = () => {
               >
                 Dashboard
               </Button>
+              <Button
+                variant="ghost"
+                className="text-sm hover:text-[var(--secondary)]"
+                onClick={() => navigate("/all-posts")}
+                style={{ color: theme === "dark" ? "#FFFFFF" : "#333333" }}
+              >
+                Offres
+              </Button>
               <DropdownMenu
                 trigger={
                   <Button variant="ghost" className="p-1">
@@ -112,7 +120,7 @@ export const Header = () => {
             style={{ backgroundColor: "transparent" }}
           >
             {theme === "light" ? (
-              <FaMoon className="w-4 h-4" style={{ color: "#333333" }} />
+              <FaMoon className="w-4 h-4" style={{ color: theme === "dark" ? "#FFFFFF" : "#333333" }} />
             ) : (
               <FaSun className="w-4 h-4" style={{ color: theme === "dark" ? "#FFFFFF" : "#333333" }} />
             )}

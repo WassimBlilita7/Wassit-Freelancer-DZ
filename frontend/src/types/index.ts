@@ -38,19 +38,37 @@ export interface SignupData {
   }
 
   export interface PostData {
-    title: string;
-    description: string;
-    skillsRequired: string[];
-    budget: number;
-    duration: "short-term" | "long-term" | "ongoing";
-    category: string;
-    profile?: ProfileData; // Ajout facultatif si utilisé ailleurs
+    _id: string; 
+    title: string; 
+    description: string; 
+    skillsRequired: string[]; 
+    budget: number; 
+    duration: "short-term" | "long-term" | "ongoing"; 
+    client: {
+      _id: string; 
+      username: string; 
+      email?: string; 
+    } | null; 
+    status: "open" | "in-progress" | "completed"; 
+    createdAt: string; 
+    updatedAt?: string; 
+    applications: {
+      freelancer: string; 
+      cv: string; 
+      coverLetter: string; 
+      bidAmount: number; 
+      status: "pending" | "accepted" | "rejected"; 
+      _id: string; 
+      appliedAt: string; 
+    }[]; 
+    category: string; 
+    profile?: ProfileData;
+    __v?: number; 
   }
   
-  // Interface pour une catégorie (basé sur categoryModel.js)
   export interface Category {
     _id: string;
     name: string;
     description?: string;
-    createdAt?: string; // Date en string au format ISO après parsing JSON
+    createdAt?: string; 
   }

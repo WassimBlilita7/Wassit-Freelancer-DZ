@@ -85,3 +85,17 @@ export const updateProfile = async (profileData: Partial<PostData["profile"]>): 
   const response = await api.put("/auth/profile", profileData);
   return response.data;
 };
+
+export const getAllPosts = async (): Promise<PostData[]> => {
+  try {
+    const response = await api.get("/post");
+    console.log("getAllPosts - Response:", response.data);
+    if (response.data && Array.isArray(response.data.posts)) {
+      return response.data.posts;
+    }
+    throw new Error("La réponse de l’API ne contient pas un tableau de posts valide");
+  } catch (err) {
+    console.error("Erreur dans getAllPosts:", err);
+    throw err;
+  }
+};

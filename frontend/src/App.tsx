@@ -10,7 +10,8 @@ import { Home } from "./pages/home/Home";
 import { NewProject } from "./pages/NewProject";
 import { ForgotPassword } from "./pages/ForgotPassword";
 import { ResetPassword } from "./pages/ResetPassword";
-import { Profile } from "./pages/Profile"; // Nouvelle importation
+import { Profile } from "./pages/Profile";
+import { AllPosts } from "./pages/AllPosts";
 import { ToastProvider } from "./components/common/ToastProvider";
 import { ThemeProvider } from "./context/ThemeContext";
 
@@ -32,7 +33,8 @@ function AppContent() {
           <Route path="/new-project" element={<NewProject />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/profile" element={<Profile />} /> {/* Nouvelle route */}
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/all-posts" element={<AllPosts />} />
           <Route path="*" element={<div>404 - Page non trouvée</div>} />
         </Routes>
       </main>

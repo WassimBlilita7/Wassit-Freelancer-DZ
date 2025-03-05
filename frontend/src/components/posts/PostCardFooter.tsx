@@ -1,14 +1,16 @@
 // src/components/posts/PostCardFooter.tsx
 import { PostData } from "../../types";
 import { ApplyButton } from "./ApplyButton";
+import { DeleteButton } from "./DeleteButton";
 import { motion } from "framer-motion";
 
 interface PostCardFooterProps {
   post: PostData & { categoryName?: string };
   isFreelancer: boolean;
+  onDelete: () => void; // Callback pour notifier le parent que le post a été supprimé
 }
 
-export const PostCardFooter = ({ post, isFreelancer }: PostCardFooterProps) => {
+export const PostCardFooter = ({ post, isFreelancer, onDelete }: PostCardFooterProps) => {
   const statusStyles: Record<"open" | "in-progress" | "completed", string> = {
     open: "bg-green-500/10 text-green-600 border-green-500",
     "in-progress": "bg-yellow-500/10 text-yellow-600 border-yellow-500",
@@ -27,7 +29,10 @@ export const PostCardFooter = ({ post, isFreelancer }: PostCardFooterProps) => {
       >
         {post.status}
       </span>
-      <ApplyButton postId={post._id} isFreelancer={isFreelancer} />
+      <div className="flex items-center space-x-2">
+        <ApplyButton postId={post._id} isFreelancer={isFreelancer} />
+        {!isFreelancer && <DeleteButton postId={post._id} onDelete={onDelete} />}
+      </div>
     </motion.div>
   );
 };

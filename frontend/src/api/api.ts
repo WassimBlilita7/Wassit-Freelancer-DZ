@@ -99,3 +99,13 @@ export const getAllPosts = async (): Promise<PostData[]> => {
     throw err;
   }
 };
+
+export const deletePost = async (postId: string): Promise<ApiResponse> => {
+  try {
+    const response = await api.delete(`/post/${postId}`);
+    return response.data;
+  } catch (err) {
+    console.error("Erreur dans deletePost:", err);
+    throw err;
+  }
+};

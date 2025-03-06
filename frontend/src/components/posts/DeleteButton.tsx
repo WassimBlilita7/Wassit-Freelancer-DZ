@@ -23,7 +23,7 @@ export const DeleteButton = ({ postId, onDelete }: DeleteButtonProps) => {
       }
     } catch (error) {
       console.error("Erreur lors de la suppression du post:", error);
-      toast.error("Échec de la suppression du projet");
+      toast.error("Vous n'êtes pas autorisé à supprimer ce post");
     } finally {
       setIsDeleting(false);
     }

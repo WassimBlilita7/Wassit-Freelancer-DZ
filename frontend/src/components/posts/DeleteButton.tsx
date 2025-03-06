@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 
 interface DeleteButtonProps {
   postId: string;
-  onDelete: () => void;
+  onDelete?: () => void; // Rendu optionnel avec "?"
 }
 
 export const DeleteButton = ({ postId, onDelete }: DeleteButtonProps) => {
@@ -16,14 +16,16 @@ export const DeleteButton = ({ postId, onDelete }: DeleteButtonProps) => {
   const handleDelete = async () => {
     setIsDeleting(true);
     try {
-      const response = await deletePost(postId); // Attendre la réponse
-      if (response && response.message) { // Vérifier que la suppression a réussi
-        toast.success("Projet supprimé avec succès");
-        onDelete(); // Appeler onDelete uniquement en cas de succès
-      }
-    } catch (error) {
-      console.error("Erreur lors de la suppression du post:", error);
-      toast.error("Vous n'êtes pas autorisé à supprimer ce post");
+      const response = await deletePost(postId);
+      console.log("DeleteButton - Response:", response);
+      toast.success("Projet supprimé avec succès");
+      console.log("DeleteButton - Avant rechargement");
+      if (onDelete) onDelete(); // Vérifie si onDelete existe avant de l’appeler
+      window.location.reload(); // Actualiser la page
+      console.log("DeleteButton - Après rechargement (ne devrait pas s’afficher)");
+    } catch (error: any) {
+      console.error("Erreur lors de la suppression du post:", error.message);
+      toast.error("Vous n'êtes pas autorisé à supprimer ce projet");
     } finally {
       setIsDeleting(false);
     }

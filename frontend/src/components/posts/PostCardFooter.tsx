@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 interface PostCardFooterProps {
   post: PostData & { categoryName?: string };
   isFreelancer: boolean;
-  onDelete: () => void;
+  onDelete: () => void; 
 }
 
 export const PostCardFooter = ({ post, isFreelancer, onDelete }: PostCardFooterProps) => {

@@ -12,7 +12,7 @@ import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 interface PostCardProps {
   post: PostData & { categoryName?: string };
   isFreelancer: boolean;
-  onDelete: () => void; // Callback pour notifier le parent que le post a été supprimé
+  onDelete: () => void; 
 }
 
 export const PostCard = ({ post, isFreelancer, onDelete }: PostCardProps) => {
@@ -30,12 +30,8 @@ export const PostCard = ({ post, isFreelancer, onDelete }: PostCardProps) => {
         className="overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-300"
         style={{ backgroundColor: "var(--card)", borderRadius: "16px" }}
       >
-        {/* En-tête de la carte */}
         <PostCardHeader post={post} />
-
-        {/* Contenu de la carte */}
         <CardContent className="p-4 space-y-3">
-          {/* Description du post avec tooltip */}
           <Tooltip.Provider>
             <Tooltip.Root>
               <Tooltip.Trigger asChild>
@@ -60,51 +56,25 @@ export const PostCard = ({ post, isFreelancer, onDelete }: PostCardProps) => {
             </Tooltip.Root>
           </Tooltip.Provider>
 
-          {/* Détails du post */}
           <div className="space-y-2">
-            <motion.div
-              className="flex items-center text-sm"
-              style={{ color: "var(--text)" }}
-              initial={{ x: -10, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.1 }}
-            >
-              <FaMoneyBillWave className="mr-2 text-emerald-500 dark:text-emerald-400" />{" "}
+            <motion.div className="flex items-center text-sm" style={{ color: "var(--text)" }} initial={{ x: -10, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.1 }}>
+              <FaMoneyBillWave className="mr-2 text-emerald-500 dark:text-emerald-400" />
               <span className="font-medium">Budget :</span> {post.budget} DZD
             </motion.div>
-            <motion.div
-              className="flex items-center text-sm"
-              style={{ color: "var(--text)" }}
-              initial={{ x: -10, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.2 }}
-            >
-              <FaClock className="mr-2 text-indigo-500 dark:text-indigo-400" />{" "}
+            <motion.div className="flex items-center text-sm" style={{ color: "var(--text)" }} initial={{ x: -10, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.2 }}>
+              <FaClock className="mr-2 text-indigo-500 dark:text-indigo-400" />
               <span className="font-medium">Durée :</span> {post.duration}
             </motion.div>
-            <motion.div
-              className="flex items-center text-sm"
-              style={{ color: "var(--text)" }}
-              initial={{ x: -10, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.3 }}
-            >
-              <FaUser className="mr-2 text-purple-500 dark:text-purple-400" />{" "}
+            <motion.div className="flex items-center text-sm" style={{ color: "var(--text)" }} initial={{ x: -10, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.3 }}>
+              <FaUser className="mr-2 text-purple-500 dark:text-purple-400" />
               <span className="font-medium">Client :</span> {post.client?.username || "Inconnu"}
             </motion.div>
-            <motion.div
-              className="flex items-center text-sm"
-              style={{ color: "var(--text)" }}
-              initial={{ x: -10, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.4 }}
-            >
-              <FaTag className="mr-2 text-coral-500 dark:text-coral-400" />{" "}
+            <motion.div className="flex items-center text-sm" style={{ color: "var(--text)" }} initial={{ x: -10, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.4 }}>
+              <FaTag className="mr-2 text-coral-500 dark:text-coral-400" />
               <span className="font-medium">Catégorie :</span> {post.categoryName || "Non spécifiée"}
             </motion.div>
           </div>
 
-          {/* Section étendue (compétences et candidatures) */}
           {isExpanded && (
             <motion.div
               initial={{ height: 0, opacity: 0 }}
@@ -113,30 +83,16 @@ export const PostCard = ({ post, isFreelancer, onDelete }: PostCardProps) => {
               transition={{ duration: 0.3 }}
               className="text-sm text-gray-600 dark:text-gray-400"
             >
-              <p>
-                <span className="font-medium">Compétences :</span> {post.skillsRequired.join(", ")}
-              </p>
-              <p>
-                <span className="font-medium">Candidatures :</span> {post.applications.length}
-              </p>
+              <p><span className="font-medium">Compétences :</span> {post.skillsRequired.join(", ")}</p>
+              <p><span className="font-medium">Candidatures :</span> {post.applications.length}</p>
             </motion.div>
           )}
 
-          {/* Bouton pour étendre/réduire la carte */}
-          <motion.div
-            className="flex justify-center mt-2"
-            whileHover={{ scale: 1.1 }}
-            onClick={() => setIsExpanded(!isExpanded)}
-          >
-            {isExpanded ? (
-              <ChevronUpIcon className="w-5 h-5 text-gray-500" />
-            ) : (
-              <ChevronDownIcon className="w-5 h-5 text-gray-500" />
-            )}
+          <motion.div className="flex justify-center mt-2" whileHover={{ scale: 1.1 }} onClick={() => setIsExpanded(!isExpanded)}>
+            {isExpanded ? <ChevronUpIcon className="w-5 h-5 text-gray-500" /> : <ChevronDownIcon className="w-5 h-5 text-gray-500" />}
           </motion.div>
         </CardContent>
 
-        {/* Pied de la carte (statut et boutons) */}
         <PostCardFooter post={post} isFreelancer={isFreelancer} onDelete={onDelete} />
       </Card>
     </motion.div>

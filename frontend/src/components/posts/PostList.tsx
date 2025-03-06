@@ -24,14 +24,15 @@ export const PostList = () => {
 
   const handleDeletePost = async (postId: string) => {
     try {
-      const response = await deletePost(postId); 
-      if (response && response.message) { 
-        setPosts(posts.filter(post => post._id !== postId));
-        toast.success("Projet supprimé avec succès"); 
-      }
-    } catch (error) {
-      console.error("Erreur lors de la suppression du post:", error);
-      toast.error("Échec de la suppression du projet"); 
+      const response = await deletePost(postId);
+      console.log("PostList - Response:", response);
+      toast.success("Projet supprimé avec succès");
+      console.log("PostList - Avant rechargement");
+      window.location.reload(); // Actualiser la page
+      console.log("PostList - Après rechargement (ne devrait pas s’afficher)");
+    } catch (error: any) {
+      console.error("Erreur lors de la suppression du post:", error.message);
+      toast.error("Échec de la suppression du projet");
     }
   };
 
@@ -42,7 +43,7 @@ export const PostList = () => {
           key={post._id}
           post={post}
           isFreelancer={false} 
-          onDelete={() => handleDeletePost(post._id)}
+          onDelete={() => handleDeletePost(post._id)} 
         />
       ))}
     </div>

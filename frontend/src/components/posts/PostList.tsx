@@ -28,7 +28,7 @@ export const PostList = () => {
       console.log("PostList - Response:", response);
       toast.success("Projet supprimé avec succès");
       console.log("PostList - Avant rechargement");
-      window.location.reload(); // Actualiser la page
+      window.location.reload();
       console.log("PostList - Après rechargement (ne devrait pas s’afficher)");
     } catch (error: any) {
       console.error("Erreur lors de la suppression du post:", error.message);
@@ -42,8 +42,8 @@ export const PostList = () => {
         <PostCard
           key={post._id}
           post={post}
-          isFreelancer={false} 
-          onDelete={() => handleDeletePost(post._id)} 
+          isFreelancer={false} // À ajuster selon la logique d’authentification
+          onDelete={() => handleDeletePost(post._id)} // onDelete toujours fourni
         />
       ))}
     </div>

@@ -12,7 +12,7 @@ import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 interface PostCardProps {
   post: PostData & { categoryName?: string };
   isFreelancer: boolean;
-  onDelete: () => void; 
+  onDelete: () => void; // Obligatoire
 }
 
 export const PostCard = ({ post, isFreelancer, onDelete }: PostCardProps) => {
@@ -84,7 +84,9 @@ export const PostCard = ({ post, isFreelancer, onDelete }: PostCardProps) => {
               className="text-sm text-gray-600 dark:text-gray-400"
             >
               <p><span className="font-medium">Compétences :</span> {post.skillsRequired.join(", ")}</p>
-              <p><span className="font-medium">Candidatures :</span> {post.applications.length}</p>
+              <p><span className="font-medium">Candid
+
+atures :</span> {post.applications.length}</p>
             </motion.div>
           )}
 

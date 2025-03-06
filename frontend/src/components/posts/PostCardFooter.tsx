@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 interface PostCardFooterProps {
   post: PostData & { categoryName?: string };
   isFreelancer: boolean;
-  onDelete: () => void; // Callback pour notifier le parent que le post a été supprimé
+  onDelete: () => void;
 }
 
 export const PostCardFooter = ({ post, isFreelancer, onDelete }: PostCardFooterProps) => {

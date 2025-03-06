@@ -1,8 +1,9 @@
 // src/components/PostList.tsx
 import { useState, useEffect } from "react";
-import { PostCard } from "./PostCard";
+import { PostCard } from "./../posts/PostCard";
 import { getAllPosts, deletePost } from "../../api/api";
-import { PostData } from "@/types";
+import { PostData } from "../../types";
+import toast from "react-hot-toast";
 
 export const PostList = () => {
   const [posts, setPosts] = useState<PostData[]>([]);
@@ -14,6 +15,7 @@ export const PostList = () => {
         setPosts(fetchedPosts);
       } catch (error) {
         console.error("Erreur lors de la récupération des posts:", error);
+        toast.error("Échec du chargement des posts");
       }
     };
 
@@ -22,10 +24,14 @@ export const PostList = () => {
 
   const handleDeletePost = async (postId: string) => {
     try {
-      await deletePost(postId);
-      setPosts(posts.filter(post => post._id !== postId));
+      const response = await deletePost(postId); 
+      if (response && response.message) { 
+        setPosts(posts.filter(post => post._id !== postId));
+        toast.success("Projet supprimé avec succès"); 
+      }
     } catch (error) {
       console.error("Erreur lors de la suppression du post:", error);
+      toast.error("Échec de la suppression du projet"); 
     }
   };
 
@@ -35,7 +41,7 @@ export const PostList = () => {
         <PostCard
           key={post._id}
           post={post}
-          isFreelancer={false} // ou true selon l'utilisateur
+          isFreelancer={false} 
           onDelete={() => handleDeletePost(post._id)}
         />
       ))}

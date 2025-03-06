@@ -3,6 +3,7 @@ import { useState } from "react";
 import { deletePost } from "../../api/api";
 import { motion } from "framer-motion";
 import { TrashIcon } from "@heroicons/react/24/outline";
+import toast from "react-hot-toast";
 
 interface DeleteButtonProps {
   postId: string;
@@ -15,10 +16,14 @@ export const DeleteButton = ({ postId, onDelete }: DeleteButtonProps) => {
   const handleDelete = async () => {
     setIsDeleting(true);
     try {
-      await deletePost(postId);
-      onDelete(); 
+      const response = await deletePost(postId); // Attendre la réponse
+      if (response && response.message) { // Vérifier que la suppression a réussi
+        toast.success("Projet supprimé avec succès");
+        onDelete(); // Appeler onDelete uniquement en cas de succès
+      }
     } catch (error) {
       console.error("Erreur lors de la suppression du post:", error);
+      toast.error("Échec de la suppression du projet");
     } finally {
       setIsDeleting(false);
     }

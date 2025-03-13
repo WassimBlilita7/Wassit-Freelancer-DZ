@@ -62,7 +62,7 @@ export interface SignupData {
       _id: string; 
       appliedAt: string; 
     }[]; 
-    category?:Category ; 
+    category?:string ; 
     profile?: ProfileData;
     __v?: number; 
   }

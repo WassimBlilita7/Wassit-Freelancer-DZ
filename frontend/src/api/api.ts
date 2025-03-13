@@ -109,3 +109,8 @@ export const deletePost = async (postId: string): Promise<ApiResponse> => {
     throw err;
   }
 };
+
+export const searchPosts = async (data: { title: string }) => {
+  const response = await api.post('/post/search', data);
+  return response.data;
+};

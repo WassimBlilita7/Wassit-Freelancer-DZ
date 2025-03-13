@@ -1,6 +1,6 @@
 // src/data/menuItems.ts
 import { IconType } from "react-icons";
-import { FaHome, FaUser, FaPlusCircle, FaSignOutAlt } from "react-icons/fa";
+import { FaHome, FaUser, FaPlusCircle, FaSignOutAlt, FaList } from "react-icons/fa";
 
 export interface MenuItemData {
   text: string;
@@ -17,6 +17,12 @@ export const getMenuItems = (navigate: (path: string) => void, isFreelancer: boo
       icon: FaHome,
       action: () => navigate("/"),
       description: "Retourner à la page principale",
+    },
+    {
+      text: "Offres",
+      icon: FaList,
+      action: () => navigate("/all-posts"),
+      description: "Voir toutes les offres disponibles",
     },
     {
       text: "Gérer mon profil",

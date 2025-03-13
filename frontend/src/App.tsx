@@ -14,6 +14,7 @@ import { Profile } from "./pages/Profile";
 import { AllPosts } from "./pages/AllPosts";
 import { ToastProvider } from "./components/common/ToastProvider";
 import { ThemeProvider } from "./context/ThemeContext";
+import { SearchResults } from "./pages/SearchResults";
 
 function AppContent() {
   const location = useLocation();
@@ -35,6 +36,7 @@ function AppContent() {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/all-posts" element={<AllPosts />} />
+          <Route path="/search-results" element={<SearchResults />} />
           <Route path="*" element={<div>404 - Page non trouvée</div>} />
         </Routes>
       </main>

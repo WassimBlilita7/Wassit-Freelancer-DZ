@@ -35,6 +35,7 @@ export interface SignupData {
     skills?: string[]; // Références aux IDs des compétences, mais ici on utilisera des chaînes pour simplifier
     companyName?: string;
     webSite?: string;
+    isFreelancer?: boolean;
   }
 
   export interface PostData {

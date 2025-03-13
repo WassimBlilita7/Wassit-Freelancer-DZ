@@ -15,6 +15,8 @@ import { AllPosts } from "./pages/AllPosts";
 import { ToastProvider } from "./components/common/ToastProvider";
 import { ThemeProvider } from "./context/ThemeContext";
 import { SearchResults } from "./pages/SearchResults";
+import { CategoryPage } from "./pages/CategoryPage";
+import { Footer } from "./components/layout/Footer";
 
 function AppContent() {
   const location = useLocation();
@@ -37,14 +39,12 @@ function AppContent() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/all-posts" element={<AllPosts />} />
           <Route path="/search-results" element={<SearchResults />} />
+          <Route path="/category/:slug" element={<CategoryPage />} /> {/* Nouvelle route */}
           <Route path="*" element={<div>404 - Page non trouvée</div>} />
         </Routes>
       </main>
-      {!hideHeaderAndFooter && (
-        <footer className="p-4 text-center" style={{ backgroundColor: "var(--card)", color: "var(--muted)" }}>
-          © 2025 Freelance DZ - Tous droits réservés
-        </footer>
-      )}
+      <Footer/>
+      
     </div>
   );
 }

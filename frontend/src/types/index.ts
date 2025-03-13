@@ -62,7 +62,7 @@ export interface SignupData {
       _id: string; 
       appliedAt: string; 
     }[]; 
-    category: string; 
+    category?:Category ; 
     profile?: ProfileData;
     __v?: number; 
   }
@@ -72,4 +72,5 @@ export interface SignupData {
     name: string;
     description?: string;
     createdAt?: string; 
+    slug?: string;
   }

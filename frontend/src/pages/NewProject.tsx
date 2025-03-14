@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { checkAuth, createPost, fetchCategories } from "../api/api";
-import { PostData } from "../types";
+import { PostData, Category, CreatePostData } from "../types";
 import { postSchema, PostFormData } from "../schemas/postSchema";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
@@ -16,6 +16,7 @@ import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 import { FaHeading, FaFileAlt, FaTools, FaMoneyBillWave, FaClock, FaTags } from "react-icons/fa";
 import { useTheme } from "../context/ThemeContext";
+import { useFetchPosts } from "../hooks/useFetchPosts"; // Importer le hook
 import "../theme/styles.css";
 import { SkillsInput } from "@/components/ui/SkillsInput";
 
@@ -24,8 +25,9 @@ export const NewProject = () => {
   const [isClient, setIsClient] = useState(false);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [categories, setCategories] = useState<string[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const navigate = useNavigate();
+  const { addPost } = useFetchPosts(); // Utiliser le hook pour accéder à addPost
 
   const { control, handleSubmit, formState: { errors, isDirty }, trigger } = useForm<PostFormData>({
     resolver: zodResolver(postSchema),
@@ -50,7 +52,7 @@ export const NewProject = () => {
         } else {
           setIsClient(true);
           const categoryData = await fetchCategories();
-          setCategories(categoryData.map((cat) => cat.name));
+          setCategories(categoryData);
         }
       } catch (err) {
         toast.error("Vous devez être connecté pour publier une offre");
@@ -67,20 +69,44 @@ export const NewProject = () => {
 
     setSubmitting(true);
     try {
-      const postData: PostData = {
-        ...data,
-        _id: "",
-        client: null,
-        status: "open",
-        createdAt: "",
-        applications: []
+      const selectedCategory = categories.find((cat) => cat.name === data.category);
+      if (!selectedCategory) throw new Error("Catégorie invalide");
+
+      const apiPostData: CreatePostData = {
+        title: data.title,
+        description: data.description,
+        skillsRequired: data.skillsRequired,
+        budget: data.budget,
+        duration: data.duration,
+        category: selectedCategory._id,
       };
-      const response = await createPost(postData);
+
+      const response = await createPost(apiPostData);
+      console.log("createPost response:", response);
+
+      const createdPost: PostData = {
+        _id: response.data?._id || "",
+        title: data.title,
+        description: data.description,
+        skillsRequired: data.skillsRequired,
+        budget: data.budget,
+        duration: data.duration as "short-term" | "long-term" | "ongoing",
+        createdAt: response.data?.createdAt || new Date().toISOString(),
+        category: selectedCategory, // Forcer la catégorie sélectionnée
+        client: response.data?.client || null,
+        status: response.data?.status || "open",
+        applications: response.data?.applications || [],
+      };
+
+      // Ajouter le post localement avec la bonne catégorie
+      addPost(createdPost);
+
       toast.success(response.message || "Offre publiée avec succès !", {
         icon: <Player autoplay src={successAnimation} style={{ height: "30px", width: "30px" }} />,
       });
       setTimeout(() => navigate("/"), 2000);
     } catch (err: any) {
+      console.error("Error in onSubmit:", err);
       toast.error(err.response?.data?.message || "Erreur lors de la publication");
     } finally {
       setSubmitting(false);
@@ -244,8 +270,8 @@ export const NewProject = () => {
                       >
                         <option value="">Sélectionnez une catégorie</option>
                         {categories.map((cat) => (
-                          <option key={cat} value={cat}>
-                            {cat}
+                          <option key={cat._id} value={cat.name}>
+                            {cat.name}
                           </option>
                         ))}
                       </select>

@@ -17,6 +17,7 @@ import { ThemeProvider } from "./context/ThemeContext";
 import { SearchResults } from "./pages/SearchResults";
 import { CategoryPage } from "./pages/CategoryPage";
 import { Footer } from "./components/layout/Footer";
+import { PostProvider } from "./context/PostContext";
 
 function AppContent() {
   const location = useLocation();
@@ -52,10 +53,12 @@ function AppContent() {
 function App() {
   return (
     <Router>
+      <PostProvider>
       <ThemeProvider>
         <ToastProvider />
         <AppContent />
       </ThemeProvider>
+      </PostProvider>
     </Router>
   );
 }

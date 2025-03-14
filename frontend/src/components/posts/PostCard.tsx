@@ -1,102 +1,166 @@
 // src/components/posts/PostCard.tsx
-import { PostData } from "../../types";
-import { Card, CardContent } from "../ui/card";
-import { motion } from "framer-motion";
-import { FaMoneyBillWave, FaClock, FaUser, FaTag } from "react-icons/fa";
-import { PostCardHeader } from "./PostCardHeader";
-import { PostCardFooter } from "./PostCardFooter";
-import * as Tooltip from "@radix-ui/react-tooltip";
 import { useState } from "react";
-import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
+import { PostData } from "../../types";
+import { FaTrash, FaEdit, FaClock, FaMoneyBillWave, FaTags, FaTools } from "react-icons/fa";
+import { Button } from "../ui/button";
+import toast from "react-hot-toast";
+import { motion } from "framer-motion";
+import { deletePost } from "../../api/api";
+import * as Tooltip from "@radix-ui/react-tooltip";
+import { cva } from "class-variance-authority";
+
+// Variantes pour le statut avec Tailwind
+const statusVariants = cva(
+  "px-3 py-1 rounded-full text-xs font-medium tracking-wide uppercase border",
+  {
+    variants: {
+      status: {
+        open: "bg-[var(--success)]/10 text-[var(--success)] border-[var(--success)]/20",
+        "in-progress": "bg-[var(--secondary)]/10 text-[var(--secondary)] border-[var(--secondary)]/20",
+        completed: "bg-[var(--muted)]/10 text-[var(--muted)] border-[var(--muted)]/20",
+      },
+    },
+    defaultVariants: {
+      status: "open",
+    },
+  }
+);
 
 interface PostCardProps {
-  post: PostData & { categoryName?: string };
+  post: PostData;
   isFreelancer: boolean;
-  onDelete: () => void; // Obligatoire
+  onEdit?: (post: PostData) => void;
+  onDelete?: (postId: string) => void;
 }
 
-export const PostCard = ({ post, isFreelancer, onDelete }: PostCardProps) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+export const PostCard = ({ post, isFreelancer, onEdit, onDelete }: PostCardProps) => {
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDelete = async () => {
+    if (!confirm("Voulez-vous vraiment supprimer cette offre ?")) return;
+
+    setIsDeleting(true);
+    try {
+      await deletePost(post._id);
+      toast.success("Offre supprimée avec succès !");
+      if (onDelete) onDelete(post._id);
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Erreur lors de la suppression");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-      whileHover={{ y: -5 }}
-      className="max-w-sm w-full"
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+      className="bg-[var(--card)] rounded-xl shadow-md p-6 border border-[var(--muted)]/20 hover:shadow-lg transition-all duration-300 max-w-md w-full"
     >
-      <Card
-        className="overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-300"
-        style={{ backgroundColor: "var(--card)", borderRadius: "16px" }}
-      >
-        <PostCardHeader post={post} />
-        <CardContent className="p-4 space-y-3">
-          <Tooltip.Provider>
-            <Tooltip.Root>
-              <Tooltip.Trigger asChild>
-                <p
-                  className={`text-sm ${isExpanded ? "" : "line-clamp-2"} cursor-pointer`}
-                  style={{ color: "var(--muted)" }}
-                  onClick={() => setIsExpanded(!isExpanded)}
-                >
-                  {post.description}
-                </p>
-              </Tooltip.Trigger>
-              <Tooltip.Portal>
-                <Tooltip.Content
-                  className="bg-gray-900 text-white p-3 rounded-lg shadow-xl text-sm max-w-md"
-                  side="top"
-                  sideOffset={5}
-                >
-                  {post.description}
-                  <Tooltip.Arrow className="fill-gray-900" />
-                </Tooltip.Content>
-              </Tooltip.Portal>
-            </Tooltip.Root>
-          </Tooltip.Provider>
-
-          <div className="space-y-2">
-            <motion.div className="flex items-center text-sm" style={{ color: "var(--text)" }} initial={{ x: -10, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.1 }}>
-              <FaMoneyBillWave className="mr-2 text-emerald-500 dark:text-emerald-400" />
-              <span className="font-medium">Budget :</span> {post.budget} DZD
-            </motion.div>
-            <motion.div className="flex items-center text-sm" style={{ color: "var(--text)" }} initial={{ x: -10, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.2 }}>
-              <FaClock className="mr-2 text-indigo-500 dark:text-indigo-400" />
-              <span className="font-medium">Durée :</span> {post.duration}
-            </motion.div>
-            <motion.div className="flex items-center text-sm" style={{ color: "var(--text)" }} initial={{ x: -10, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.3 }}>
-              <FaUser className="mr-2 text-purple-500 dark:text-purple-400" />
-              <span className="font-medium">Client :</span> {post.client?.username || "Inconnu"}
-            </motion.div>
-            <motion.div className="flex items-center text-sm" style={{ color: "var(--text)" }} initial={{ x: -10, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.4 }}>
-              <FaTag className="mr-2 text-coral-500 dark:text-coral-400" />
-              <span className="font-medium">Catégorie :</span> {post.categoryName || "Non spécifiée"}
-            </motion.div>
+      {/* Header */}
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-lg font-semibold text-[var(--text)] line-clamp-1">
+          {post.title}
+        </h2>
+        {!isFreelancer && (
+          <div className="flex space-x-2">
+            {onEdit && (
+              <Tooltip.Provider>
+                <Tooltip.Root>
+                  <Tooltip.Trigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onEdit(post)}
+                      className="text-[var(--primary)] hover:text-[var(--primary)]/80"
+                      disabled={isDeleting}
+                    >
+                      <FaEdit className="w-4 h-4" />
+                    </Button>
+                  </Tooltip.Trigger>
+                  <Tooltip.Portal>
+                    <Tooltip.Content
+                      className="bg-gray-800 text-white text-xs rounded-md px-2 py-1 shadow-lg"
+                      style={{ backgroundColor: "var(--background)" }}
+                      sideOffset={5}
+                    >
+                      Modifier
+                      <Tooltip.Arrow className="fill-gray-800" />
+                    </Tooltip.Content>
+                  </Tooltip.Portal>
+                </Tooltip.Root>
+              </Tooltip.Provider>
+            )}
+            <Tooltip.Provider>
+              <Tooltip.Root>
+                <Tooltip.Trigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleDelete}
+                    className="text-[var(--error)] hover:text-[var(--error)]/80"
+                    disabled={isDeleting}
+                  >
+                    {isDeleting ? (
+                      <span className="animate-spin text-sm">⏳</span>
+                    ) : (
+                      <FaTrash className="w-4 h-4" style={{ color: "var(--error-dark, var(--error))" }} />
+                    )}
+                  </Button>
+                </Tooltip.Trigger>
+                <Tooltip.Portal>
+                  <Tooltip.Content
+                    className="bg-gray-800 text-white text-xs rounded-md px-2 py-1 shadow-lg"
+                    style={{ backgroundColor: "var(--background)" }}
+                    sideOffset={5}
+                  >
+                    Supprimer
+                    <Tooltip.Arrow className="fill-gray-800" />
+                  </Tooltip.Content>
+                </Tooltip.Portal>
+              </Tooltip.Root>
+            </Tooltip.Provider>
           </div>
+        )}
+      </div>
 
-          {isExpanded && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="text-sm text-gray-600 dark:text-gray-400"
-            >
-              <p><span className="font-medium">Compétences :</span> {post.skillsRequired.join(", ")}</p>
-              <p><span className="font-medium">Candid
+      {/* Description */}
+      <p className="text-[var(--text)]/80 text-sm mb-4 line-clamp-2">
+        {post.description}
+      </p>
 
-atures :</span> {post.applications.length}</p>
-            </motion.div>
-          )}
+      {/* Détails avec couleurs d'icônes */}
+      <div className="space-y-3 text-sm text-[var(--text)]/70">
+        <div className="flex items-center">
+          <FaMoneyBillWave className="mr-2 w-4 h-4" style={{ color: "var(--secondary)" }} />
+          <span>{post.budget.toLocaleString()} DZD</span>
+        </div>
+        <div className="flex items-center">
+          <FaClock className="mr-2 w-4 h-4" style={{ color: "var(--primary)" }} />
+          <span>
+            {post.duration === "short-term" ? "Court terme" : post.duration === "long-term" ? "Long terme" : "En continu"}
+          </span>
+        </div>
+        <div className="flex items-center">
+          <FaTags className="mr-2 w-4 h-4" style={{ color: "var(--success)" }} />
+          <span>{post.category?.name || "Non spécifiée"}</span>
+        </div>
+        <div className="flex items-center">
+          <FaTools className="mr-2 w-4 h-4" style={{ color: "var(--muted)" }} />
+          <span className="line-clamp-1">{post.skillsRequired.join(", ") || "Aucune"}</span>
+        </div>
+      </div>
 
-          <motion.div className="flex justify-center mt-2" whileHover={{ scale: 1.1 }} onClick={() => setIsExpanded(!isExpanded)}>
-            {isExpanded ? <ChevronUpIcon className="w-5 h-5 text-gray-500" /> : <ChevronDownIcon className="w-5 h-5 text-gray-500" />}
-          </motion.div>
-        </CardContent>
-
-        <PostCardFooter post={post} isFreelancer={isFreelancer} onDelete={onDelete} />
-      </Card>
+      {/* Footer */}
+      <div className="mt-4 flex items-center justify-between">
+        <span className={statusVariants({ status: post.status })}>
+          {post.status === "open" ? "Ouverte" : post.status === "in-progress" ? "En cours" : "Terminée"}
+        </span>
+        <span className="text-xs text-[var(--muted)]">
+          {new Date(post.createdAt).toLocaleDateString()}
+        </span>
+      </div>
     </motion.div>
   );
 };

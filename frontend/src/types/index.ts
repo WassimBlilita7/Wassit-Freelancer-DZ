@@ -38,6 +38,14 @@ export interface SignupData {
     isFreelancer?: boolean;
   }
 
+  export interface CreatePostData {
+    title: string;
+    description: string;
+    skillsRequired: string[];
+    budget: number;
+    duration: string; // "short-term" | "long-term" | "ongoing"
+    category: string; // ID comme string pour l'API
+  }
   export interface PostData {
     _id: string; 
     title: string; 
@@ -62,7 +70,7 @@ export interface SignupData {
       _id: string; 
       appliedAt: string; 
     }[]; 
-    category?:string ; 
+    category?:Category ; 
     profile?: ProfileData;
     __v?: number; 
   }

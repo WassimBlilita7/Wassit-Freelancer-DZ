@@ -8,7 +8,7 @@
   --card: #FFFFFF; /* Blanc pur */
   --text: #000; /* Bleu foncé, lisible */
   --muted: #64748B; /* Gris bleuté */
-  --error: #EF4444; /* Rouge vif */
+  --error: #EF4444; /* Rouge vif pour mode clair */
   --success: #22C55E; /* Vert clair */
 }
 
@@ -19,7 +19,8 @@
   --card: #334155; /* Gris moyen sombre */
   --text: #E2E8F0; /* Gris clair, lisible */
   --muted: #94A3B8; /* Gris moyen clair */
-  --error: #F87171; /* Rouge clair */
+  --error: #F87171; /* Rouge clair pour mode sombre (bouton) */
+  --error-dark: #EF4444; /* Rouge vif pour icône en mode sombre */
   --success: #6EE7B7; /* Vert clair lumineux */
 }
 
@@ -42,6 +43,6 @@ input, select, textarea {
   transition: all 0.3s ease;
 }
 
-input:focus, select:focus, textarea:focus {
+input:focus, select, textarea:focus {
   outline: none;
 }

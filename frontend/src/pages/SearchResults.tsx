@@ -31,7 +31,7 @@ export const SearchResults = () => {
   if (loading) return <Loader />;
 
   return (
-    <section className="py-12 bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <section className="py-12 bg[var(--card)] min-h-screen">
       <div className="container mx-auto px-4">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8">
           Résultats de la recherche pour "{location.state?.query}"

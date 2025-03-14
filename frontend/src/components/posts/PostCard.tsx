@@ -60,7 +60,7 @@ export const PostCard = ({ post, isFreelancer, onEdit, onDelete }: PostCardProps
     >
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold text-[var(--text)] line-clamp-1">
+        <h2 className="text-lg font-semibold text-[var(--header-text)] line-clamp-1">
           {post.title}
         </h2>
         {!isFreelancer && (
@@ -81,12 +81,11 @@ export const PostCard = ({ post, isFreelancer, onEdit, onDelete }: PostCardProps
                   </Tooltip.Trigger>
                   <Tooltip.Portal>
                     <Tooltip.Content
-                      className="bg-gray-800 text-white text-xs rounded-md px-2 py-1 shadow-lg"
-                      style={{ backgroundColor: "var(--background)" }}
+                      className="bg-[var(--background)] text-[var(--text)] text-xs rounded-md px-2 py-1 shadow-lg"
                       sideOffset={5}
                     >
                       Modifier
-                      <Tooltip.Arrow className="fill-gray-800" />
+                      <Tooltip.Arrow className="fill-[var(--background)]" />
                     </Tooltip.Content>
                   </Tooltip.Portal>
                 </Tooltip.Root>
@@ -111,12 +110,11 @@ export const PostCard = ({ post, isFreelancer, onEdit, onDelete }: PostCardProps
                 </Tooltip.Trigger>
                 <Tooltip.Portal>
                   <Tooltip.Content
-                    className="bg-gray-800 text-white text-xs rounded-md px-2 py-1 shadow-lg"
-                    style={{ backgroundColor: "var(--background)" }}
+                    className="bg-[var(--background)] text-[var(--text)] text-xs rounded-md px-2 py-1 shadow-lg"
                     sideOffset={5}
                   >
                     Supprimer
-                    <Tooltip.Arrow className="fill-gray-800" />
+                    <Tooltip.Arrow className="fill-[var(--background)]" />
                   </Tooltip.Content>
                 </Tooltip.Portal>
               </Tooltip.Root>

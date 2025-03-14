@@ -6,7 +6,8 @@
   --secondary: #10B981; /* Vert émeraude, complémentaire */
   --background: #F1F5F9; /* Gris bleu pâle, moderne */
   --card: #FFFFFF; /* Blanc pur */
-  --text: #000; /* Bleu foncé, lisible */
+  --text: #000; /* Noir, lisible */
+  --header-text: #000; /* Noir pour le header en mode clair */
   --muted: #64748B; /* Gris bleuté */
   --error: #EF4444; /* Rouge vif pour mode clair */
   --success: #22C55E; /* Vert clair */
@@ -15,10 +16,11 @@
 :root.dark {
   --primary: #C40D6C; /* Magenta vibrant, repris du header */
   --secondary: #34D399; /* Vert clair, complémentaire */
-  --background: #1E293B; /* Gris bleu foncé, élégant */
-  --card: #334155; /* Gris moyen sombre */
+  --background: #0F1419; /* Noir profond anthracite */
+  --card: #1A1F26; /* Noir grisâtre élégant pour la carte */
   --text: #E2E8F0; /* Gris clair, lisible */
-  --muted: #94A3B8; /* Gris moyen clair */
+  --header-text: #FFFFFF; /* Blanc pur pour le header en mode sombre */
+  --muted: #A1A9B3; /* Gris clair ajusté pour contraste avec le nouveau noir */
   --error: #F87171; /* Rouge clair pour mode sombre (bouton) */
   --error-dark: #EF4444; /* Rouge vif pour icône en mode sombre */
   --success: #6EE7B7; /* Vert clair lumineux */
@@ -43,6 +45,6 @@ input, select, textarea {
   transition: all 0.3s ease;
 }
 
-input:focus, select, textarea:focus {
+input:focus, select:focus, textarea:focus {
   outline: none;
 }

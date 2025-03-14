@@ -1,5 +1,6 @@
+/* eslint-disable react-refresh/only-export-components */
 // src/context/PostContext.tsx
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode } from "react";
 import { PostData } from "../types";
 
 interface PostContextType {

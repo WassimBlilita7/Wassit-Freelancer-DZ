@@ -1,16 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-//frontend\src\pages\Logout.tsx
+// src/pages/Logout.tsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { logoutUser, checkAuth } from "../api/api";
-import { Button } from "../components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../components/ui/card";
 import { Loader } from "../components/common/Loader";
 import { motion } from "framer-motion";
+import Lottie from "lottie-react";
+import logoutAnimation from "../assets/lottie/logoutAnimation.json"; // Assurez-vous que ce fichier existe
 
 export const Logout = () => {
   const [loading, setLoading] = useState<boolean>(false);
+  const [isLoggedOut, setIsLoggedOut] = useState<boolean>(false); // État pour suivre la déconnexion
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,9 +20,11 @@ export const Logout = () => {
       try {
         await checkAuth();
         const response = await logoutUser();
+        setIsLoggedOut(true); // Déconnexion réussie
         toast.success(response.message || "Déconnexion réussie !", { id: "logout" });
-        setTimeout(() => navigate("/login"), 2000);
+        setTimeout(() => navigate("/login"), 3000); // Redirection après 3s
       } catch (err: any) {
+        setIsLoggedOut(false); // Échec de la déconnexion
         toast.error("Aucun compte connecté à déconnecter", { id: "logout" });
         setTimeout(() => navigate("/login"), 2000);
       } finally {
@@ -32,39 +35,58 @@ export const Logout = () => {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-      >
-        <Card className="w-full max-w-md" style={{ backgroundColor: "var(--card)" }}>
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold" style={{ color: "var(--text)" }}>
-              Déconnexion
-            </CardTitle>
-            <CardDescription style={{ color: "var(--muted)" }}>
-              Vous êtes en train de vous déconnecter de votre compte.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-center" style={{ color: "var(--text)" }}>
-              {loading ? "Déconnexion en cours..." : "Vous serez redirigé vers la page de connexion."}
-            </p>
-          </CardContent>
-          <CardFooter className="flex justify-center">
-            <Button
-              variant="outline"
-              onClick={() => navigate("/")}
-              disabled={loading}
-              style={{ borderColor: "var(--muted)", color: "var(--text)" }}
-            >
-              Retour à l'accueil
-            </Button>
-          </CardFooter>
-        </Card>
-      </motion.div>
-      {loading && <Loader />}
+    <div className="min-h-screen flex items-center justify-center relative">
+      {loading ? (
+        <div className="flex flex-col items-center justify-center h-full">
+          <Loader />
+          <p className="text-lg mt-4" style={{ color: "var(--text)" }}>
+            Déconnexion en cours...
+          </p>
+        </div>
+      ) : isLoggedOut ? (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+          className="w-full h-screen flex flex-col items-center justify-center relative"
+        >
+          {/* Animation Lottie en plein écran */}
+          <Lottie
+            animationData={logoutAnimation}
+            loop={false} // Une seule lecture
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100vw",
+              height: "100vh",
+              objectFit: "cover",
+              zIndex: 1,
+            }}
+          />
+          {/* Texte en gras */}
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+            className="text-4xl md:text-6xl font-bold text-center z-10"
+            style={{ color: "var(--text)" }}
+          >
+            Vous avez été déconnecté !
+          </motion.h1>
+        </motion.div>
+      ) : (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="flex flex-col items-center justify-center"
+        >
+          <p className="text-lg" style={{ color: "var(--text)" }}>
+            Aucun compte à déconnecter. Redirection en cours...
+          </p>
+        </motion.div>
+      )}
     </div>
   );
 };

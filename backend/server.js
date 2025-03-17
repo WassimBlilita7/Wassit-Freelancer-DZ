@@ -25,8 +25,8 @@ app.use(cookieParser());
 
 app.use(passport.initialize());
 
-app.use(rateLimitMiddleware);
-app.use(antiDosMiddleware);
+//app.use(rateLimitMiddleware);
+//app.use(antiDosMiddleware);
 
 
 app.use(

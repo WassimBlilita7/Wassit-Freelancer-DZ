@@ -8,5 +8,6 @@ export const ENV_VARS = {
     EMAIL_USER : process.env.EMAIL_USER,
     EMAIL_PASSWORD : process.env.EMAIL_PASSWORD,
     JWT_SECRET : process.env.JWT_SECRET,
+    VITE_URL : process.env.VITE_URL,
     
 }; 

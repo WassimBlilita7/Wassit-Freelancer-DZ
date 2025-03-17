@@ -21,17 +21,23 @@ import { PostProvider } from "./context/PostContext";
 
 function AppContent() {
   const location = useLocation();
-  const hideHeaderAndFooter = ["/signup", "/login", "/verify-otp", "/forgot-password", "/reset-password"].includes(location.pathname);
+
+
+  const hideHeader = ["/signup", "/login", "/verify-otp", "/forgot-password", "/reset-password"].includes(
+    location.pathname
+  );
+
+  const showFooter = location.pathname === "/";
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "var(--background)" }}>
-      {!hideHeaderAndFooter && <Header />}
+      {!hideHeader && <Header />}
       <main className="container mx-auto p-4 flex-grow" style={{ backgroundColor: "var(--background)" }}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/verify-otp" element={<VerifyOTP />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<Login />} /> {/* Plus besoin de setAuthenticated */}
           <Route path="/logout" element={<Logout />} />
           <Route path="/signup-with-google" element={<SignupWithGoogle />} />
           <Route path="/new-project" element={<NewProject />} />
@@ -40,12 +46,11 @@ function AppContent() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/all-posts" element={<AllPosts />} />
           <Route path="/search-results" element={<SearchResults />} />
-          <Route path="/category/:slug" element={<CategoryPage />} /> {/* Nouvelle route */}
+          <Route path="/category/:slug" element={<CategoryPage />} />
           <Route path="*" element={<div>404 - Page non trouvée</div>} />
         </Routes>
       </main>
-      <Footer/>
-      
+      {showFooter && <Footer />} {/* Footer uniquement sur "/" */}
     </div>
   );
 }
@@ -54,10 +59,10 @@ function App() {
   return (
     <Router>
       <PostProvider>
-      <ThemeProvider>
-        <ToastProvider />
-        <AppContent />
-      </ThemeProvider>
+        <ThemeProvider>
+          <ToastProvider />
+          <AppContent />
+        </ThemeProvider>
       </PostProvider>
     </Router>
   );

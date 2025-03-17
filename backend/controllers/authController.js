@@ -11,10 +11,13 @@ export async function signup(req, res) {
   try {
     const { username, email, password, isFreelancer } = req.body;
 
+    const normalizedUsername = username.toLowerCase();
+    const normalizedEmail = email.toLowerCase();
+
    
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    if (!emailRegex.test(normalizedEmail)) {
       return res.status(400).json({ message: "Email invalide" });
     }
     const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{6,}$/;
@@ -23,11 +26,11 @@ export async function signup(req, res) {
     }
 
     // Vérifier si l'utilisateur existe déjà
-    const existingUserByEmail = await User.findOne({ email });
+    const existingUserByEmail = await User.findOne({ email : normalizedEmail });
     if (existingUserByEmail) {
       return res.status(400).json({ message: "Un utilisateur avec cet email existe déjà" });
     }
-    const existingUserByUsername = await User.findOne({ username });
+    const existingUserByUsername = await User.findOne({ username : normalizedUsername});
     if (existingUserByUsername) {
       return res.status(400).json({ message: "Un utilisateur avec ce nom d'utilisateur existe déjà" });
     }
@@ -39,8 +42,8 @@ export async function signup(req, res) {
     const otpExpires = Date.now() + 600000; // 10 minutes
 
     const newUser = new User({
-      username,
-      email,
+      username : normalizedUsername,
+      email : normalizedEmail,
       password: hashedPassword,
       isFreelancer,
       otp,
@@ -53,7 +56,7 @@ export async function signup(req, res) {
 
     const emailSubject = "Vérification de votre compte";
     const emailText = `Votre code de vérification est : ${otp}\nValable pendant 10 minutes`;
-    await sendEmail(email, emailSubject, emailText);
+    await sendEmail(normalizedEmail, emailSubject, emailText);
 
     res.status(201).json({ message: "Utilisateur créé avec succès. Vérifiez votre e-mail pour le code OTP." });
   } catch (error) {

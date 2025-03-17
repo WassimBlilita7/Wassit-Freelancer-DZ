@@ -3,17 +3,17 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { loginUser, LoginData } from "../api/api";
-import { Button } from "../components/ui/button";
 import { Label } from "../components/ui/label";
 import { CustomTextField } from "../components/common/CustomTextField";
 import { GoogleAuthButton } from "../components/common/GoogleAuthButton";
 import { Loader } from "../components/common/Loader";
+import { RateLimitedButton } from "../components/common/RateLimitedButton";
 import { motion } from "framer-motion";
-import { useTheme } from "../context/ThemeContext"; // Ajouté pour accéder au thème
+import { useTheme } from "../context/ThemeContext";
 import loginBgImage from "../assets/signupPicture.png";
 
 export const Login = () => {
-  const { theme } = useTheme(); // Ajouté pour définir theme
+  const { theme } = useTheme();
   const [formData, setFormData] = useState<LoginData>({ email: "", password: "" });
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -23,8 +23,7 @@ export const Login = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     setLoading(true);
     try {
       await loginUser(formData);
@@ -55,7 +54,7 @@ export const Login = () => {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={(e) => e.preventDefault()} className="space-y-6">
             <div className="space-y-3">
               <Label htmlFor="email" style={{ color: "var(--text)", fontSize: "16px" }}>
                 Email
@@ -90,14 +89,25 @@ export const Login = () => {
               />
             </div>
 
-            <Button
-              type="submit"
-              className="w-full py-6 text-lg"
-              style={{ backgroundColor: "var(--primary)", color: "#FFFFFF" }}
-              disabled={loading}
+            <RateLimitedButton
+              onClick={handleSubmit}
+              loading={loading}
+              maxAttempts={5} // 5 tentatives
+              lockoutTime={15 * 60 * 1000} // 15 minutes (900000 ms)
+              storageKey="loginRateLimit"
+              toastOptions={{
+                lockedMessage: "Vous avez été bloqué pour 15 minutes en raison de trop de tentatives !",
+                unlockedMessage: "Compte débloqué. Vous pouvez réessayer.",
+                style: {
+                  background: theme === "dark" ? "#C40D6C" : "#2770D1",
+                  color: "#FFFFFF",
+                  borderRadius: "8px",
+                  padding: "10px",
+                },
+              }}
             >
               Se connecter
-            </Button>
+            </RateLimitedButton>
 
             <div className="mt-4">
               <GoogleAuthButton />
@@ -112,7 +122,7 @@ export const Login = () => {
               <a
                 href="/forgot-password"
                 className="font-bold hover:underline"
-                style={{ color: theme === "dark" ? "#60A5FA" : "#2563EB" }} // Bleu clair en sombre, bleu vif en clair
+                style={{ color: theme === "dark" ? "#60A5FA" : "#2563EB" }}
               >
                 Mot de passe oublié ?
               </a>

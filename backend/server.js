@@ -11,6 +11,9 @@ import { ENV_VARS } from "./config/envVars.js";
 import { connectDB } from "./config/db.js";
 import passport from "passport";
 import cookieParser from "cookie-parser";
+import rateLimitMiddleware from "./middleware/rateLimitMiddleware.js";
+import antiDosMiddleware from "./middleware/antiDosMiddleware.js";
+
 
 
 const app = express();
@@ -21,6 +24,10 @@ app.use(express.json());
 app.use(cookieParser()); 
 
 app.use(passport.initialize());
+
+app.use(rateLimitMiddleware);
+app.use(antiDosMiddleware);
+
 
 app.use(
     cors({

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // src/hooks/useSearchPosts.ts
 import { useState, useEffect } from 'react';
 import { searchPosts, getAllPosts } from '../api/api';

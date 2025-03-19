@@ -93,10 +93,10 @@ export const Login = () => {
               onClick={handleSubmit}
               loading={loading}
               maxAttempts={5} // 5 tentatives
-              lockoutTime={15 * 60 * 1000} // 15 minutes (900000 ms)
+              lockoutTime={5 * 60 * 1000} // 5 minutes (300000 ms)
               storageKey="loginRateLimit"
               toastOptions={{
-                lockedMessage: "Vous avez été bloqué pour 15 minutes en raison de trop de tentatives !",
+                lockedMessage: "Vous avez été bloqué pour 5 minutes en raison de trop de tentatives !",
                 unlockedMessage: "Compte débloqué. Vous pouvez réessayer.",
                 style: {
                   background: theme === "dark" ? "#C40D6C" : "#2770D1",

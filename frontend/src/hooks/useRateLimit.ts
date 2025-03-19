@@ -1,17 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 // src/hooks/useRateLimit.ts
 import { useState, useEffect } from "react";
-import toast, { ToastOptions } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 interface RateLimitConfig {
-  maxAttempts: number; 
-  lockoutTime: number; 
-  storageKey?: string; 
+  maxAttempts: number;
+  lockoutTime: number; // En millisecondes
+  storageKey?: string;
   toastOptions?: {
     lockedMessage?: string;
     unlockedMessage?: string;
-    style?: ToastOptions;
+    style?: Record<string, any>;
   };
+  onUnlock?: () => void;
 }
 
 export const useRateLimit = ({
@@ -19,6 +20,7 @@ export const useRateLimit = ({
   lockoutTime,
   storageKey = "rateLimit",
   toastOptions,
+  onUnlock,
 }: RateLimitConfig) => {
   const [attempts, setAttempts] = useState(() => {
     const stored = localStorage.getItem(`${storageKey}_attempts`);
@@ -29,58 +31,69 @@ export const useRateLimit = ({
     const stored = localStorage.getItem(`${storageKey}_lockoutStart`);
     return stored ? parseInt(stored, 10) : null;
   });
+  const [remainingTime, setRemainingTime] = useState<number | null>(null);
+
+  const calculateRemainingTime = () => {
+    if (!lockoutStart) return null;
+    const timeElapsed = Date.now() - lockoutStart;
+    const timeLeft = lockoutTime - timeElapsed;
+    return timeLeft > 0 ? timeLeft : 0;
+  };
 
   useEffect(() => {
     if (lockoutStart) {
-      const timeElapsed = Date.now() - lockoutStart;
-      if (timeElapsed < lockoutTime) {
-        setIsLocked(true);
-        const remainingTime = lockoutTime - timeElapsed;
-        setTimeout(() => {
+      const updateRemainingTime = () => {
+        const timeLeft = calculateRemainingTime();
+        if (timeLeft && timeLeft > 0) {
+          setIsLocked(true);
+          setRemainingTime(timeLeft);
+        } else {
           clearLockout();
-        }, remainingTime);
-      } else {
-        clearLockout(); 
-      }
+        }
+      };
+
+      updateRemainingTime();
+      const interval = setInterval(updateRemainingTime, 1000);
+      return () => clearInterval(interval);
+    } else {
+      setIsLocked(false);
+      setRemainingTime(null);
     }
   }, [lockoutStart, lockoutTime]);
 
   useEffect(() => {
-    if (attempts >= maxAttempts && !isLocked) {
+    if (attempts >= maxAttempts && !lockoutStart) {
       const startTime = Date.now();
       setIsLocked(true);
       setLockoutStart(startTime);
+      setRemainingTime(lockoutTime);
       localStorage.setItem(`${storageKey}_attempts`, attempts.toString());
       localStorage.setItem(`${storageKey}_lockoutStart`, startTime.toString());
 
+      console.log("Blocage démarré à :", new Date(startTime).toLocaleString());
       toast.error(
-        toastOptions?.lockedMessage || `Trop de tentatives. Réessayez dans ${lockoutTime / 60000} minutes.`,
+        `Trop de tentatives. Réessayez dans ${lockoutTime / 60000} minutes.`,
         toastOptions?.style || {}
       );
-
-      const timer = setTimeout(() => {
-        clearLockout();
-      }, lockoutTime);
-
-      return () => clearTimeout(timer);
     }
-  }, [attempts, maxAttempts, lockoutTime, toastOptions, isLocked, storageKey]);
+  }, [attempts, maxAttempts, lockoutTime, lockoutStart, storageKey, toastOptions]);
 
   const clearLockout = () => {
+    console.log("Déblocage effectué à :", new Date().toLocaleString());
     setAttempts(0);
     setIsLocked(false);
     setLockoutStart(null);
+    setRemainingTime(null);
     localStorage.removeItem(`${storageKey}_attempts`);
     localStorage.removeItem(`${storageKey}_lockoutStart`);
-    toast.success(
-      toastOptions?.unlockedMessage || "Vous pouvez réessayer maintenant.",
-      toastOptions?.style || {}
-    );
+    toast.success("Vous pouvez réessayer maintenant.", toastOptions?.style || {});
+    if (onUnlock) onUnlock();
   };
 
   const attemptAction = (action: () => void) => {
     if (isLocked) {
-      toast.error("Action bloquée temporairement.", toastOptions?.style || {});
+      const minutesLeft = remainingTime ? Math.ceil(remainingTime / 60000) : lockoutTime / 60000;
+      toast.error(`Action bloquée. Attendez ${minutesLeft} minute(s).`, toastOptions?.style || {});
       return false;
     }
     setAttempts((prev) => {
@@ -92,5 +105,5 @@ export const useRateLimit = ({
     return true;
   };
 
-  return { isLocked, attempts, attemptAction };
+  return { isLocked, attempts, attemptAction, remainingTime };
 };

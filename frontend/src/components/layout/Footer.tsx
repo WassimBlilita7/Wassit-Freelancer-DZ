@@ -14,6 +14,7 @@ export const Footer = () => {
     const loadCategories = async () => {
       try {
         const data = await fetchCategories();
+        console.log("Catégories récupérées :", data); // Log pour vérification
         setCategories(data);
       } catch (error) {
         console.error('Erreur lors du chargement des catégories:', error);
@@ -24,37 +25,19 @@ export const Footer = () => {
   }, []);
 
   return (
-    <footer
-      className="py-8"
-      style={{
-        backgroundColor: 'var(--card)', // Blanc (#FFFFFF) en light, gris sombre (#334155) en dark
-        color: 'var(--text)', // Noir (#000) en light, gris clair (#E2E8F0) en dark
-      }}
-    >
+    <footer className="py-8" style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}>
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Section À propos */}
           <div>
-            <h3
-              className="text-lg font-semibold mb-4"
-              style={{ color: 'var(--primary)' }} // Bleu (#2770D1) en light, magenta (#C40D6C) en dark
-            >
+            <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--primary)' }}>
               Freelancer DZ
             </h3>
-            <p
-              className="text-sm"
-              style={{ color: 'var(--muted)' }} // Gris bleuté (#64748B) en light, gris clair (#94A3B8) en dark
-            >
+            <p className="text-sm" style={{ color: 'var(--muted)' }}>
               Plateforme algérienne pour connecter freelances et clients.
             </p>
           </div>
-
-          {/* Section Catégories */}
           <div>
-            <h3
-              className="text-lg font-semibold mb-4"
-              style={{ color: 'var(--primary)' }}
-            >
+            <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--primary)' }}>
               Catégories
             </h3>
             <ul className="space-y-2">
@@ -62,7 +45,7 @@ export const Footer = () => {
                 categories.map((category) => (
                   <li key={category._id}>
                     <button
-                      onClick={() => navigate(`/category/${category.slug}`)}
+                      onClick={() => navigate(`/category/${category._id}`)}
                       className="text-sm transition-colors duration-200 hover:text-[var(--secondary)]"
                       style={{ color: 'var(--text)' }}
                     >
@@ -71,22 +54,14 @@ export const Footer = () => {
                   </li>
                 ))
               ) : (
-                <li
-                  className="text-sm"
-                  style={{ color: 'var(--muted)' }}
-                >
+                <li className="text-sm" style={{ color: 'var(--muted)' }}>
                   Chargement...
                 </li>
               )}
             </ul>
           </div>
-
-          {/* Section Liens */}
           <div>
-            <h3
-              className="text-lg font-semibold mb-4"
-              style={{ color: 'var(--primary)' }}
-            >
+            <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--primary)' }}>
               Liens Utiles
             </h3>
             <ul className="space-y-2">
@@ -120,15 +95,10 @@ export const Footer = () => {
             </ul>
           </div>
         </div>
-
-        {/* Section Logo, Copyright et Icônes Sociales */}
         <div className="mt-8 pt-4 flex flex-col md:flex-row items-center justify-between border-t" style={{ borderColor: 'var(--muted)' }}>
           <div className="flex items-center space-x-4 mb-4 md:mb-0">
             <FooterLogo />
-            <p
-              className="text-sm"
-              style={{ color: 'var(--muted)' }}
-            >
+            <p className="text-sm" style={{ color: 'var(--muted)' }}>
               © {new Date().getFullYear()} Freelancer DZ. Tous droits réservés.
             </p>
           </div>

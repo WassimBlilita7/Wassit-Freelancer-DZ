@@ -80,5 +80,5 @@ export interface SignupData {
     name: string;
     description?: string;
     createdAt?: string; 
-    slug?: string;
+    slug: string;
   }

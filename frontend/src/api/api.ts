@@ -114,3 +114,8 @@ export const searchPosts = async (data: { title: string }) => {
   const response = await api.post('/post/search', data);
   return response.data;
 };
+
+export const fetchCategoryById = async (id: string): Promise<Category> => {
+  const response = await api.get(`/category/${id}`);
+  return response.data;
+};

@@ -15,13 +15,12 @@ import { AllPosts } from "./pages/AllPosts";
 import { ToastProvider } from "./components/common/ToastProvider";
 import { ThemeProvider } from "./context/ThemeContext";
 import { SearchResults } from "./pages/SearchResults";
-import { CategoryPage } from "./pages/CategoryPage";
+import CategoryPage from "./pages/CategoryPage"; // Pas besoin d'importer comme { CategoryPage }
 import { Footer } from "./components/layout/Footer";
 import { PostProvider } from "./context/PostContext";
 
 function AppContent() {
   const location = useLocation();
-
 
   const hideHeader = ["/signup", "/login", "/verify-otp", "/forgot-password", "/reset-password"].includes(
     location.pathname
@@ -37,7 +36,7 @@ function AppContent() {
           <Route path="/" element={<Home />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/verify-otp" element={<VerifyOTP />} />
-          <Route path="/login" element={<Login />} /> {/* Plus besoin de setAuthenticated */}
+          <Route path="/login" element={<Login />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="/signup-with-google" element={<SignupWithGoogle />} />
           <Route path="/new-project" element={<NewProject />} />
@@ -46,11 +45,11 @@ function AppContent() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/all-posts" element={<AllPosts />} />
           <Route path="/search-results" element={<SearchResults />} />
-          <Route path="/category/:slug" element={<CategoryPage />} />
+          <Route path="/category/:categoryId" element={<CategoryPage />} /> {/* Changé slug en categoryId */}
           <Route path="*" element={<div>404 - Page non trouvée</div>} />
         </Routes>
       </main>
-      {showFooter && <Footer />} {/* Footer uniquement sur "/" */}
+      {showFooter && <Footer />}
     </div>
   );
 }
@@ -60,7 +59,7 @@ function App() {
     <Router>
       <PostProvider>
         <ThemeProvider>
-          <ToastProvider />
+          <ToastProvider /> {/* ToastProvider doit être un composant, pas un contexte */}
           <AppContent />
         </ThemeProvider>
       </PostProvider>

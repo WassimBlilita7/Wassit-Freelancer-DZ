@@ -1,83 +1,71 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // src/pages/CategoryPage.tsx
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { fetchCategories, getAllPosts } from '@/api/api';
-import { PostCard } from '@/components/posts/PostCard';
-import { Category, PostData } from '@/types';
-import toast from 'react-hot-toast';
+import { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import { fetchCategoryById } from "@/api/api";
+import { Category } from "@/types";
 
-export const CategoryPage = () => {
-  const { slug } = useParams<{ slug: string }>();
+const CategoryPage = () => {
+  const { categoryId } = useParams<{ categoryId: string }>(); // Changé categorySlug en categoryId
   const [category, setCategory] = useState<Category | null>(null);
-  const [posts, setPosts] = useState<PostData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        // Charger les catégories
-        const categories = await fetchCategories();
-        const foundCategory = categories.find((cat) => cat.slug === slug);
-        setCategory(foundCategory || null);
+    const loadCategory = async () => {
+      if (!categoryId) {
+        setError("Aucune catégorie spécifiée");
+        setLoading(false);
+        return;
+      }
 
-        // Charger tous les posts et filtrer par catégorie
-        const allPosts = await getAllPosts();
-        const filteredPosts = allPosts.filter((post) =>
-          post.category?.slug === slug // Vérifie si la catégorie existe dans le post
-        );
-        setPosts(filteredPosts);
-      } catch (error) {
-        toast.error('Erreur lors du chargement des données');
-        setPosts([]);
-        setCategory(null);
+      try {
+        const data = await fetchCategoryById(categoryId);
+        setCategory(data);
+      } catch (err) {
+        console.error("Erreur lors du chargement de la catégorie:", err);
+        setError("Impossible de charger la catégorie");
       } finally {
         setLoading(false);
       }
     };
-
-    loadData();
-  }, [slug]);
+    loadCategory();
+  }, [categoryId]);
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-12 text-center">
-        <p className="text-gray-600 dark:text-gray-400">Chargement...</p>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "var(--background)" }}>
+        <p style={{ color: "var(--text)" }}>Chargement...</p>
       </div>
     );
   }
 
-  if (!category) {
+  if (error || !category) {
     return (
-      <div className="container mx-auto px-4 py-12 text-center">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-          Catégorie non trouvée
-        </h1>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "var(--background)" }}>
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4" style={{ color: "var(--text)" }}>
+            {error || "Catégorie non trouvée"}
+          </h2>
+          <Link to="/" className="text-[var(--secondary)] hover:underline">
+            Retour à l'accueil
+          </Link>
+        </div>
       </div>
     );
   }
 
   return (
-    <section className="py-12 bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <div className="min-h-screen py-10" style={{ backgroundColor: "var(--background)" }}>
       <div className="container mx-auto px-4">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8">
+        <Link to="/" className="text-[var(--secondary)] hover:underline mb-6 inline-block">
+          ← Retour à l'accueil
+        </Link>
+        <h1 className="text-3xl font-bold" style={{ color: "var(--text)" }}>
           {category.name}
         </h1>
-
-        {posts.length > 0 ? (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {posts.map((post) => (
-              <PostCard key={post._id} post={post} isFreelancer={false} onDelete={function (): void {
-                    throw new Error('Function not implemented.');
-                } } />
-            ))}
-          </div>
-        ) : (
-          <p className="text-center text-gray-600 dark:text-gray-400">
-            Aucune offre trouvée dans cette catégorie.
-          </p>
-        )}
       </div>
-    </section>
+    </div>
   );
 };
+
+export default CategoryPage;

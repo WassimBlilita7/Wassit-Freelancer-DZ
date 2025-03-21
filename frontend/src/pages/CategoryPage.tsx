@@ -1,11 +1,14 @@
 // src/pages/CategoryPage.tsx
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { fetchCategoryById } from "@/api/api";
 import { Category } from "@/types";
+import { WavyHeader } from "@/components/category/WavyHeader";
+import { CategoryHeader } from "@/components/category/CategoryHeader";
+import { CategorySummary } from "@/components/category/CategorySummary";
 
 const CategoryPage = () => {
-  const { categoryId } = useParams<{ categoryId: string }>(); // Changé categorySlug en categoryId
+  const { categoryId } = useParams<{ categoryId: string }>();
   const [category, setCategory] = useState<Category | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -34,7 +37,7 @@ const CategoryPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "var(--background)" }}>
-        <p style={{ color: "var(--text)" }}>Chargement...</p>
+        <p className="text-lg" style={{ color: "var(--text)" }}>Chargement...</p>
       </div>
     );
   }
@@ -42,27 +45,21 @@ const CategoryPage = () => {
   if (error || !category) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "var(--background)" }}>
-        <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4" style={{ color: "var(--text)" }}>
+        <div className="text-center bg-[var(--card)] p-6 rounded-lg shadow-md">
+          <h2 className="text-3xl font-bold" style={{ color: "var(--text)" }}>
             {error || "Catégorie non trouvée"}
           </h2>
-          <Link to="/" className="text-[var(--secondary)] hover:underline">
-            Retour à l'accueil
-          </Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen py-10" style={{ backgroundColor: "var(--background)" }}>
-      <div className="container mx-auto px-4">
-        <Link to="/" className="text-[var(--secondary)] hover:underline mb-6 inline-block">
-          ← Retour à l'accueil
-        </Link>
-        <h1 className="text-3xl font-bold" style={{ color: "var(--text)" }}>
-          {category.name}
-        </h1>
+    <div className="min-h-screen" style={{ backgroundColor: "var(--background)" }}>
+      <WavyHeader />
+      <CategoryHeader category={category} />
+      <div className="container mx-auto px-6 py-12 max-w-6xl">
+        <CategorySummary category={category} />
       </div>
     </div>
   );

@@ -1,7 +1,15 @@
 // src/components/posts/PostCard.tsx
 import { useState } from "react";
 import { PostData } from "../../types";
-import { FaTrash, FaEdit, FaClock, FaMoneyBillWave, FaTags, FaTools } from "react-icons/fa";
+import {
+  FaTrash,
+  FaEdit,
+  FaClock,
+  FaMoneyBillWave,
+  FaTags,
+  FaTools,
+  FaUser,
+} from "react-icons/fa";
 import { Button } from "../ui/button";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
@@ -9,7 +17,7 @@ import { deletePost } from "../../api/api";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { cva } from "class-variance-authority";
 
-// Variantes pour le statut avec Tailwind
+// Variantes pour le statut (inchangé)
 const statusVariants = cva(
   "px-3 py-1 rounded-full text-xs font-medium tracking-wide uppercase border",
   {
@@ -123,10 +131,18 @@ export const PostCard = ({ post, isFreelancer, onEdit, onDelete }: PostCardProps
         )}
       </div>
 
-      {/* Description */}
-      <p className="text-[var(--text)]/80 text-sm mb-4 line-clamp-2">
-        {post.description}
-      </p>
+      {/* Description encadrée et en gras */}
+      <div className="border border-[var(--muted)]/30 bg-[var(--card)]/50 p-3 rounded-md mb-4">
+        <p className="text-[var(--text)]/80 text-sm font-bold line-clamp-2">
+          {post.description}
+        </p>
+      </div>
+
+      {/* Nom du client */}
+      <div className="flex items-center text-sm text-[var(--text)]/70 mb-6">
+        <FaUser className="mr-2 w-4 h-4" style={{ color: "var(--primary)" }} />
+        <span>Créé par {post.client?.username || "Utilisateur anonyme"}</span>
+      </div>
 
       {/* Détails avec couleurs d'icônes */}
       <div className="space-y-3 text-sm text-[var(--text)]/70">

@@ -1,4 +1,3 @@
-// src/components/posts/DeleteButton.tsx
 import { useState } from "react";
 import { deletePost } from "../../api/api";
 import { motion } from "framer-motion";
@@ -7,25 +6,23 @@ import toast from "react-hot-toast";
 
 interface DeleteButtonProps {
   postId: string;
-  onDelete?: () => void; // Rendu optionnel avec "?"
+  onDelete?: () => void;
 }
 
 export const DeleteButton = ({ postId, onDelete }: DeleteButtonProps) => {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
+    if (!confirm("Voulez-vous vraiment supprimer ce projet ?")) return;
+
     setIsDeleting(true);
     try {
-      const response = await deletePost(postId);
-      console.log("DeleteButton - Response:", response);
+      await deletePost(postId);
       toast.success("Projet supprimé avec succès");
-      console.log("DeleteButton - Avant rechargement");
-      if (onDelete) onDelete(); // Vérifie si onDelete existe avant de l’appeler
-      window.location.reload(); // Actualiser la page
-      console.log("DeleteButton - Après rechargement (ne devrait pas s’afficher)");
+      if (onDelete) onDelete(); // Met à jour l’état dans PostList.tsx
     } catch (error: any) {
       console.error("Erreur lors de la suppression du post:", error.message);
-      toast.error("Vous n'êtes pas autorisé à supprimer ce projet");
+      toast.error("Vous n’êtes pas autorisé à supprimer ce projet");
     } finally {
       setIsDeleting(false);
     }
@@ -39,7 +36,11 @@ export const DeleteButton = ({ postId, onDelete }: DeleteButtonProps) => {
       disabled={isDeleting}
       className="p-2 text-red-500 hover:text-red-700 transition-colors duration-200"
     >
-      <TrashIcon className="w-5 h-5" />
+      {isDeleting ? (
+        <span className="animate-spin w-5 h-5">⏳</span>
+      ) : (
+        <TrashIcon className="w-5 h-5" />
+      )}
     </motion.button>
   );
 };

@@ -1,7 +1,7 @@
 // routes/authRoutes.js
 import express from "express";
 import passport from "passport";
-import { authCheck, forgotPassword, getProfile, login, logout, resetPassword, signup, updateProfile, verifyOTP } from "../controllers/authController.js";
+import { authCheck, forgotPassword, getProfile, getProfileByUsername, login, logout, resetPassword, signup, updateProfile, verifyOTP } from "../controllers/authController.js";
 import { configureGoogleAuth } from "../config/googleAuthConfig.js";
 import { generateTokenAndSetCookie } from "../utils/generateToken.js";
 import { protect } from "../middleware/authMiddleware.js";
@@ -43,5 +43,6 @@ router.post("/reset-password", resetPassword);
 
 router.get("/profile", protect, getProfile);
 router.put("/profile", protect, updateProfile);
+router.get("/profile/:username", getProfileByUsername);
 
 export default router;

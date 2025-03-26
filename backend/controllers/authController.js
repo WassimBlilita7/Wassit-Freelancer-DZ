@@ -277,3 +277,44 @@ export async function updateProfile(req, res) {
     res.status(500).json({ message: "Erreur serveur", error: error.message });
   }
 };
+
+export async function getProfileByUsername(req, res) {
+  try {
+    const { username } = req.params;
+
+    // Trouver l'utilisateur par username (insensible à la casse)
+    const user = await User.findOne({ username: username.toLowerCase() })
+      .select("-password -otp -otpExpires -resetOTP -resetOTPExpires -notifications") // Exclure les données sensibles
+      .populate("profile.skills", "name"); // Peupler les compétences si elles sont des références
+
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+
+    // Construire l'objet userData
+    const userData = {
+      id: user._id.toString(),
+      username: user.username,
+      email: user.email,
+      isFreelancer: user.isFreelancer,
+      profile: {
+        firstName: user.profile?.firstName || "",
+        lastName: user.profile?.lastName || "",
+        bio: user.profile?.bio || "",
+        skills: user.profile?.skills || [], // Si peuplé, ce sera un tableau d'objets avec 'name'
+        portfolio: user.profile?.portfolio || [],
+        companyName: user.profile?.companyName || "",
+        webSite: user.profile?.webSite || "",
+        offers: user.profile?.offers || [],
+      },
+    };
+
+    res.status(200).json({
+      message: "Profil récupéré avec succès",
+      userData,
+    });
+  } catch (error) {
+    console.error("Erreur dans getProfileByUsername:", error);
+    res.status(500).json({ message: "Erreur serveur", error: error.message });
+  }
+}

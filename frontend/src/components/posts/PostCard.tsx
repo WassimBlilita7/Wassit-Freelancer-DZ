@@ -9,15 +9,20 @@ import {
   FaTags,
   FaTools,
   FaUser,
+  FaHeart,
+  FaRegHeart,
+  FaShareAlt,
+  FaBookmark,
+  FaRegBookmark
 } from "react-icons/fa";
 import { Button } from "../ui/button";
 import toast from "react-hot-toast";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { deletePost } from "../../api/api";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { cva } from "class-variance-authority";
+import { Badge } from "@/components/ui/badge";
 
-// Variantes pour le statut (inchangé)
 const statusVariants = cva(
   "px-3 py-1 rounded-full text-xs font-medium tracking-wide uppercase border",
   {
@@ -43,6 +48,9 @@ interface PostCardProps {
 
 export const PostCard = ({ post, isFreelancer, onEdit, onDelete }: PostCardProps) => {
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   const handleDelete = async () => {
     if (!confirm("Voulez-vous vraiment supprimer cette offre ?")) return;
@@ -61,120 +69,209 @@ export const PostCard = ({ post, isFreelancer, onEdit, onDelete }: PostCardProps
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.98 }}
-      animate={{ opacity: 1, scale: 1 }}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ y: -5 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
-      className="bg-[var(--card)] rounded-xl shadow-md p-6 border border-[var(--muted)]/20 hover:shadow-lg transition-all duration-300 max-w-md w-full"
+      className="bg-[var(--card)] rounded-xl shadow-lg overflow-hidden border border-[var(--muted)]/20 hover:shadow-xl transition-all duration-300 w-full max-w-md"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Header */}
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold text-[var(--header-text)] line-clamp-1">
-          {post.title}
-        </h2>
-        {!isFreelancer && (
-          <div className="flex space-x-2">
-            {onEdit && (
+      {/* Header with gradient */}
+      <div className="relative h-2 bg-gradient-to-r from-[var(--primary)] to-[var(--secondary)]" />
+
+      {/* Card Content */}
+      <div className="p-6">
+        {/* Title and Actions */}
+        <div className="flex justify-between items-start mb-4">
+          <div>
+            <h2 className="text-xl font-bold text-[var(--header-text)] line-clamp-2">
+              {post.title}
+            </h2>
+            <div className="flex items-center mt-1 text-sm text-[var(--muted)]">
+              <FaUser className="mr-1" />
+              <span>Par {post.client?.username || "Anonyme"}</span>
+            </div>
+          </div>
+          
+          {!isFreelancer && (
+            <div className="flex space-x-1">
+              {onEdit && (
+                <Tooltip.Provider>
+                  <Tooltip.Root>
+                    <Tooltip.Trigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => onEdit(post)}
+                        className="text-[var(--muted)] hover:text-[var(--primary)]"
+                        disabled={isDeleting}
+                      >
+                        <FaEdit className="w-4 h-4" />
+                      </Button>
+                    </Tooltip.Trigger>
+                    <Tooltip.Content side="top">
+                      <div className="bg-[var(--background)] text-[var(--text)] text-xs px-2 py-1 rounded">
+                        Modifier
+                        <Tooltip.Arrow className="fill-[var(--background)]" />
+                      </div>
+                    </Tooltip.Content>
+                  </Tooltip.Root>
+                </Tooltip.Provider>
+              )}
               <Tooltip.Provider>
                 <Tooltip.Root>
                   <Tooltip.Trigger asChild>
                     <Button
                       variant="ghost"
-                      size="sm"
-                      onClick={() => onEdit(post)}
-                      className="text-[var(--primary)] hover:text-[var(--primary)]/80"
+                      size="icon"
+                      onClick={handleDelete}
+                      className="text-[var(--muted)] hover:text-[var(--error)]"
                       disabled={isDeleting}
                     >
-                      <FaEdit className="w-4 h-4" />
+                      {isDeleting ? (
+                        <span className="animate-spin">⏳</span>
+                      ) : (
+                        <FaTrash className="w-4 h-4" style={{ color: "var(--error)" }} />
+                      )}
                     </Button>
                   </Tooltip.Trigger>
-                  <Tooltip.Portal>
-                    <Tooltip.Content
-                      className="bg-[var(--background)] text-[var(--text)] text-xs rounded-md px-2 py-1 shadow-lg"
-                      sideOffset={5}
-                    >
-                      Modifier
+                  <Tooltip.Content side="top">
+                    <div className="bg-[var(--background)] text-[var(--text)] text-xs px-2 py-1 rounded">
+                      Supprimer
                       <Tooltip.Arrow className="fill-[var(--background)]" />
-                    </Tooltip.Content>
-                  </Tooltip.Portal>
+                    </div>
+                  </Tooltip.Content>
                 </Tooltip.Root>
               </Tooltip.Provider>
-            )}
-            <Tooltip.Provider>
-              <Tooltip.Root>
-                <Tooltip.Trigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleDelete}
-                    className="text-[var(--error)] hover:text-[var(--error)]/80"
-                    disabled={isDeleting}
-                  >
-                    {isDeleting ? (
-                      <span className="animate-spin text-sm">⏳</span>
-                    ) : (
-                      <FaTrash className="w-4 h-4" style={{ color: "var(--error-dark, var(--error))" }} />
-                    )}
-                  </Button>
-                </Tooltip.Trigger>
-                <Tooltip.Portal>
-                  <Tooltip.Content
-                    className="bg-[var(--background)] text-[var(--text)] text-xs rounded-md px-2 py-1 shadow-lg"
-                    sideOffset={5}
-                  >
-                    Supprimer
-                    <Tooltip.Arrow className="fill-[var(--background)]" />
-                  </Tooltip.Content>
-                </Tooltip.Portal>
-              </Tooltip.Root>
-            </Tooltip.Provider>
+            </div>
+          )}
+        </div>
+
+        {/* Description */}
+        <div className="mb-6">
+          <p className="text-[var(--text)]/80 line-clamp-3">
+            {post.description}
+          </p>
+        </div>
+
+        {/* Details Grid */}
+        <div className="grid grid-cols-2 gap-4 mb-6">
+          <div className="flex items-center">
+            <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30 mr-3">
+              <FaMoneyBillWave className="text-[var(--primary)]" />
+            </div>
+            <div>
+              <p className="text-xs text-[var(--muted)]">Budget</p>
+              <p className="font-medium text-[var(--text)]">
+                {post.budget.toLocaleString()} DZD
+              </p>
+            </div>
           </div>
+
+          <div className="flex items-center">
+            <div className="p-2 rounded-lg bg-purple-100 dark:bg-purple-900/30 mr-3">
+              <FaClock className="text-[var(--primary)]" />
+            </div>
+            <div>
+              <p className="text-xs text-[var(--muted)]">Durée</p>
+              <p className="font-medium text-[var(--text)]">
+                {post.duration === "short-term" 
+                  ? "Court terme" 
+                  : post.duration === "long-term" 
+                    ? "Long terme" 
+                    : "En continu"}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center">
+            <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 mr-3">
+              <FaTags className="text-[var(--success)]" />
+            </div>
+            <div>
+              <p className="text-xs text-[var(--muted)]">Catégorie</p>
+              <p className="font-medium text-[var(--text)]">
+                {post.category?.name || "Non spécifiée"}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center">
+            <div className="p-2 rounded-lg bg-amber-100 dark:bg-amber-900/30 mr-3">
+              <FaTools className="text-[var(--muted)]" />
+            </div>
+            <div>
+              <p className="text-xs text-[var(--muted)]">Compétences</p>
+              <p className="font-medium text-[var(--text)] line-clamp-1">
+                {post.skillsRequired.join(", ") || "Aucune"}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="flex items-center justify-between pt-4 border-t border-[var(--muted)]/20">
+          <div className="flex space-x-2">
+            <Badge className={statusVariants({ status: post.status })}>
+              {post.status === "open" 
+                ? "Ouverte" 
+                : post.status === "in-progress" 
+                  ? "En cours" 
+                  : "Terminée"}
+            </Badge>
+            <Badge variant="outline" className="text-xs">
+              {new Date(post.createdAt).toLocaleDateString()}
+            </Badge>
+          </div>
+
+          <div className="flex space-x-2">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={() => setIsLiked(!isLiked)}
+              className="text-[var(--muted)] hover:text-[var(--error)]"
+            >
+              {isLiked ? (
+                <FaHeart style={{ color: "var(--error)" }} />
+              ) : (
+                <FaRegHeart />
+              )}
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={() => setIsBookmarked(!isBookmarked)}
+              className="text-[var(--muted)] hover:text-[var(--primary)]"
+            >
+              {isBookmarked ? (
+                <FaBookmark style={{ color: "var(--primary)" }} />
+              ) : (
+                <FaRegBookmark />
+              )}
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="text-[var(--muted)] hover:text-[var(--text)]"
+            >
+              <FaShareAlt />
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Hover effect */}
+      <AnimatePresence>
+        {isHovered && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"
+          />
         )}
-      </div>
-
-      {/* Description encadrée et en gras */}
-      <div className="border border-[var(--muted)]/30 bg-[var(--card)]/50 p-3 rounded-md mb-4">
-        <p className="text-[var(--text)]/80 text-sm font-bold line-clamp-2">
-          {post.description}
-        </p>
-      </div>
-
-      {/* Nom du client */}
-      <div className="flex items-center text-sm text-[var(--text)]/70 mb-6">
-        <FaUser className="mr-2 w-4 h-4" style={{ color: "var(--primary)" }} />
-        <span>Créé par {post.client?.username || "Utilisateur anonyme"}</span>
-      </div>
-
-      {/* Détails avec couleurs d'icônes */}
-      <div className="space-y-3 text-sm text-[var(--text)]/70">
-        <div className="flex items-center">
-          <FaMoneyBillWave className="mr-2 w-4 h-4" style={{ color: "var(--secondary)" }} />
-          <span>{post.budget.toLocaleString()} DZD</span>
-        </div>
-        <div className="flex items-center">
-          <FaClock className="mr-2 w-4 h-4" style={{ color: "var(--primary)" }} />
-          <span>
-            {post.duration === "short-term" ? "Court terme" : post.duration === "long-term" ? "Long terme" : "En continu"}
-          </span>
-        </div>
-        <div className="flex items-center">
-          <FaTags className="mr-2 w-4 h-4" style={{ color: "var(--success)" }} />
-          <span>{post.category?.name || "Non spécifiée"}</span>
-        </div>
-        <div className="flex items-center">
-          <FaTools className="mr-2 w-4 h-4" style={{ color: "var(--muted)" }} />
-          <span className="line-clamp-1">{post.skillsRequired.join(", ") || "Aucune"}</span>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <div className="mt-4 flex items-center justify-between">
-        <span className={statusVariants({ status: post.status })}>
-          {post.status === "open" ? "Ouverte" : post.status === "in-progress" ? "En cours" : "Terminée"}
-        </span>
-        <span className="text-xs text-[var(--muted)]">
-          {new Date(post.createdAt).toLocaleDateString()}
-        </span>
-      </div>
+      </AnimatePresence>
     </motion.div>
   );
 };

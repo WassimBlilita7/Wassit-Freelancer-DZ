@@ -100,6 +100,11 @@ export const getAllPosts = async (): Promise<PostData[]> => {
   }
 };
 
+export const getPostById = async (postId: string): Promise<PostData> => {
+  const response = await api.get(`/post/${postId}`);
+  return response.data.post;
+};
+
 export const deletePost = async (postId: string): Promise<ApiResponse> => {
   try {
     const response = await api.delete(`/post/${postId}`);

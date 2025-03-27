@@ -13,15 +13,15 @@ import {
   FaRegHeart,
   FaShareAlt,
   FaBookmark,
-  FaRegBookmark
+  FaRegBookmark,
 } from "react-icons/fa";
 import { Button } from "../ui/button";
-import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
-import { deletePost } from "../../api/api";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { cva } from "class-variance-authority";
 import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "react-router-dom";
+import { handleDeletePost } from "../../utils/postUtils";
 
 const statusVariants = cva(
   "px-3 py-1 rounded-full text-xs font-medium tracking-wide uppercase border",
@@ -33,9 +33,7 @@ const statusVariants = cva(
         completed: "bg-[var(--muted)]/10 text-[var(--muted)] border-[var(--muted)]/20",
       },
     },
-    defaultVariants: {
-      status: "open",
-    },
+    defaultVariants: { status: "open" },
   }
 );
 
@@ -51,19 +49,17 @@ export const PostCard = ({ post, isFreelancer, onEdit, onDelete }: PostCardProps
   const [isLiked, setIsLiked] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const navigate = useNavigate();
 
-  const handleDelete = async () => {
-    if (!confirm("Voulez-vous vraiment supprimer cette offre ?")) return;
+  const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Prevent navigation if clicking an interactive element
+    const target = e.target as HTMLElement;
+    if (target.closest("button") || target.tagName === "BUTTON") return;
 
-    setIsDeleting(true);
-    try {
-      await deletePost(post._id);
-      toast.success("Offre supprimée avec succès !");
-      if (onDelete) onDelete(post._id);
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || "Erreur lors de la suppression");
-    } finally {
-      setIsDeleting(false);
+    if (post._id) {
+      navigate(`/post/${post._id}`);
+    } else {
+      console.error("Post ID is undefined:", post);
     }
   };
 
@@ -73,16 +69,14 @@ export const PostCard = ({ post, isFreelancer, onEdit, onDelete }: PostCardProps
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -5 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
-      className="bg-[var(--card)] rounded-xl shadow-lg overflow-hidden border border-[var(--muted)]/20 hover:shadow-xl transition-all duration-300 w-full max-w-md"
+      className="bg-[var(--card)] rounded-xl shadow-lg overflow-hidden border border-[var(--muted)]/20 hover:shadow-xl transition-all duration-300 w-full max-w-md cursor-pointer relative"
+      onClick={handleCardClick} // Direct onClick on the card
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Header with gradient */}
+      {/* Removed separate clickable div to simplify */}
       <div className="relative h-2 bg-gradient-to-r from-[var(--primary)] to-[var(--secondary)]" />
-
-      {/* Card Content */}
-      <div className="p-6">
-        {/* Title and Actions */}
+      <div className="p-6 relative z-10">
         <div className="flex justify-between items-start mb-4">
           <div>
             <h2 className="text-xl font-bold text-[var(--header-text)] line-clamp-2">
@@ -93,7 +87,6 @@ export const PostCard = ({ post, isFreelancer, onEdit, onDelete }: PostCardProps
               <span>Par {post.client?.username || "Anonyme"}</span>
             </div>
           </div>
-          
           {!isFreelancer && (
             <div className="flex space-x-1">
               {onEdit && (
@@ -103,7 +96,10 @@ export const PostCard = ({ post, isFreelancer, onEdit, onDelete }: PostCardProps
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => onEdit(post)}
+                        onClick={(e) => {
+                          e.stopPropagation(); // Ensure this stops bubbling
+                          onEdit(post);
+                        }}
                         className="text-[var(--muted)] hover:text-[var(--primary)]"
                         disabled={isDeleting}
                       >
@@ -125,7 +121,10 @@ export const PostCard = ({ post, isFreelancer, onEdit, onDelete }: PostCardProps
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={handleDelete}
+                      onClick={(e) => {
+                        e.stopPropagation(); // Ensure this stops bubbling
+                        handleDeletePost(post._id, onDelete, setIsDeleting);
+                      }}
                       className="text-[var(--muted)] hover:text-[var(--error)]"
                       disabled={isDeleting}
                     >
@@ -147,15 +146,9 @@ export const PostCard = ({ post, isFreelancer, onEdit, onDelete }: PostCardProps
             </div>
           )}
         </div>
-
-        {/* Description */}
         <div className="mb-6">
-          <p className="text-[var(--text)]/80 line-clamp-3">
-            {post.description}
-          </p>
+          <p className="text-[var(--text)]/80 line-clamp-3">{post.description}</p>
         </div>
-
-        {/* Details Grid */}
         <div className="grid grid-cols-2 gap-4 mb-6">
           <div className="flex items-center">
             <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30 mr-3">
@@ -163,12 +156,9 @@ export const PostCard = ({ post, isFreelancer, onEdit, onDelete }: PostCardProps
             </div>
             <div>
               <p className="text-xs text-[var(--muted)]">Budget</p>
-              <p className="font-medium text-[var(--text)]">
-                {post.budget.toLocaleString()} DZD
-              </p>
+              <p className="font-medium text-[var(--text)]">{post.budget.toLocaleString()} DZD</p>
             </div>
           </div>
-
           <div className="flex items-center">
             <div className="p-2 rounded-lg bg-purple-100 dark:bg-purple-900/30 mr-3">
               <FaClock className="text-[var(--primary)]" />
@@ -176,83 +166,65 @@ export const PostCard = ({ post, isFreelancer, onEdit, onDelete }: PostCardProps
             <div>
               <p className="text-xs text-[var(--muted)]">Durée</p>
               <p className="font-medium text-[var(--text)]">
-                {post.duration === "short-term" 
-                  ? "Court terme" 
-                  : post.duration === "long-term" 
-                    ? "Long terme" 
-                    : "En continu"}
+                {post.duration === "short-term" ? "Court terme" : post.duration === "long-term" ? "Long terme" : "En continu"}
               </p>
             </div>
           </div>
-
           <div className="flex items-center">
             <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 mr-3">
               <FaTags className="text-[var(--success)]" />
             </div>
             <div>
               <p className="text-xs text-[var(--muted)]">Catégorie</p>
-              <p className="font-medium text-[var(--text)]">
-                {post.category?.name || "Non spécifiée"}
-              </p>
+              <p className="font-medium text-[var(--text)]">{post.category?.name || "Non spécifiée"}</p>
             </div>
           </div>
-
           <div className="flex items-center">
             <div className="p-2 rounded-lg bg-amber-100 dark:bg-amber-900/30 mr-3">
               <FaTools className="text-[var(--muted)]" />
             </div>
             <div>
               <p className="text-xs text-[var(--muted)]">Compétences</p>
-              <p className="font-medium text-[var(--text)] line-clamp-1">
-                {post.skillsRequired.join(", ") || "Aucune"}
-              </p>
+              <p className="font-medium text-[var(--text)] line-clamp-1">{post.skillsRequired.join(", ") || "Aucune"}</p>
             </div>
           </div>
         </div>
-
-        {/* Footer */}
         <div className="flex items-center justify-between pt-4 border-t border-[var(--muted)]/20">
           <div className="flex space-x-2">
             <Badge className={statusVariants({ status: post.status })}>
-              {post.status === "open" 
-                ? "Ouverte" 
-                : post.status === "in-progress" 
-                  ? "En cours" 
-                  : "Terminée"}
+              {post.status === "open" ? "Ouverte" : post.status === "in-progress" ? "En cours" : "Terminée"}
             </Badge>
             <Badge variant="outline" className="text-xs">
               {new Date(post.createdAt).toLocaleDateString()}
             </Badge>
           </div>
-
           <div className="flex space-x-2">
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={() => setIsLiked(!isLiked)}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsLiked(!isLiked);
+              }}
               className="text-[var(--muted)] hover:text-[var(--error)]"
             >
-              {isLiked ? (
-                <FaHeart style={{ color: "var(--error)" }} />
-              ) : (
-                <FaRegHeart />
-              )}
+              {isLiked ? <FaHeart style={{ color: "var(--error)" }} /> : <FaRegHeart />}
             </Button>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={() => setIsBookmarked(!isBookmarked)}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsBookmarked(!isBookmarked);
+              }}
               className="text-[var(--muted)] hover:text-[var(--primary)]"
             >
-              {isBookmarked ? (
-                <FaBookmark style={{ color: "var(--primary)" }} />
-              ) : (
-                <FaRegBookmark />
-              )}
+              {isBookmarked ? <FaBookmark style={{ color: "var(--primary)" }} /> : <FaRegBookmark />}
             </Button>
-            <Button 
-              variant="ghost" 
-              size="icon" 
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={(e) => e.stopPropagation()}
               className="text-[var(--muted)] hover:text-[var(--text)]"
             >
               <FaShareAlt />
@@ -260,8 +232,6 @@ export const PostCard = ({ post, isFreelancer, onEdit, onDelete }: PostCardProps
           </div>
         </div>
       </div>
-
-      {/* Hover effect */}
       <AnimatePresence>
         {isHovered && (
           <motion.div

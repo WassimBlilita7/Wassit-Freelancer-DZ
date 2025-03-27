@@ -63,19 +63,23 @@ export const getAllPosts = async (req, res) => {
     }
 };
 
+// Backend: Update getPostById in your controller file
 export const getPostById = async (req, res) => {
     try {
-        const postId = req.params.id;
-        const post = await Post.findById(postId).populate("client", "username email").populate("applications.freelancer", "username email");
-        if(!post) {
-            return res.status(404).json({message: "Offre non trouvée"});
-        }
-        res.status(200).json({post});
+      const postId = req.params.id;
+      const post = await Post.findById(postId)
+        .populate("client", "username email")
+        .populate("applications.freelancer", "username email")
+        .populate("category", "name"); // Add this line to populate category
+      if (!post) {
+        return res.status(404).json({ message: "Offre non trouvée" });
+      }
+      res.status(200).json({ post });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Erreur serveur" });
+      console.error(error);
+      res.status(500).json({ message: "Erreur serveur" });
     }
-};
+  };
 
 export const applyToPost = async (req, res) => {
     try {

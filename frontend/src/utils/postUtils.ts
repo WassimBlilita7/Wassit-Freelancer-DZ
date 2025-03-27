@@ -12,7 +12,7 @@ export const fetchPostById = async (
   setLoading(true);
   try {
     const fetchedPost = await apiGetPostById(postId);
-    console.log("Raw API Response:", fetchedPost); // Debug raw data
+    console.log("Raw API Response:", fetchedPost);
     if (!fetchedPost) {
       throw new Error("Post non trouvé dans la réponse de l'API");
     }
@@ -45,4 +45,18 @@ export const handleDeletePost = async (
   } finally {
     setIsDeleting?.(false);
   }
+};
+
+export const formatTimeSince = (createdAt: string): string => {
+  const now = new Date();
+  const posted = new Date(createdAt);
+  const diffMs = now.getTime() - posted.getTime();
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffMinutes = Math.floor(diffMs / (1000 * 60));
+
+  if (diffDays > 0) return `${diffDays} jour${diffDays > 1 ? "s" : ""} ago`;
+  if (diffHours > 0) return `${diffHours} heure${diffHours > 1 ? "s" : ""} ago`;
+  if (diffMinutes > 0) return `${diffMinutes} minute${diffMinutes > 1 ? "s" : ""} ago`;
+  return "Il y a quelques instants";
 };

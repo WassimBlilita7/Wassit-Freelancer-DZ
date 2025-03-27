@@ -1,28 +1,31 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
 :root, :root.light {
-  --primary: #2770D1; /* Bleu vif, repris du header */
-  --secondary: #10B981; /* Vert émeraude, complémentaire */
-  --background: #F1F5F9; /* Gris bleu pâle, moderne */
+  --primary: #2770D1; /* Bleu vif */
+  --secondary: #10B981; /* Vert émeraude */
+  --background: #F1F5F9; /* Gris bleu pâle */
   --card: #FFFFFF; /* Blanc pur */
-  --text: #000; /* Noir, lisible */
-  --header-text: #000; /* Noir pour le header en mode clair */
+  --text: #000; /* Noir */
+  --header-text: #000; /* Noir */
   --muted: #64748B; /* Gris bleuté */
-  --error: #EF4444; /* Rouge vif pour mode clair */
+  --error: #EF4444; /* Rouge vif */
   --success: #22C55E; /* Vert clair */
+  --accent: #F59E0B; /* Jaune ambre, chaleureux */
 }
 
+/* Add to :root.dark */
 :root.dark {
-  --primary: #C40D6C; /* Magenta vibrant, repris du header */
-  --secondary: #34D399; /* Vert clair, complémentaire */
-  --background: #0F1419; /* Noir profond anthracite */
-  --card: #1A1F26; /* Noir grisâtre élégant pour la carte */
-  --text: #E2E8F0; /* Gris clair, lisible */
-  --header-text: #FFFFFF; /* Blanc pur pour le header en mode sombre */
-  --muted: #A1A9B3; /* Gris clair ajusté pour contraste avec le nouveau noir */
-  --error: #F87171; /* Rouge clair pour mode sombre (bouton) */
-  --error-dark: #EF4444; /* Rouge vif pour icône en mode sombre */
-  --success: #6EE7B7; /* Vert clair lumineux */
+  --primary: #C40D6C; /* Magenta vibrant */
+  --secondary: #34D399; /* Vert clair */
+  --background: #0F1419; /* Noir profond */
+  --card: #1A1F26; /* Noir grisâtre */
+  --text: #E2E8F0; /* Gris clair */
+  --header-text: #FFFFFF; /* Blanc */
+  --muted: #A1A9B3; /* Gris clair */
+  --error: #F87171; /* Rouge clair */
+  --error-dark: #EF4444; /* Rouge vif */
+  --success: #6EE7B7; /* Vert clair */
+  --accent: #FBBF24; /* Jaune ambre clair, lumineux */
 }
 
 html,

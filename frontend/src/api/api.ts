@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ApiResponse, Category, CreatePostData, PostData } from "@/types";
+import { ApiResponse, Category, PostData } from "@/types";
 import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL ||   "http://localhost:5000/api/v1";

@@ -34,6 +34,10 @@ const postSchema = new mongoose.Schema({
         ref: 'Category', 
         required: true 
     },
+    picture: {
+        type: String, // URL to the uploaded image
+        default: null
+      },
     createdAt: {
         type: Date,
         default: Date.now

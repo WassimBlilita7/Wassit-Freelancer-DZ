@@ -56,8 +56,10 @@ export const checkAuth = async () => {
   }
 };
 
-export const createPost = async (data: CreatePostData) => {
-  const response = await api.post("/post/createPost", data);
+export const createPost = async (data: FormData): Promise<{ message: string; post: PostData }> => {
+  const response = await api.post("/post/createPost", data, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
   return response.data;
 };
 

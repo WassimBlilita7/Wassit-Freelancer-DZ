@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { checkAuth, createPost, fetchCategories } from "../api/api";
-import { PostData, Category, CreatePostData } from "../types";
+import { PostData, Category } from "../types";
 import { postSchema, PostFormData } from "../schemas/postSchema";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
@@ -16,9 +16,10 @@ import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 import { FaHeading, FaFileAlt, FaTools, FaMoneyBillWave, FaClock, FaTags } from "react-icons/fa";
 import { useTheme } from "../context/ThemeContext";
-import { useFetchPosts } from "../hooks/useFetchPosts"; // Importer le hook
+import { useFetchPosts } from "../hooks/useFetchPosts";
 import "../theme/styles.css";
 import { SkillsInput } from "@/components/ui/SkillsInput";
+import { ImageUpload } from "../components/ui/ImageUpload";
 
 export const NewProject = () => {
   const { theme } = useTheme();
@@ -27,9 +28,9 @@ export const NewProject = () => {
   const [submitting, setSubmitting] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const navigate = useNavigate();
-  const { addPost } = useFetchPosts(); // Utiliser le hook pour accéder à addPost
+  const { addPost } = useFetchPosts();
 
-  const { control, handleSubmit, formState: { errors, isDirty }, trigger } = useForm<PostFormData>({
+  const { control, handleSubmit, formState: { errors, isDirty }, trigger, watch } = useForm<PostFormData>({
     resolver: zodResolver(postSchema),
     defaultValues: {
       title: "",
@@ -38,8 +39,12 @@ export const NewProject = () => {
       budget: 0,
       duration: undefined,
       category: "",
+      picture: undefined,
     },
   });
+
+  // Watch skillsRequired for real-time updates
+  const skillsRequired = watch("skillsRequired");
 
   useEffect(() => {
     const verifyClientAndFetchCategories = async () => {
@@ -72,33 +77,33 @@ export const NewProject = () => {
       const selectedCategory = categories.find((cat) => cat.name === data.category);
       if (!selectedCategory) throw new Error("Catégorie invalide");
 
-      const apiPostData: CreatePostData = {
-        title: data.title,
-        description: data.description,
-        skillsRequired: data.skillsRequired,
-        budget: data.budget,
-        duration: data.duration,
-        category: selectedCategory._id,
-      };
+      const formData = new FormData();
+      formData.append("title", data.title);
+      formData.append("description", data.description);
+      formData.append("skillsRequired", JSON.stringify(data.skillsRequired));
+      formData.append("budget", data.budget.toString());
+      formData.append("duration", data.duration);
+      formData.append("category", selectedCategory._id);
+      if (data.picture) formData.append("picture", data.picture);
 
-      const response = await createPost(apiPostData);
+      const response = await createPost(formData);
       console.log("createPost response:", response);
 
       const createdPost: PostData = {
-        _id: response.data?._id || "",
-        title: data.title,
-        description: data.description,
-        skillsRequired: data.skillsRequired,
-        budget: data.budget,
-        duration: data.duration as "short-term" | "long-term" | "ongoing",
-        createdAt: response.data?.createdAt || new Date().toISOString(),
-        category: selectedCategory, // Forcer la catégorie sélectionnée
-        client: response.data?.client || null,
-        status: response.data?.status || "open",
-        applications: response.data?.applications || [],
+        _id: response.post._id,
+        title: response.post.title,
+        description: response.post.description,
+        skillsRequired: response.post.skillsRequired,
+        budget: response.post.budget,
+        duration: response.post.duration,
+        createdAt: response.post.createdAt || new Date().toISOString(),
+        category: selectedCategory,
+        client: response.post.client || null,
+        status: response.post.status || "open",
+        applications: response.post.applications || [],
+        picture: response.post.picture || undefined,
       };
 
-      // Ajouter le post localement avec la bonne catégorie
       addPost(createdPost);
 
       toast.success(response.message || "Offre publiée avec succès !", {
@@ -112,6 +117,9 @@ export const NewProject = () => {
       setSubmitting(false);
     }
   };
+
+  // Debug: Log skillsRequired to ensure it's an array
+  console.log("Current skillsRequired:", skillsRequired);
 
   if (loading) return <Loader />;
 
@@ -205,6 +213,18 @@ export const NewProject = () => {
                 />
               </div>
 
+              {/* Image Upload */}
+              <Controller
+                name="picture"
+                control={control}
+                render={({ field }) => (
+                  <ImageUpload
+                    onChange={(file) => field.onChange(file)}
+                    disabled={submitting}
+                  />
+                )}
+              />
+
               {/* Compétences */}
               <div className="space-y-2">
                 <label className="text-base font-medium flex items-center" style={{ color: "var(--text)" }}>
@@ -222,6 +242,14 @@ export const NewProject = () => {
                     />
                   )}
                 />
+                {/* Display skills as "hgdhd, hdghd, hddbca, az" */}
+                <div className="mt-2">
+                  <p className="text-base" style={{ color: "var(--text)" }}>
+                    {skillsRequired.length > 0
+                      ? skillsRequired.join(", ")
+                      : "Aucune compétence sélectionnée"}
+                  </p>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

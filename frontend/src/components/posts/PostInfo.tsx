@@ -10,6 +10,15 @@ interface PostInfoProps {
   post: PostData;
 }
 
+const PlaceholderImageSVG = () => (
+  <svg width="100%" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="400" height="300" fill="var(--muted)" opacity="0.2" />
+    <text x="50%" y="50%" fontSize="24" fill="var(--muted)" textAnchor="middle" dominantBaseline="middle">
+      Aucune image disponible
+    </text>
+  </svg>
+);
+
 export const PostInfo = ({ post }: PostInfoProps) => {
   return (
     <motion.div
@@ -32,6 +41,23 @@ export const PostInfo = ({ post }: PostInfoProps) => {
             <h3 className="text-lg font-medium" style={{ color: "var(--text)" }}>Description</h3>
             <p className="mt-1" style={{ color: "var(--muted)" }}>{post.description || "Aucune description disponible"}</p>
           </div>
+          {/* Picture Section */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            {post.picture ? (
+              <img
+                src={post.picture}
+                alt={post.title}
+                className="w-full h-auto rounded-lg shadow-md"
+                style={{ maxHeight: "300px", objectFit: "cover" }}
+              />
+            ) : (
+              <PlaceholderImageSVG />
+            )}
+          </motion.div>
           <Separator style={{ backgroundColor: "var(--muted)" }} />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <motion.div whileHover={{ scale: 1.02 }} className="flex items-center gap-3">

@@ -55,7 +55,7 @@ export const formatTimeSince = (createdAt: string): string => {
   const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
   const diffMinutes = Math.floor(diffMs / (1000 * 60));
 
-  if (diffDays > 0) return `${diffDays} jour${diffDays > 1 ? "s" : ""} ago`;
+  if (diffDays > 0) return `${diffDays} jour${diffDays > 1 ? "s" : ""} `;
   if (diffHours > 0) return `${diffHours} heure${diffHours > 1 ? "s" : ""} ago`;
   if (diffMinutes > 0) return `${diffMinutes} minute${diffMinutes > 1 ? "s" : ""} ago`;
   return "Il y a quelques instants";

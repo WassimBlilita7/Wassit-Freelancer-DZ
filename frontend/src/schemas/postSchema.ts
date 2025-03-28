@@ -8,6 +8,7 @@ export const postSchema = z.object({
   budget: z.number().min(1, "Le budget doit être supérieur à 0"),
   duration: z.enum(["short-term", "long-term", "ongoing"], { required_error: "Veuillez sélectionner une durée" }),
   category: z.string().nonempty("Veuillez sélectionner une catégorie"),
+  picture: z.instanceof(File).optional(),
 });
 
 export type PostFormData = z.infer<typeof postSchema>;

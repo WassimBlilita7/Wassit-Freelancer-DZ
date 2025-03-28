@@ -44,7 +44,8 @@ export interface SignupData {
     skillsRequired: string[];
     budget: number;
     duration: string; // "short-term" | "long-term" | "ongoing"
-    category: string; // ID comme string pour l'API
+    category: string; 
+    picture?: File;
   }
   export interface PostData {
     _id: string; 
@@ -72,6 +73,7 @@ export interface SignupData {
     }[]; 
     category?:Category ; 
     profile?: ProfileData;
+    picture? : string;
     __v?: number; 
   }
   

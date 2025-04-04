@@ -12,7 +12,6 @@ export const fetchPostById = async (
   setLoading(true);
   try {
     const fetchedPost = await apiGetPostById(postId);
-    console.log("Raw API Response:", fetchedPost);
     if (!fetchedPost) {
       throw new Error("Post non trouvé dans la réponse de l'API");
     }

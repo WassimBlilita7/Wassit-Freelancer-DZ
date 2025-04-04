@@ -18,10 +18,8 @@ export const useFetchPosts = () => {
       setIsFreelancer(authResponse.userData?.isFreelancer || false);
 
       const fetchedPosts = await getAllPosts();
-      console.log("useFetchPosts - Posts fetched from API:", fetchedPosts);
 
       const fetchedCategories = await fetchCategories();
-      console.log("useFetchPosts - Categories fetched:", fetchedCategories);
       setCategories(fetchedCategories);
 
       const postsWithCategories: PostData[] = fetchedPosts.map((post: any) => {
@@ -35,7 +33,6 @@ export const useFetchPosts = () => {
       });
 
       setPosts(postsWithCategories);
-      console.log("useFetchPosts - Posts with categories:", postsWithCategories);
       setError(null);
     } catch (err: any) {
       console.error("useFetchPosts - Error:", err);
@@ -55,8 +52,6 @@ export const useFetchPosts = () => {
   const addPost = (newPost: PostData) => {
     setPosts((prevPosts) => {
       const updatedPosts = [newPost, ...prevPosts.filter((p) => p._id !== newPost._id)];
-      console.log("useFetchPosts - Post added manually:", newPost);
-      console.log("useFetchPosts - Updated posts:", updatedPosts);
       return updatedPosts;
     });
   };

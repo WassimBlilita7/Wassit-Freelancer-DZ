@@ -17,7 +17,6 @@ export const useProfile = () => {
       try {
         setIsAuthenticated(true);
         const profileResponse = await getProfile();
-        console.log("Profile response:", profileResponse); // Debug
         setProfile(profileResponse.userData?.profile || {});
       } catch (err) {
         console.error("Erreur lors de la récupération du profil:", err);

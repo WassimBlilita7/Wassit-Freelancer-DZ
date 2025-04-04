@@ -91,7 +91,6 @@ export const updateProfile = async (profileData: Partial<PostData["profile"]>): 
 export const getAllPosts = async (): Promise<PostData[]> => {
   try {
     const response = await api.get("/post");
-    console.log("getAllPosts - Response:", response.data);
     if (response.data && Array.isArray(response.data.posts)) {
       return response.data.posts;
     }

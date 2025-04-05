@@ -1,4 +1,3 @@
-// src/hooks/useProfile.ts
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getProfile } from "../api/api";
@@ -7,6 +6,7 @@ import toast from "react-hot-toast";
 
 export const useProfile = () => {
   const [profile, setProfile] = useState<ProfileData>({});
+  const [username, setUsername] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -15,9 +15,10 @@ export const useProfile = () => {
     const fetchProfile = async () => {
       setLoading(true);
       try {
-        setIsAuthenticated(true);
         const profileResponse = await getProfile();
+        setIsAuthenticated(true);
         setProfile(profileResponse.userData?.profile || {});
+        setUsername(profileResponse.userData?.username || "");
       } catch (err) {
         console.error("Erreur lors de la récupération du profil:", err);
         setIsAuthenticated(false);
@@ -30,5 +31,5 @@ export const useProfile = () => {
     fetchProfile();
   }, [navigate]);
 
-  return { profile, loading, isAuthenticated, navigate };
+  return { profile, username, loading, isAuthenticated };
 };

@@ -2,7 +2,7 @@ import { HeroSection } from "../../components/home/HeroSection";
 import { FeaturesSection } from "../../components/home/FeaturesSection";
 import { CallToActionSection } from "../../components/home/CallToActionSection";
 import { StatsSection } from "../../components/home/StatsSection";
-import { InspirationSection } from "../../components/home/InspirationSection"; // Nouvelle importation
+import { InspirationSection } from "../../components/home/InspirationSection";
 import { useHome } from "../../hooks/useHome";
 import { Loader } from "../../components/common/Loader";
 import { motion } from "framer-motion";
@@ -15,7 +15,24 @@ export const Home = () => {
   }
 
   if (!isAuthenticated) {
-    return null;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
+        <p style={{ color: "var(--text)" }}>
+          Veuillez vous connecter pour accéder à cette page.
+        </p>
+      </div>
+    );
+  }
+
+  // Si isFreelancer est undefined, on affiche un message temporaire
+  if (isFreelancer === undefined) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
+        <p style={{ color: "var(--text)" }}>
+          Erreur : Impossible de déterminer votre rôle. Veuillez réessayer.
+        </p>
+      </div>
+    );
   }
 
   return (
@@ -29,7 +46,7 @@ export const Home = () => {
         <HeroSection isFreelancer={isFreelancer} navigate={navigate} />
         <FeaturesSection />
         <StatsSection />
-        <InspirationSection isFreelancer={isFreelancer} /> {/* Nouvelle section ajoutée */}
+        <InspirationSection isFreelancer={isFreelancer} />
         <CallToActionSection />
       </motion.div>
     </div>

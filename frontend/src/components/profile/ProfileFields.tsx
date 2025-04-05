@@ -19,34 +19,34 @@ const profileFieldsConfig: FieldConfig[] = [
     name: "firstName",
     label: "Prénom",
     placeholder: "Entrez votre prénom",
-    icon: <FaUser className="text-[var(--primary)]" />,
+    icon: <FaUser className="text-[var(--profile-header-start)]" />,
     required: true,
   },
   {
     name: "lastName",
     label: "Nom",
     placeholder: "Entrez votre nom",
-    icon: <FaUser className="text-[var(--secondary)]" />,
+    icon: <FaUser className="text-[var(--profile-header-start)]" />,
     required: true,
   },
   {
     name: "bio",
     label: "Bio",
     placeholder: "Décrivez-vous en quelques mots...",
-    icon: <FaEdit className="text-[var(--primary)]" />,
+    icon: <FaEdit className="text-[var(--profile-header-start)]" />,
     type: "textarea",
   },
   {
     name: "companyName",
     label: "Nom de l'entreprise",
     placeholder: "Entrez le nom de votre entreprise",
-    icon: <FaBriefcase className="text-[var(--secondary)]" />,
+    icon: <FaBriefcase className="text-[var(--profile-header-start)]" />,
   },
   {
     name: "webSite",
     label: "Site web",
     placeholder: "Entrez l’URL de votre site",
-    icon: <FaGlobe className="text-[var(--primary)]" />,
+    icon: <FaGlobe className="text-[var(--profile-header-start)]" />,
   },
 ];
 
@@ -81,7 +81,7 @@ export const ProfileFields = ({ form, submitting }: ProfileFieldsProps) => {
                 <textarea
                   {...controllerField}
                   placeholder={field.placeholder}
-                  className={`w-full mt-2 p-3 rounded-lg border-2 ${errors[field.name] ? "border-[var(--error)]" : "border-[var(--muted)]/50"} focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/30 transition-all h-32 resize-none`}
+                  className={`w-full mt-2 p-3 rounded-lg border-2 ${errors[field.name] ? "border-[var(--error)]" : "border-[var(--muted)]/50"} focus:border-[var(--profile-header-start)] focus:ring-2 focus:ring-[var(--profile-header-start)]/30 transition-all h-32 resize-none`}
                   style={{ backgroundColor: theme === "dark" ? "#475569" : "#EFF6FF", color: "var(--text)" }}
                   disabled={submitting}
                 />
@@ -89,7 +89,7 @@ export const ProfileFields = ({ form, submitting }: ProfileFieldsProps) => {
                 <input
                   {...controllerField}
                   placeholder={field.placeholder}
-                  className={`w-full mt-2 p-3 rounded-lg border-2 ${errors[field.name] ? "border-[var(--error)]" : "border-[var(--muted)]/50"} focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/30 transition-all`}
+                  className={`w-full mt-2 p-3 rounded-lg border-2 ${errors[field.name] ? "border-[var(--error)]" : "border-[var(--muted)]/50"} focus:border-[var(--profile-header-start)] focus:ring-2 focus:ring-[var(--profile-header-start)]/30 transition-all`}
                   style={{ backgroundColor: theme === "dark" ? "#475569" : "#EFF6FF", color: "var(--text)" }}
                   disabled={submitting}
                 />

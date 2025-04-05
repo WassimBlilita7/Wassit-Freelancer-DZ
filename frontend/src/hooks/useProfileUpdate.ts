@@ -41,7 +41,7 @@ export const useProfileUpdate = (initialProfile: ProfileData) => {
 
   const resetForm = () => {
     form.reset();
-    toast("Modifications annulées.", { // Remplacement de toast.info par toast
+    toast("Modifications annulées.", { 
       style: {
         background: "#e0f2fe",
         color: "#0369a1",

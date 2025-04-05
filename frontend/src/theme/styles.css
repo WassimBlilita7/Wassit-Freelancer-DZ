@@ -11,9 +11,15 @@
   --error: #EF4444; /* Rouge vif */
   --success: #22C55E; /* Vert clair */
   --accent: #F59E0B; /* Jaune ambre, chaleureux */
+
+  /* Variables spécifiques pour la page Profil */
+  --profile-sidebar-bg: #E2E8F0; /* Bleu-gris doux */
+  --profile-header-start: #2770D1; /* Identique à --primary */
+  --profile-header-end: #60A5FA; /* Bleu clair */
+  --profile-button-save: #2770D1; /* Identique à --primary */
+  --profile-button-cancel: #F59E0B; /* Identique à --accent */
 }
 
-/* Add to :root.dark */
 :root.dark {
   --primary: #C40D6C; /* Magenta vibrant */
   --secondary: #34D399; /* Vert clair */
@@ -26,6 +32,13 @@
   --error-dark: #EF4444; /* Rouge vif */
   --success: #6EE7B7; /* Vert clair */
   --accent: #FBBF24; /* Jaune ambre clair, lumineux */
+
+  /* Variables spécifiques pour la page Profil en mode sombre */
+  --profile-sidebar-bg: #2D3748; /* Gris foncé */
+  --profile-header-start: #C40D6C; /* Identique à --primary */
+  --profile-header-end: #F472B6; /* Magenta clair */
+  --profile-button-save: #C40D6C; /* Identique à --primary */
+  --profile-button-cancel: #FBBF24; /* Identique à --accent */
 }
 
 html,

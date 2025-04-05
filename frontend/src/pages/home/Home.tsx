@@ -1,8 +1,8 @@
-// src/pages/home/Home.tsx
 import { HeroSection } from "../../components/home/HeroSection";
 import { FeaturesSection } from "../../components/home/FeaturesSection";
 import { CallToActionSection } from "../../components/home/CallToActionSection";
-import { StatsSection } from "../../components/home/StatsSection"; // Nouvelle section
+import { StatsSection } from "../../components/home/StatsSection";
+import { InspirationSection } from "../../components/home/InspirationSection"; // Nouvelle importation
 import { useHome } from "../../hooks/useHome";
 import { Loader } from "../../components/common/Loader";
 import { motion } from "framer-motion";
@@ -28,7 +28,8 @@ export const Home = () => {
       >
         <HeroSection isFreelancer={isFreelancer} navigate={navigate} />
         <FeaturesSection />
-        <StatsSection /> {/* Nouvelle section ajoutée */}
+        <StatsSection />
+        <InspirationSection isFreelancer={isFreelancer} /> {/* Nouvelle section ajoutée */}
         <CallToActionSection />
       </motion.div>
     </div>

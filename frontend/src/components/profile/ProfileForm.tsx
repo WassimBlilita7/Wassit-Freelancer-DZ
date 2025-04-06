@@ -106,10 +106,10 @@ export const ProfileForm = ({ initialProfile, username }: ProfileFormProps) => {
             }}
           >
             <CardTitle className="text-3xl font-bold">
-              Gérer mon profil
+            Devenez inoubliable avec un profil au top 🚀
             </CardTitle>
             <p className="mt-2 text-sm opacity-90">
-              Mettez à jour vos informations pour un profil professionnel.
+            Racontez votre histoire, montrez vos compétences et attirez les clients qui vous correspondent
             </p>
           </CardHeader>
           <CardContent className="p-6">

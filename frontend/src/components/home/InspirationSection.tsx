@@ -21,7 +21,7 @@ export const InspirationSection = ({ isFreelancer }: InspirationSectionProps) =>
         className="text-3xl font-bold text-center mb-12"
         style={{ color: "var(--text)" }}
       >
-        Inspirez-vous et passez à l’action
+        Boostez vos ambitions dès aujourd’hui 🚄
       </motion.h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {inspirationItems.map((item: InspirationItem, index: number) => (

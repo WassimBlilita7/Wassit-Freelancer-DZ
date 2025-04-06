@@ -12,27 +12,27 @@ export const FeaturesSection = () => {
     {
       icon: <FaRocket className="text-[var(--primary)] text-4xl" />,
       image: whyDzFreelancerImg,
-      title: "Pourquoi DZFreelancer ?",
-      description: "Une plateforme rapide et intuitive pour connecter les talents aux projets, conçue pour simplifier votre expérience.",
+      title: "Une fusée pour vos ambitions",
+      description: "Fini les complications : connectez-vous en un éclair aux projets qui vous font décoller",
     },
     {
       icon: <FaUsers className="text-[var(--secondary)] text-4xl" />,
       image: bestOffersImg,
-      title: "Écoutez les meilleures offres",
-      description: "Accédez à une communauté active de freelancers et de clients, avec des opportunités adaptées à vos besoins.",
+      title: "Des opportunités qui parlent fort",
+      description: "Plongez dans un vivier de talents et de missions taillées pour vos rêves",
     },
     {
       icon: <FaStar className="text-[var(--primary)] text-4xl" />,
       image: qualityImg,
-      title: "Qualité garantie",
-      description: "Des profils vérifiés et des projets bien définis pour assurer des résultats exceptionnels à chaque collaboration.",
+      title: "L’excellence à chaque clic",
+      description: "Collaborez en toute confiance avec des pros triés sur le volet pour des résultats qui bluffent",
     },
   ];
 
   return (
     <section className="py-16">
       <h2 className="text-3xl font-bold text-center mb-12" style={{ color: "var(--text)" }}>
-        Ce qui nous distingue
+      Votre succès commence avec ces atouts !
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {features.map((feature, index) => (

@@ -65,7 +65,7 @@ export const StatsSection = () => {
   return (
     <section className="py-16">
       <h2 className="text-3xl font-bold text-center mb-12" style={{ color: "var(--text)" }}>
-        Pourquoi choisir DZFreelancer ? Les chiffres parlent !
+      Des chiffres qui prouvent notre puissance !
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
         <motion.div

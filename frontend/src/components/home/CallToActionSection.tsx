@@ -20,10 +20,10 @@ export const CallToActionSection = () => {
         className="md:w-1/2 space-y-6"
       >
         <h2 className="text-4xl font-bold" style={{ color: "var(--text)" }}>
-          Make it real with DZFreelancer
+        Faites de vos idées une réalité éclatante !
         </h2>
         <p className="text-lg" style={{ color: "var(--muted)" }}>
-          Transformez vos idées en réalité avec une communauté de talents prêts à donner vie à vos projets. Commencez dès aujourd’hui !
+        Vos projets méritent les meilleurs : rejoignez une communauté vibrante et passez à l’action maintenant !
         </p>
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
           <Button

@@ -26,11 +26,11 @@ export const HeroSection = ({ isFreelancer, navigate }: HeroSectionProps) => {
       >
         <h1 className="text-5xl font-bold leading-tight" style={{ color: "var(--text)" }}>
           {isFreelancer
-            ? "Trouvez les meilleures opportunités avec DZFreelancer"
-            : "Engagez les meilleurs talents pour vos projets"}
+            ? "Lancez votre carrière freelance au sommet !"
+            : "Transformez vos rêves en succès avec les pros !"}
         </h1>
         <p className="text-lg" style={{ color: "var(--muted)" }}>
-          DZFreelancer connecte les freelancers talentueux aux entreprises ambitieuses. Que vous soyez à la recherche d’un projet ou d’un expert, nous sommes là pour vous.
+        Des missions qui boostent votre talent, des clients qui valorisent vos idées : votre prochaine grande opportunité vous attend ici 🩷
         </p>
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
           <Button

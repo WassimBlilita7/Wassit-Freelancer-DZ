@@ -35,7 +35,7 @@ export const ApplyToPostForm = ({ postId, isFreelancer }: ApplyToPostFormProps) 
     return (
       <div className="bg-[var(--card)] rounded-xl shadow-lg p-6 text-center">
         <p className="text-[var(--muted)] text-lg">
-          Seuls les freelances peuvent postuler à cette offre.
+          Ops ! Seuls les freelances peuvent postuler à cette offre 😪
         </p>
       </div>
     );

@@ -15,10 +15,10 @@ import { AllPosts } from "./pages/AllPosts";
 import { ToastProvider } from "./components/common/ToastProvider";
 import { ThemeProvider } from "./context/ThemeContext";
 import { SearchResults } from "./pages/SearchResults";
-import CategoryPage from "./pages/CategoryPage"; // Pas besoin d'importer comme { CategoryPage }
+import CategoryPage from "./pages/CategoryPage";
 import { Footer } from "./components/layout/Footer";
 import { PostProvider } from "./context/PostContext";
-import PostDetails from "./pages/PostDetail";
+import PostDetails from "./pages/PostDetail"; // Correctement importé
 
 function AppContent() {
   const location = useLocation();
@@ -45,9 +45,9 @@ function AppContent() {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/all-posts" element={<AllPosts />} />
-          <Route path="/post/:postId" element={<PostDetails />} /> {/* New route */}
+          <Route path="/post/:postId" element={<PostDetails />} />
           <Route path="/search-results" element={<SearchResults />} />
-          <Route path="/category/:categoryId" element={<CategoryPage />} /> {/* Changé slug en categoryId */}
+          <Route path="/category/:categoryId" element={<CategoryPage />} />
           <Route path="*" element={<div>404 - Page non trouvée</div>} />
         </Routes>
       </main>
@@ -61,7 +61,7 @@ function App() {
     <Router>
       <PostProvider>
         <ThemeProvider>
-          <ToastProvider /> {/* ToastProvider doit être un composant, pas un contexte */}
+          <ToastProvider />
           <AppContent />
         </ThemeProvider>
       </PostProvider>

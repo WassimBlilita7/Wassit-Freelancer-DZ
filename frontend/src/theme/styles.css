@@ -1,23 +1,24 @@
+/* src/index.css ou src/styles/global.css */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
 :root, :root.light {
-  --primary: #2770D1; /* Bleu vif */
-  --secondary: #10B981; /* Vert émeraude */
-  --background: #F1F5F9; /* Gris bleu pâle */
-  --card: #FFFFFF; /* Blanc pur */
-  --text: #000; /* Noir */
-  --header-text: #000; /* Noir */
-  --muted: #64748B; /* Gris bleuté */
-  --error: #EF4444; /* Rouge vif */
-  --success: #22C55E; /* Vert clair */
-  --accent: #F59E0B; /* Jaune ambre, chaleureux */
+  --primary: #3B82F6; /* Bleu vif et moderne (plus lumineux que #2770D1) */
+  --secondary: #14B8A6; /* Teal vibrant (plus punchy que #10B981) */
+  --background: #E5E7EB; /* Gris clair avec une touche de chaleur (moins fade que #F1F5F9) */
+  --card: #F9FAFB; /* Gris très clair (plus doux que #FFFFFF) */
+  --text: #1F2937; /* Gris anthracite (plus riche que #000) */
+  --header-text: #111827; /* Gris foncé profond (plus élégant que #000) */
+  --muted: #6B7280; /* Gris neutre moderne (légèrement plus foncé que #64748B) */
+  --error: #F43F5E; /* Rose-rouge vif (plus audacieux que #EF4444) */
+  --success: #34D399; /* Vert teal éclatant (plus vibrant que #22C55E) */
+  --accent: #FBBF24; /* Jaune ambre clair (emprunté au dark mode pour plus de punch) */
 
   /* Variables spécifiques pour la page Profil */
-  --profile-sidebar-bg: #E2E8F0; /* Bleu-gris doux */
-  --profile-header-start: #2770D1; /* Identique à --primary */
-  --profile-header-end: #60A5FA; /* Bleu clair */
-  --profile-button-save: #2770D1; /* Identique à --primary */
-  --profile-button-cancel: #F59E0B; /* Identique à --accent */
+  --profile-sidebar-bg: #D1D5DB; /* Gris clair moderne (plus lumineux que #E2E8F0) */
+  --profile-header-start: #3B82F6; /* Identique à --primary */
+  --profile-header-end: #93C5FD; /* Bleu ciel clair (plus vibrant que #60A5FA) */
+  --profile-button-save: #3B82F6; /* Identique à --primary */
+  --profile-button-cancel: #FBBF24; /* Identique à --accent */
 }
 
 :root.dark {

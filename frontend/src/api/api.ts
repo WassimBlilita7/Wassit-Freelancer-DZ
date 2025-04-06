@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ApiResponse, Category, PostData, ProfileData } from "@/types"; // Ajout de ProfileData
+import { ApiResponse, Category, PostData, ProfileData , ApplyToPostData} from "@/types"; // Ajout de ProfileData
 import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
@@ -137,5 +137,10 @@ export const updateProfilePicture = async (file: File): Promise<ApiResponse> => 
   const response = await api.put("/auth/profile/picture", formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
+  return response.data;
+};
+
+export const applyToPost = async (postId: string, data: ApplyToPostData): Promise<ApiResponse> => {
+  const response = await api.post(`/post/${postId}/apply`, data);
   return response.data;
 };

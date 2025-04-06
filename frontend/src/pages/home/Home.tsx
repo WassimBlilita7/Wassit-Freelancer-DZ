@@ -1,3 +1,4 @@
+// src/pages/home/Home.tsx
 import { HeroSection } from "../../components/home/HeroSection";
 import { FeaturesSection } from "../../components/home/FeaturesSection";
 import { CallToActionSection } from "../../components/home/CallToActionSection";
@@ -24,7 +25,6 @@ export const Home = () => {
     );
   }
 
-  // Si isFreelancer est undefined, on affiche un message temporaire
   if (isFreelancer === undefined) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">

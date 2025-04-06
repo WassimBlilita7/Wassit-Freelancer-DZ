@@ -86,3 +86,9 @@ export interface Category {
   createdAt?: string;
   slug: string;
 }
+
+export interface ApplyToPostData {
+  cv: string;
+  coverLetter: string;
+  bidAmount: number;
+}

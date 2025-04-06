@@ -1,50 +1,53 @@
-// src/pages/PostDetails.tsx
-import { useState, useEffect } from "react";
+// src/pages/PostDetail.tsx
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { PostData } from "../types";
-import { fetchPostById } from "../utils/postUtils";
-import Lottie from "lottie-react";
-import loadingAnimation from "../assets/lottie/loading.json";
-import { PostHero } from "../components/posts/PostHero";
-import { PostInfo } from "../components/posts/PostInfo";
-import { PostSidebar } from "../components/posts/PostSidebar";
 import { motion } from "framer-motion";
+import Lottie from "lottie-react";
+import loadingAnimation from "../assets/lottie/loading.json"; // À ajouter
+import notFoundAnimation from "../assets/lottie/empty.json"; // À ajouter
+import { getPostById } from "../api/api";
+import { PostData } from "../types";
+import { useHome } from "../hooks/useHome";
+import { PostDetailHeader } from "../components/posts/PostDetailHeader";
+import { PostDetailInfo } from "../components/posts/PostDetailInfo";
+import { PostDetailImage } from "../components/posts/PostDetailImage";
+import { PostDetailApplications } from "../components/posts/PostDetailApplications";
+import { ApplyToPostForm } from "../components/posts/ApplyToPostForm";
 
 const PostDetails = () => {
   const { postId } = useParams<{ postId: string }>();
   const [post, setPost] = useState<PostData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { isFreelancer } = useHome();
 
   useEffect(() => {
-    if (!postId) {
-      setError("Aucun ID de post fourni");
-      setLoading(false);
-      return;
-    }
-    fetchPostById(postId, setPost, setLoading, setError);
+    const fetchPost = async () => {
+      if (!postId) return;
+      try {
+        const data = await getPostById(postId);
+        setPost(data);
+      } catch (err) {
+        console.error("Erreur lors du chargement de l’offre:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPost();
   }, [postId]);
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "var(--background)" }}>
-        <Lottie animationData={loadingAnimation} loop style={{ width: 120, height: 120 }} />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "var(--background)", color: "var(--text)" }}>
-        <p>Erreur: {error}</p>
+      <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
+        <Lottie animationData={loadingAnimation} style={{ width: 200, height: 200 }} />
       </div>
     );
   }
 
   if (!post) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "var(--background)", color: "var(--text)" }}>
-        Post non trouvé
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[var(--background)]">
+        <Lottie animationData={notFoundAnimation} style={{ width: 300, height: 300 }} />
+        <p className="text-2xl font-extrabold text-[var(--text)] tracking-wider">Offre introuvable</p>
       </div>
     );
   }
@@ -53,15 +56,27 @@ const PostDetails = () => {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      className="min-h-screen py-8"
-      style={{ backgroundColor: "var(--background)" }}
+      transition={{ duration: 1 }}
+      className="min-h-screen bg-[var(--background)] py-16"
     >
-      <div className="container mx-auto px-4">
-        <PostHero post={post} />
-        <div className="mt-8 flex flex-col lg:flex-row gap-8">
-          <PostInfo post={post} />
-          <PostSidebar post={post} />
+      <div className="container mx-auto max-w-6xl px-6">
+        <PostDetailHeader title={post.title} />
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+          <div className="lg:col-span-4 space-y-8">
+            <PostDetailInfo post={post} />
+            {post.picture && <PostDetailImage picture={post.picture} title={post.title} />}
+            <PostDetailApplications applications={post.applications} />
+          </div>
+          <div className="lg:col-span-1">
+            <motion.div
+              initial={{ y: 50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="sticky top-6"
+            >
+              <ApplyToPostForm postId={postId!} isFreelancer={isFreelancer || false} />
+            </motion.div>
+          </div>
         </div>
       </div>
     </motion.div>

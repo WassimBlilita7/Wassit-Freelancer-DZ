@@ -52,6 +52,7 @@ const userSchema = new mongoose.Schema({
         }],
         companyName: { type: String },
         webSite: { type: String },
+        profilePicture: { type: String, default: "" },
     },
     notifications: [{ 
         type: mongoose.Schema.Types.ObjectId,

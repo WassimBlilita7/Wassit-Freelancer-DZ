@@ -125,3 +125,13 @@ export const fetchCategoryById = async (id: string): Promise<Category> => {
   const response = await api.get(`/category/${id}`);
   return response.data;
 };
+
+export const updateProfilePicture = (file: File) => {
+  const formData = new FormData();
+  formData.append("profilePicture", file); // Doit correspondre à .single("profilePicture")
+  console.log("FormData envoyé :", formData.get("profilePicture")); // Log pour débogage
+  return axios.put(`${API_URL}/auth/profile/picture`, formData, {
+    withCredentials: true,
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+};

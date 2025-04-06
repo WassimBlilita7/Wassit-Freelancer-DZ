@@ -225,7 +225,9 @@ export async function resetPassword(req, res) {
 
 export async function getProfile(req, res) {
   try {
-    const user = await User.findById(req.user._id).select("-password -otp -otpExpires -resetOTP -resetOTPExpires");
+    const user = await User.findById(req.user._id).select(
+      "-password -otp -otpExpires -resetOTP -resetOTPExpires"
+    );
     if (!user) {
       return res.status(404).json({ message: "Utilisateur non trouvé" });
     }
@@ -242,7 +244,7 @@ export async function getProfile(req, res) {
   } catch (error) {
     res.status(500).json({ message: "Erreur serveur", error: error.message });
   }
-};
+}
 
 export async function updateProfile(req, res) {
   try {
@@ -253,7 +255,6 @@ export async function updateProfile(req, res) {
       return res.status(404).json({ message: "Utilisateur non trouvé" });
     }
 
-    // Mettre à jour uniquement les champs fournis
     if (firstName !== undefined) user.profile.firstName = firstName;
     if (lastName !== undefined) user.profile.lastName = lastName;
     if (bio !== undefined) user.profile.bio = bio;
@@ -276,8 +277,39 @@ export async function updateProfile(req, res) {
   } catch (error) {
     res.status(500).json({ message: "Erreur serveur", error: error.message });
   }
-};
+}
 
+export async function updateProfilePicture(req, res) {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ message: "Aucune photo fournie" });
+    }
+
+    console.log("Fichier reçu :", req.file); // Ajout pour débogage
+
+    user.profile.profilePicture = req.file.path; // URL Cloudinary
+    await user.save();
+
+    res.status(200).json({
+      message: "Photo de profil mise à jour avec succès",
+      userData: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        isFreelancer: user.isFreelancer,
+        profile: user.profile,
+      },
+    });
+  } catch (error) {
+    console.error("Erreur dans updateProfilePicture :", error); // Log détaillé
+    res.status(500).json({ message: "Erreur lors de l'upload de la photo", error: error.message });
+  }
+}
 export async function getProfileByUsername(req, res) {
   try {
     const { username } = req.params;

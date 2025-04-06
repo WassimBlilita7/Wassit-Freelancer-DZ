@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ApiResponse, Category, PostData } from "@/types";
+import { ApiResponse, Category, PostData, ProfileData } from "@/types"; // Ajout de ProfileData
 import axios from "axios";
 
-const API_URL = import.meta.env.VITE_API_URL ||   "http://localhost:5000/api/v1";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
 
 const api = axios.create({
   baseURL: API_URL,
@@ -39,7 +39,7 @@ export interface LoginData {
 
 export const loginUser = async (data: LoginData) => {
   const response = await api.post("/auth/login", data);
-  return response.data; 
+  return response.data;
 };
 
 export const logoutUser = async () => {
@@ -73,7 +73,11 @@ export const forgotPassword = async (email: string): Promise<ApiResponse> => {
   return response.data;
 };
 
-export const resetPassword = async (data: { email: string; resetOTP: string; newPassword: string }): Promise<ApiResponse> => {
+export const resetPassword = async (data: {
+  email: string;
+  resetOTP: string;
+  newPassword: string;
+}): Promise<ApiResponse> => {
   const response = await api.post("/auth/reset-password", data);
   return response.data;
 };
@@ -83,7 +87,7 @@ export const getProfile = async (): Promise<ApiResponse> => {
   return response.data;
 };
 
-export const updateProfile = async (profileData: Partial<PostData["profile"]>): Promise<ApiResponse> => {
+export const updateProfile = async (profileData: Partial<ProfileData>): Promise<ApiResponse> => {
   const response = await api.put("/auth/profile", profileData);
   return response.data;
 };
@@ -117,7 +121,7 @@ export const deletePost = async (postId: string): Promise<ApiResponse> => {
 };
 
 export const searchPosts = async (data: { title: string }) => {
-  const response = await api.post('/post/search', data);
+  const response = await api.post("/post/search", data);
   return response.data;
 };
 
@@ -126,12 +130,12 @@ export const fetchCategoryById = async (id: string): Promise<Category> => {
   return response.data;
 };
 
-export const updateProfilePicture = (file: File) => {
+export const updateProfilePicture = async (file: File): Promise<ApiResponse> => {
   const formData = new FormData();
-  formData.append("profilePicture", file); // Doit correspondre à .single("profilePicture")
-  console.log("FormData envoyé :", formData.get("profilePicture")); // Log pour débogage
-  return axios.put(`${API_URL}/auth/profile/picture`, formData, {
-    withCredentials: true,
+  formData.append("profilePicture", file);
+  console.log("FormData envoyé :", formData.get("profilePicture"));
+  const response = await api.put("/auth/profile/picture", formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
+  return response.data;
 };

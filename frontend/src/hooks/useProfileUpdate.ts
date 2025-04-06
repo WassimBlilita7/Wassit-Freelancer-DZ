@@ -3,7 +3,7 @@ import { useForm, UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { profileSchema, ProfileFormData } from "../schemas/profileSchema";
 import { updateProfile, updateProfilePicture } from "../api/api";
-import { ProfileData } from "../types";
+import { ProfileData, ApiResponse } from "../types";
 
 export type AlertType = "success" | "error" | "info" | null;
 
@@ -26,17 +26,20 @@ export const useProfileUpdate = (initialProfile: ProfileData) => {
   const onSubmit = async (data: ProfileFormData) => {
     setSubmitting(true);
     try {
-      const response = await updateProfile(data);
+      const response: ApiResponse = await updateProfile(data);
       form.reset({
-        firstName: response.data.userData.profile.firstName || "",
-        lastName: response.data.userData.profile.lastName || "",
-        bio: response.data.userData.profile.bio || "",
-        companyName: response.data.userData.profile.companyName || "",
-        webSite: response.data.userData.profile.webSite || "",
+        firstName: response.userData?.profile?.firstName || "",
+        lastName: response.userData?.profile?.lastName || "",
+        bio: response.userData?.profile?.bio || "",
+        companyName: response.userData?.profile?.companyName || "",
+        webSite: response.userData?.profile?.webSite || "",
       });
-      setAlert({ type: "success", message: response.data.message });
+      setAlert({ type: "success", message: response.message });
     } catch (err: any) {
-      setAlert({ type: "error", message: err.response?.data?.message || "Erreur lors de la mise à jour" });
+      setAlert({
+        type: "error",
+        message: err.response?.data?.message || "Erreur lors de la mise à jour",
+      });
     } finally {
       setSubmitting(false);
       setTimeout(() => setAlert(null), 5000);
@@ -52,11 +55,14 @@ export const useProfileUpdate = (initialProfile: ProfileData) => {
   const handlePictureUpload = async (file: File) => {
     setSubmitting(true);
     try {
-      const response = await updateProfilePicture(file);
-      setProfilePicture(response.data.userData.profile.profilePicture);
-      setAlert({ type: "success", message: response.data.message });
+      const response: ApiResponse = await updateProfilePicture(file);
+      setProfilePicture(response.userData?.profile?.profilePicture || "");
+      setAlert({ type: "success", message: response.message });
     } catch (err: any) {
-      setAlert({ type: "error", message: err.response?.data?.message || "Erreur lors de l’upload" });
+      setAlert({
+        type: "error",
+        message: err.response?.data?.message || "Erreur lors de l’upload",
+      });
     } finally {
       setSubmitting(false);
       setTimeout(() => setAlert(null), 5000);

@@ -323,7 +323,7 @@ export async function getProfileByUsername(req, res) {
       return res.status(404).json({ message: "Utilisateur non trouvé" });
     }
 
-    // Construire l'objet userData
+    // Construire l'objet userData avec l'URL de la photo de profil
     const userData = {
       id: user._id.toString(),
       username: user.username,
@@ -333,13 +333,18 @@ export async function getProfileByUsername(req, res) {
         firstName: user.profile?.firstName || "",
         lastName: user.profile?.lastName || "",
         bio: user.profile?.bio || "",
-        skills: user.profile?.skills || [], // Si peuplé, ce sera un tableau d'objets avec 'name'
+        skills: user.profile?.skills || [],
         portfolio: user.profile?.portfolio || [],
         companyName: user.profile?.companyName || "",
         webSite: user.profile?.webSite || "",
         offers: user.profile?.offers || [],
+        profilePicture: user.profile?.profilePicture || "", // Inclure explicitement l'URL de la photo
       },
     };
+
+    if (userData.profile.profilePicture && !userData.profile.profilePicture.startsWith("http")) {
+      userData.profile.profilePicture = `http://localhost:5000/${userData.profile.profilePicture}`;
+    }
 
     res.status(200).json({
       message: "Profil récupéré avec succès",

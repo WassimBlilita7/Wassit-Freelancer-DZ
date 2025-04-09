@@ -144,3 +144,8 @@ export const applyToPost = async (postId: string, data: ApplyToPostData): Promis
   const response = await api.post(`/post/${postId}/apply`, data);
   return response.data;
 };
+
+export const getProfileByUsername = async (username: string) => {
+  const response = await axios.get(`${API_URL}/auth/profile/${username}`);
+  return response.data;
+};

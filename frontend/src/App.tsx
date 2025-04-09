@@ -19,6 +19,7 @@ import CategoryPage from "./pages/CategoryPage";
 import { Footer } from "./components/layout/Footer";
 import { PostProvider } from "./context/PostContext";
 import PostDetails from "./pages/PostDetail"; // Correctement importé
+import { ProfilePage } from "./pages/ProfilePage";
 
 function AppContent() {
   const location = useLocation();
@@ -48,6 +49,7 @@ function AppContent() {
           <Route path="/post/:postId" element={<PostDetails />} />
           <Route path="/search-results" element={<SearchResults />} />
           <Route path="/category/:categoryId" element={<CategoryPage />} />
+          <Route path="/profile/:username" element={<ProfilePage />} /> {/* Nouvelle route */}
           <Route path="*" element={<div>404 - Page non trouvée</div>} />
         </Routes>
       </main>

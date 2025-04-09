@@ -41,7 +41,6 @@ export const PostInfo = ({ post }: PostInfoProps) => {
             <h3 className="text-lg font-medium" style={{ color: "var(--text)" }}>Description</h3>
             <p className="mt-1" style={{ color: "var(--muted)" }}>{post.description || "Aucune description disponible"}</p>
           </div>
-          {/* Picture Section */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -74,7 +73,21 @@ export const PostInfo = ({ post }: PostInfoProps) => {
               <div>
                 <p className="text-sm" style={{ color: "var(--muted)" }}>Durée</p>
                 <p className="text-lg font-medium" style={{ color: "var(--text)" }}>
-                  {post.duration === "short-term" ? "Court terme" : post.duration === "long-term" ? "Long terme" : post.duration || "En continu"}
+                  {post.duration === "1j"
+                    ? "1 jour"
+                    : post.duration === "7j"
+                    ? "7 jours"
+                    : post.duration === "15j"
+                    ? "15 jours"
+                    : post.duration === "1mois"
+                    ? "1 mois"
+                    : post.duration === "3mois"
+                    ? "3 mois"
+                    : post.duration === "6mois"
+                    ? "6 mois"
+                    : post.duration === "+1an"
+                    ? "+1 an"
+                    : "Non spécifiée"}
                 </p>
               </div>
             </motion.div>

@@ -43,7 +43,6 @@ export const NewProject = () => {
     },
   });
 
-  // Watch skillsRequired for real-time updates
   const skillsRequired = watch("skillsRequired");
 
   useEffect(() => {
@@ -117,9 +116,6 @@ export const NewProject = () => {
       setSubmitting(false);
     }
   };
-
-  // Debug: Log skillsRequired to ensure it's an array
-  console.log("Current skillsRequired:", skillsRequired);
 
   if (loading) return <Loader />;
 
@@ -242,7 +238,6 @@ export const NewProject = () => {
                     />
                   )}
                 />
-                {/* Display skills as "hgdhd, hdghd, hddbca, az" */}
                 <div className="mt-2">
                   <p className="text-base" style={{ color: "var(--text)" }}>
                     {skillsRequired.length > 0
@@ -271,9 +266,13 @@ export const NewProject = () => {
                         onChange={(e) => { field.onChange(e); trigger("duration"); }}
                       >
                         <option value="">Sélectionnez une durée</option>
-                        <option value="short-term">Court terme</option>
-                        <option value="long-term">Long terme</option>
-                        <option value="ongoing">En continu</option>
+                        <option value="1j">1 jour</option>
+                        <option value="7j">7 jours</option>
+                        <option value="15j">15 jours</option>
+                        <option value="1mois">1 mois</option>
+                        <option value="3mois">3 mois</option>
+                        <option value="6mois">6 mois</option>
+                        <option value="+1an">+1 an</option>
                       </select>
                     )}
                   />

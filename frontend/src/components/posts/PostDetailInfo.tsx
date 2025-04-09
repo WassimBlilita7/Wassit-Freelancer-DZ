@@ -20,27 +20,35 @@ export const PostDetailInfo = ({ post }: PostDetailInfoProps) => {
       <p className="text-lg text-[var(--muted)] leading-relaxed mb-8">{post.description}</p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="flex items-start space-x-4">
-          <FaMoneyBillWave style={{ color: "var(--success)" }} className="text-3xl" /> {/* Vert */}
+          <FaMoneyBillWave style={{ color: "var(--success)" }} className="text-3xl" />
           <div>
             <p className="text-xl font-semibold text-[var(--text)]">Budget</p>
             <p className="text-2xl text-[var(--text)]">{post.budget.toLocaleString()} DA</p>
           </div>
         </div>
         <div className="flex items-start space-x-4">
-          <FaClock style={{ color: "var(--secondary)" }} className="text-3xl" /> {/* Teal */}
+          <FaClock style={{ color: "var(--secondary)" }} className="text-3xl" />
           <div>
             <p className="text-xl font-semibold text-[var(--text)]">Durée</p>
             <p className="text-2xl text-[var(--text)]">
-              {post.duration === "short-term"
-                ? "Court terme"
-                : post.duration === "long-term"
-                ? "Long terme"
-                : "En continu"}
+              {post.duration === "1j"
+                ? "1 jour"
+                : post.duration === "7j"
+                ? "7 jours"
+                : post.duration === "15j"
+                ? "15 jours"
+                : post.duration === "1mois"
+                ? "1 mois"
+                : post.duration === "3mois"
+                ? "3 mois"
+                : post.duration === "6mois"
+                ? "6 mois"
+                : "+1 an"}
             </p>
           </div>
         </div>
         <div className="flex items-start space-x-4 md:col-span-2">
-          <FaTags style={{ color: "var(--accent)" }} className="text-3xl" /> {/* Jaune */}
+          <FaTags style={{ color: "var(--accent)" }} className="text-3xl" />
           <div>
             <p className="text-xl font-semibold text-[var(--text)]">Compétences</p>
             <div className="flex flex-wrap gap-3 mt-2">
@@ -56,14 +64,14 @@ export const PostDetailInfo = ({ post }: PostDetailInfoProps) => {
           </div>
         </div>
         <div className="flex items-start space-x-4">
-          <FaFolderOpen style={{ color: "var(--primary)" }} className="text-3xl" /> {/* Bleu/Magenta */}
+          <FaFolderOpen style={{ color: "var(--primary)" }} className="text-3xl" />
           <div>
             <p className="text-xl font-semibold text-[var(--text)]">Catégorie</p>
             <p className="text-2xl text-[var(--text)]">{post.category?.name || "Non spécifiée"}</p>
           </div>
         </div>
         <div className="flex items-start space-x-4">
-          <FaClock style={{ color: "var(--error)" }} className="text-3xl" /> {/* Rose/Rouge */}
+          <FaClock style={{ color: "var(--error)" }} className="text-3xl" />
           <div>
             <p className="text-xl font-semibold text-[var(--text)]">Publié</p>
             <p className="text-2xl text-[var(--text)]">{timeAgo(post.createdAt)}</p>

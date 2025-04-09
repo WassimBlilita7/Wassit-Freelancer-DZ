@@ -52,7 +52,6 @@ export const PostCard = ({ post, isFreelancer, onEdit, onDelete }: PostCardProps
   const navigate = useNavigate();
 
   const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    // Prevent navigation if clicking an interactive element
     const target = e.target as HTMLElement;
     if (target.closest("button") || target.tagName === "BUTTON") return;
 
@@ -70,11 +69,10 @@ export const PostCard = ({ post, isFreelancer, onEdit, onDelete }: PostCardProps
       whileHover={{ y: -5 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
       className="bg-[var(--card)] rounded-xl shadow-lg overflow-hidden border border-[var(--muted)]/20 hover:shadow-xl transition-all duration-300 w-full max-w-md cursor-pointer relative"
-      onClick={handleCardClick} // Direct onClick on the card
+      onClick={handleCardClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Removed separate clickable div to simplify */}
       <div className="relative h-2 bg-gradient-to-r from-[var(--primary)] to-[var(--secondary)]" />
       <div className="p-6 relative z-10">
         <div className="flex justify-between items-start mb-4">
@@ -97,7 +95,7 @@ export const PostCard = ({ post, isFreelancer, onEdit, onDelete }: PostCardProps
                         variant="ghost"
                         size="icon"
                         onClick={(e) => {
-                          e.stopPropagation(); // Ensure this stops bubbling
+                          e.stopPropagation();
                           onEdit(post);
                         }}
                         className="text-[var(--muted)] hover:text-[var(--primary)]"
@@ -122,7 +120,7 @@ export const PostCard = ({ post, isFreelancer, onEdit, onDelete }: PostCardProps
                       variant="ghost"
                       size="icon"
                       onClick={(e) => {
-                        e.stopPropagation(); // Ensure this stops bubbling
+                        e.stopPropagation();
                         handleDeletePost(post._id, onDelete, setIsDeleting);
                       }}
                       className="text-[var(--muted)] hover:text-[var(--error)]"
@@ -166,7 +164,19 @@ export const PostCard = ({ post, isFreelancer, onEdit, onDelete }: PostCardProps
             <div>
               <p className="text-xs text-[var(--muted)]">Durée</p>
               <p className="font-medium text-[var(--text)]">
-                {post.duration === "short-term" ? "Court terme" : post.duration === "long-term" ? "Long terme" : "En continu"}
+                {post.duration === "1j"
+                  ? "1 jour"
+                  : post.duration === "7j"
+                  ? "7 jours"
+                  : post.duration === "15j"
+                  ? "15 jours"
+                  : post.duration === "1mois"
+                  ? "1 mois"
+                  : post.duration === "3mois"
+                  ? "3 mois"
+                  : post.duration === "6mois"
+                  ? "6 mois"
+                  : "+1 an"}
               </p>
             </div>
           </div>

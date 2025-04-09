@@ -22,7 +22,7 @@ const postSchema = new mongoose.Schema({
     duration: {
         type: String,
         required: true,
-        enum: ['short-term', 'long-term', 'ongoing']
+        enum: ['1j', '7j', '15j', '1mois', '3mois', '6mois', '+1an']
     },
     client: {
         type: mongoose.Schema.Types.ObjectId,

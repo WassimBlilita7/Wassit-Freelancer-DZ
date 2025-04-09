@@ -44,7 +44,7 @@ export interface CreatePostData {
   description: string;
   skillsRequired: string[];
   budget: number;
-  duration: string; // "short-term" | "long-term" | "ongoing"
+  duration: string; 
   category: string;
   picture?: File;
 }
@@ -55,7 +55,7 @@ export interface PostData {
   description: string;
   skillsRequired: string[];
   budget: number;
-  duration: "short-term" | "long-term" | "ongoing";
+  duration: '1j' | '7j' | '15j' | '1mois' | '3mois' | '6mois' | '+1an';
   client: {
     _id: string;
     username: string;

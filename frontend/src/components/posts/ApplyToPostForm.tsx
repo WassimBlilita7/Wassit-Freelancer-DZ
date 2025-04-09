@@ -47,7 +47,7 @@ export const ApplyToPostForm = ({ postId, isFreelancer }: ApplyToPostFormProps) 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div>
           <label htmlFor="cv" className="block text-sm font-medium text-[var(--text)] mb-2">
-            Lien vers votre CV
+            Lien vers votre Portfolio
           </label>
           <input
             id="cv"
@@ -96,7 +96,7 @@ export const ApplyToPostForm = ({ postId, isFreelancer }: ApplyToPostFormProps) 
           disabled={loading}
           className="w-full bg-[var(--primary)] text-[var(--card)] hover:bg-[var(--primary)]/90 py-3 text-lg rounded-lg transition-all"
         >
-          {loading ? "Envoi en cours..." : "Envoyer ma candidature"}
+          {loading ? "Envoi en cours..." : "Postuler "}
         </Button>
       </form>
     </div>

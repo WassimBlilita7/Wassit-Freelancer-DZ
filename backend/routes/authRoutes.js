@@ -18,7 +18,10 @@ import { generateTokenAndSetCookie } from "../utils/generateToken.js";
 import { protect } from "../middleware/authMiddleware.js";
 import { uploadProfilePicture } from "../utils/upload.js"; // Correct
 import { ENV_VARS } from "../config/envVars.js";
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3af5ff09e1b97bca4fa49aaf65c59b5d39be4ce1
 const router = express.Router();
 
 configureGoogleAuth();

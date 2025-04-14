@@ -9,7 +9,7 @@ export const generateTokenAndSetCookie = (userId, res) => {
     maxAge: 15 * 24 * 60 * 60 * 1000, // 15 jours en ms
     httpOnly: true, // Protège contre les attaques XSS
     sameSite: "lax", // Protège contre les attaques CSRF
-    secure: false, // true en production avec HTTPS, false pour HTTP local/VPS sans SSL
+    secure: true, // true en production avec HTTPS, false pour HTTP local/VPS sans SSL
   });
 
   return token;

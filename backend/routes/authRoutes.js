@@ -17,6 +17,7 @@ import { configureGoogleAuth } from "../config/googleAuthConfig.js";
 import { generateTokenAndSetCookie } from "../utils/generateToken.js";
 import { protect } from "../middleware/authMiddleware.js";
 import { uploadProfilePicture } from "../utils/upload.js"; // Correct
+import { ENV_VARS } from "../config/envVars.js";
 
 const router = express.Router();
 
@@ -34,7 +35,7 @@ router.get(
   (req, res) => {
     const { user } = req.user;
     generateTokenAndSetCookie(user._id, res);
-    res.redirect("http://localhost:3000/");
+    res.redirect(ENV_VARS.VITE_URL);
   }
 );
 router.post("/forgot-password", forgotPassword);

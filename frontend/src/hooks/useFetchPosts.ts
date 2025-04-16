@@ -1,7 +1,6 @@
-// src/hooks/useFetchPosts.ts
 import { useState, useEffect } from "react";
-import { getAllPosts, fetchCategories, checkAuth } from "../api/api";
-import { PostData, Category } from "../types";
+import { getAllPosts, checkAuth } from "../api/api";
+import { PostData } from "../types";
 import toast from "react-hot-toast";
 
 export const useFetchPosts = () => {
@@ -9,7 +8,6 @@ export const useFetchPosts = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isFreelancer, setIsFreelancer] = useState<boolean>(false);
-  const [categories, setCategories] = useState<Category[]>([]);
 
   const fetchData = async () => {
     setLoading(true);
@@ -18,21 +16,7 @@ export const useFetchPosts = () => {
       setIsFreelancer(authResponse.userData?.isFreelancer || false);
 
       const fetchedPosts = await getAllPosts();
-
-      const fetchedCategories = await fetchCategories();
-      setCategories(fetchedCategories);
-
-      const postsWithCategories: PostData[] = fetchedPosts.map((post: any) => {
-        const categoryId = post.category; // ID de la catégorie retourné par l'API
-        const category = fetchedCategories.find((cat) => cat._id === categoryId);
-        if (!category) {
-          console.warn(`Category not found for ID: ${categoryId}, post:`, post);
-          return { ...post, category: undefined };
-        }
-        return { ...post, category };
-      });
-
-      setPosts(postsWithCategories);
+      setPosts(fetchedPosts);
       setError(null);
     } catch (err: any) {
       console.error("useFetchPosts - Error:", err);
@@ -56,5 +40,5 @@ export const useFetchPosts = () => {
     });
   };
 
-  return { posts, loading, error, isFreelancer, categories, addPost, refetch: fetchData };
+  return { posts, loading, error, isFreelancer, addPost, refetch: fetchData };
 };

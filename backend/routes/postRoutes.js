@@ -4,7 +4,7 @@ import { protect } from "../middleware/authMiddleware.js";
 import { upload } from "../utils/upload.js";
 const router = express.Router();
 
-router.get("/", getAllPosts);
+router.get("/",protect, getAllPosts);
 router.post("/createPost",protect, upload.single('picture'), createPost);
 router.get("/:id", getPostById);
 router.post("/:id/apply", protect, applyToPost);

@@ -73,7 +73,7 @@ export const AllPosts = () => {
         >
           <div className="flex items-center justify-between mb-8">
             <h1 className="text-3xl font-bold" style={{ color: "var(--text)" }}>
-              Toutes les Offres
+              {isFreelancer ? "Toutes les Offres" : "Mes Offres"}
             </h1>
             <div className="z-50">
               <CategoryFilter categories={categories} onFilterChange={handleFilterChange} />

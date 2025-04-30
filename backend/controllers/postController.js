@@ -55,32 +55,46 @@ export const createPost = async (req, res) => {
 
   export const getAllPosts = async (req, res) => {
     try {
-        const userId = req.user.id;
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).json({ message: "Utilisateur non trouvé" });
-        }
-
-        let posts;
-        if (user.isFreelancer) {
-            // Freelancers voient toutes les offres ouvertes
-            posts = await Post.find({ status: "open" })
-                .populate("client", "username email")
-                .populate("category", "name");
+      const userId = req.user.id;
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({ message: "Utilisateur non trouvé" });
+      }
+  
+      let posts;
+      const { random } = req.query; // Nouveau paramètre de requête
+  
+      if (user.isFreelancer) {
+        // Freelancers voient toutes les offres ouvertes
+        if (random === 'true') {
+          // Retourner 3 offres aléatoires
+          posts = await Post.aggregate([
+            { $match: { status: "open" } },
+            { $sample: { size: 3 } }, // MongoDB $sample pour sélection aléatoire
+          ]);
+          // Populate manuellement car aggregate ne supporte pas populate
+          posts = await Post.populate(posts, [
+            { path: "client", select: "username email" },
+            { path: "category", select: "name" },
+          ]);
         } else {
-            // Clients voient uniquement leurs propres offres
-            posts = await Post.find({ client: userId })
-                .populate("client", "username email")
-                .populate("category", "name");
+          posts = await Post.find({ status: "open" })
+            .populate("client", "username email")
+            .populate("category", "name");
         }
-
-        res.status(200).json({ posts });
+      } else {
+        // Clients voient uniquement leurs propres offres
+        posts = await Post.find({ client: userId })
+          .populate("client", "username email")
+          .populate("category", "name");
+      }
+  
+      res.status(200).json({ posts });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Erreur serveur" });
+      console.error(error);
+      res.status(500).json({ message: "Erreur serveur" });
     }
-};
-
+  };
 // Backend: Update getPostById in your controller file
 export const getPostById = async (req, res) => {
     try {

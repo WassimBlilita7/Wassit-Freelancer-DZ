@@ -20,6 +20,7 @@ import { Footer } from "./components/layout/Footer";
 import { PostProvider } from "./context/PostContext";
 import PostDetails from "./pages/PostDetail"; // Correctement importé
 import { ProfilePage } from "./pages/ProfilePage";
+import EditPost from "./pages/EditPost";
 
 function AppContent() {
   const location = useLocation();
@@ -50,6 +51,7 @@ function AppContent() {
           <Route path="/search-results" element={<SearchResults />} />
           <Route path="/category/:categoryId" element={<CategoryPage />} />
           <Route path="/profile/:username" element={<ProfilePage />} /> {/* Nouvelle route */}
+          <Route path="/edit-post/:postId" element={<EditPost />} />
           <Route path="*" element={<div>404 - Page non trouvée</div>} />
         </Routes>
       </main>

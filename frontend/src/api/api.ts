@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ApiResponse, Category, PostData, ProfileData , ApplyToPostData} from "@/types"; // Ajout de ProfileData
+import { ApiResponse, Category, PostData, ProfileData , ApplyToPostData, CreatePostData} from "@/types"; // Ajout de ProfileData
 import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
@@ -147,5 +147,21 @@ export const applyToPost = async (postId: string, data: ApplyToPostData): Promis
 
 export const getProfileByUsername = async (username: string) => {
   const response = await axios.get(`${API_URL}/auth/profile/${username}`);
+  return response.data;
+};
+export const updatePost = async (postId: string, data: Partial<CreatePostData>): Promise<{ message: string; post: PostData }> => {
+  const formData = new FormData();
+  formData.append("title", data.title || "");
+  formData.append("description", data.description || "");
+  formData.append("skillsRequired", JSON.stringify(data.skillsRequired || []));
+  formData.append("budget", data.budget?.toString() || "");
+  formData.append("duration", data.duration || "");
+  if (data.picture && data.picture instanceof File) {
+    formData.append("picture", data.picture);
+  }
+
+  const response = await api.put(`/post/${postId}`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
   return response.data;
 };

@@ -1,4 +1,3 @@
-// src/components/posts/PostCard.tsx
 import { useState } from "react";
 import { PostData } from "../../types";
 import {
@@ -21,7 +20,7 @@ import * as Tooltip from "@radix-ui/react-tooltip";
 import { cva } from "class-variance-authority";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
-import { handleDeletePost } from "../../utils/postUtils";
+import { handleDeletePost, handleEditPost } from "../../utils/postUtils";
 
 const statusVariants = cva(
   "px-3 py-1 rounded-full text-xs font-medium tracking-wide uppercase border",
@@ -40,11 +39,12 @@ const statusVariants = cva(
 interface PostCardProps {
   post: PostData;
   isFreelancer: boolean;
+  currentUserId: string | null;
   onEdit?: (post: PostData) => void;
   onDelete?: (postId: string) => void;
 }
 
-export const PostCard = ({ post, isFreelancer, onEdit, onDelete }: PostCardProps) => {
+export const PostCard = ({ post, isFreelancer, currentUserId, onDelete }: PostCardProps) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
@@ -61,6 +61,15 @@ export const PostCard = ({ post, isFreelancer, onEdit, onDelete }: PostCardProps
       console.error("Post ID is undefined:", post);
     }
   };
+
+  const isPostOwner = !isFreelancer && currentUserId && post.client && currentUserId === post.client._id.toString();
+  console.log("Debug - PostCard:", {
+    currentUserId: currentUserId,
+    postClientId: post.client?._id,
+    isPostOwner: isPostOwner,
+    postId: post._id,
+    isFreelancer: isFreelancer,
+  });
 
   return (
     <motion.div
@@ -85,34 +94,32 @@ export const PostCard = ({ post, isFreelancer, onEdit, onDelete }: PostCardProps
               <span>Par {post.client?.username || "Anonyme"}</span>
             </div>
           </div>
-          {!isFreelancer && (
+          {isPostOwner && (
             <div className="flex space-x-1">
-              {onEdit && (
-                <Tooltip.Provider>
-                  <Tooltip.Root>
-                    <Tooltip.Trigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onEdit(post);
-                        }}
-                        className="text-[var(--muted)] hover:text-[var(--primary)]"
-                        disabled={isDeleting}
-                      >
-                        <FaEdit className="w-4 h-4" />
-                      </Button>
-                    </Tooltip.Trigger>
-                    <Tooltip.Content side="top">
-                      <div className="bg-[var(--background)] text-[var(--text)] text-xs px-2 py-1 rounded">
-                        Modifier
-                        <Tooltip.Arrow className="fill-[var(--background)]" />
-                      </div>
-                    </Tooltip.Content>
-                  </Tooltip.Root>
-                </Tooltip.Provider>
-              )}
+              <Tooltip.Provider>
+                <Tooltip.Root>
+                  <Tooltip.Trigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEditPost(post._id, navigate);
+                      }}
+                      className="text-[var(--muted)] hover:text-[var(--primary)]"
+                      disabled={isDeleting}
+                    >
+                      <FaEdit className="w-4 h-4" />
+                    </Button>
+                  </Tooltip.Trigger>
+                  <Tooltip.Content side="top">
+                    <div className="bg-[var(--background)] text-[var(--text)] text-xs px-2 py-1 rounded">
+                      Modifier
+                      <Tooltip.Arrow className="fill-[var(--background)]" />
+                    </div>
+                  </Tooltip.Content>
+                </Tooltip.Root>
+              </Tooltip.Provider>
               <Tooltip.Provider>
                 <Tooltip.Root>
                   <Tooltip.Trigger asChild>

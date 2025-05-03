@@ -1,7 +1,7 @@
-// src/utils/postUtils.ts
 import { getPostById as apiGetPostById, deletePost } from "../api/api";
 import toast from "react-hot-toast";
 import { PostData } from "../types";
+import { useNavigate } from "react-router-dom";
 
 export const fetchPostById = async (
   postId: string,
@@ -58,4 +58,8 @@ export const formatTimeSince = (createdAt: string): string => {
   if (diffHours > 0) return `${diffHours} heure${diffHours > 1 ? "s" : ""} ago`;
   if (diffMinutes > 0) return `${diffMinutes} minute${diffMinutes > 1 ? "s" : ""} ago`;
   return "Il y a quelques instants";
+};
+
+export const handleEditPost = (postId: string, navigate: ReturnType<typeof useNavigate>) => {
+  navigate(`/edit-post/${postId}`);
 };

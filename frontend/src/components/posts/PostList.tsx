@@ -91,8 +91,7 @@ const PostList = () => {
               onDelete={() => {
                 setFilteredPosts((prev) => prev.filter((p) => p._id !== post._id));
                 setPosts((prev) => prev.filter((p) => p._id !== post._id));
-              }}
-            />
+              } } currentUserId={null}            />
           ))
         ) : (
           <p className="text-[var(--text)]/80 col-span-full text-center py-10">

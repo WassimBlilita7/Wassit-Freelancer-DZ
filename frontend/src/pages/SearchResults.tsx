@@ -40,8 +40,8 @@ export const SearchResults = () => {
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {results.map((post) => (
               <PostCard key={post._id} post={post} isFreelancer={false} onDelete={function (): void {
-                    throw new Error('Function not implemented.');
-                } } />
+                throw new Error('Function not implemented.');
+              } } currentUserId={null} />
             ))}
           </div>
         ) : (

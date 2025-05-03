@@ -1,23 +1,20 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-// Inside EditPost.tsx
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTheme } from "@/context/ThemeContext";
 import { CustomTextField } from "@/components/common/CustomTextField";
 import { Button } from "@/components/ui/button";
-import { CategoryFilter } from "@/components/posts/CategoryFilter";
-import { useEditPost } from "../hooks/useEditPost";
+import { useEditPost } from "@/hooks/useEditPost";
+import { toast } from "react-hot-toast";
 import { Loader } from "@/components/common/Loader";
-import { getPostById, fetchCategories } from "@/api/api";
-import {  Category } from "@/types";
+import { fetchCategories } from "@/api/api";
+import { Category } from "@/types";
+import { TagInput } from "@/components/common/TagInput";
 
 const EditPost = () => {
   const { postId } = useParams<{ postId: string }>();
   const navigate = useNavigate();
   const { theme } = useTheme();
   const [categories, setCategories] = useState<Category[]>([]);
-  const [, setSelectedCategory] = useState<string | null>(null);
-  const [skills, setSkills] = useState<string[]>([]); // Store skills as an array
 
   const {
     loading,
@@ -29,36 +26,20 @@ const EditPost = () => {
   } = useEditPost(postId || "");
 
   useEffect(() => {
-    const loadData = async () => {
-      if (postId) {
-        const postData = await getPostById(postId);
-        setFormData({
-          title: postData.title,
-          description: postData.description,
-          budget: postData.budget,
-          duration: postData.duration,
-          skillsRequired: postData.skillsRequired,
-          category: postData.category?._id || undefined,
-          picture: undefined,
-        });
-        setSelectedCategory(postData.category?._id || null);
-        setSkills(postData.skillsRequired || []); // Initialize skills array from post data
+    const loadCategories = async () => {
+      try {
+        const categoriesData = await fetchCategories();
+        setCategories(categoriesData);
+      } catch (error) {
+        console.error("Erreur lors du chargement des catégories:", error);
+        toast.error("Erreur lors du chargement des catégories");
       }
-      const categoriesData = await fetchCategories();
-      setCategories(categoriesData);
     };
-    loadData();
-  }, [postId]);
+    loadCategories();
+  }, []);
 
-  const handleSkillAdd = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && e.currentTarget.value.trim() !== "") {
-      setSkills((prevSkills) => [...prevSkills, e.currentTarget.value.trim()]);
-      e.currentTarget.value = ""; // Clear input after adding
-    }
-  };
-
-  const handleSkillRemove = (index: number) => {
-    setSkills((prevSkills) => prevSkills.filter((_, i) => i !== index));
+  const handleTagChange = (newTags: string[]) => {
+    setFormData({ ...formData, skillsRequired: newTags });
   };
 
   if (loading) return <Loader />;
@@ -106,49 +87,28 @@ const EditPost = () => {
             id="budget"
             name="budget"
             type="number"
-            value={formData.budget ? formData.budget.toString() : ""}
+            value={formData.budget?.toString() || ""}
             onChange={handleInputChange}
             placeholder="Budget (DZD)"
             icon="user"
           />
-          
-          {/* Modified skills input */}
-          <div>
+          <div className="relative">
             <label className="block text-sm font-medium mb-1" style={{ color: "var(--muted)" }}>
               Compétences requises
             </label>
-            <input
-              type="text"
-              placeholder="Appuyez sur 'Entrée' pour ajouter une compétence"
-              onKeyDown={handleSkillAdd}
-              className="w-full px-4 py-3 bg-[var(--background)] text-[var(--text)] rounded-lg border border-[var(--muted)] focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/50 transition-all duration-200"
+            <TagInput
+              value={formData.skillsRequired || []}
+              onChange={handleTagChange}
+              placeholder="Ajoutez des compétences (Entrée, virgule ou espace)"
             />
-            <div className="mt-3">
-              {skills.map((skill, index) => (
-                <span
-                  key={index}
-                  className="bg-gray-200 text-gray-800 rounded-full py-1 px-4 mr-2 mb-2 inline-block"
-                >
-                  {skill} 
-                  <button
-                    type="button"
-                    onClick={() => handleSkillRemove(index)}
-                    className="ml-2 text-red-500"
-                  >
-                    X
-                  </button>
-                </span>
-              ))}
-            </div>
           </div>
-          
           <div className="relative">
             <label className="block text-sm font-medium mb-1" style={{ color: "var(--muted)" }}>
               Durée
             </label>
             <select
               name="duration"
-              value={formData.duration}
+              value={formData.duration || ""}
               onChange={handleInputChange}
               className="w-full px-4 py-3 bg-[var(--background)] text-[var(--text)] rounded-lg border border-[var(--muted)] focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/50 transition-all duration-200"
             >
@@ -165,13 +125,19 @@ const EditPost = () => {
             <label className="block text-sm font-medium mb-1" style={{ color: "var(--muted)" }}>
               Catégorie
             </label>
-            <CategoryFilter
-              categories={categories}
-              onFilterChange={(categoryId) => {
-                setFormData({ ...formData, category: categoryId || undefined });
-                setSelectedCategory(categoryId);
-              }}
-            />
+            <select
+              name="category"
+              value={formData.category || ""}
+              onChange={handleInputChange}
+              className="w-full px-4 py-3 bg-[var(--background)] text-[var(--text)] rounded-lg border border-[var(--muted)] focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/50 transition-all duration-200"
+            >
+              <option value="">Sélectionnez une catégorie</option>
+              {categories.map((category) => (
+                <option key={category._id} value={category._id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="relative">
             <label className="block text-sm font-medium mb-1" style={{ color: "var(--muted)" }}>

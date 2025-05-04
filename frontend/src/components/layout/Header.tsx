@@ -1,36 +1,43 @@
-// src/components/layout/Header.tsx
 import { useState, useContext, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MobileMenu } from './MobileMenu';
 import { SearchBar } from './SearchBar';
 import { useSearchPosts } from '@/hooks/useSearchPosts';
 import { useProfile } from '@/hooks/useProfile';
+import { useNotifications } from '@/hooks/useNotifications';
+import { NotificationIcon } from '@/components/common/NotificationIcon';
 import { ThemeContext } from '@/context/ThemeContext';
+import { AuthContext } from '@/context/AuthContext';
 import { getMenuItems } from '@/data/menuItems';
-import Logo from '../../assets/logo/logo-transparent-svg.svg'; // Chemin supposé pour votre logo
+import Logo from '../../assets/logo/logo-transparent-svg.svg';
 import { FaBars, FaTimes } from 'react-icons/fa';
 
 export const Header = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useProfile();
+  const { currentUserId } = useContext(AuthContext);
+  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications(currentUserId);
   const themeContext = useContext(ThemeContext);
   const theme = themeContext?.theme ?? 'light';
   const toggleTheme = themeContext?.toggleTheme ?? (() => {});
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const { query, setQuery, suggestions, performSearch } = useSearchPosts();
   const menuRef = useRef<HTMLDivElement>(null);
+  const notificationRef = useRef<HTMLDivElement>(null);
 
-  // Générer les menu items (sans toucher isFreelancer pour éviter l'erreur)
   const menuItems = isAuthenticated
     ? getMenuItems(navigate, false)
     : [{ text: 'Accueil', icon: null, action: () => navigate('/'), description: 'Page principale' }];
 
-  // Fermer le menu déroulant si clic à l'extérieur
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setIsMenuOpen(false);
+      }
+      if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
+        setIsNotificationOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -40,9 +47,7 @@ export const Header = () => {
   return (
     <header className="fixed top-0 left-0 w-full bg-[var(--card)] shadow-md z-50">
       <div className="container mx-auto px-4 py-3 flex flex-col md:flex-row items-center justify-between gap-2 md:gap-4">
-        {/* Première ligne : Logo et Actions */}
         <div className="w-full flex items-center justify-between">
-          {/* Logo */}
           <div className="cursor-pointer" onClick={() => navigate('/')}>
             <img
               src={Logo}
@@ -51,9 +56,51 @@ export const Header = () => {
             />
           </div>
 
-          {/* Actions (Menu Icon, Thème, Mobile Menu) */}
           <div className="flex items-center space-x-2 md:space-x-4">
-            {/* Icône de menu déroulant */}
+            {isAuthenticated && (
+              <div className="relative" ref={notificationRef}>
+                <NotificationIcon
+                  unreadCount={unreadCount}
+                  notifications={notifications}
+                  markAsRead={markAsRead}
+                  markAllAsRead={() => markAllAsRead([])}
+                  onClick={() => setIsNotificationOpen(!isNotificationOpen)}
+                />
+                {isNotificationOpen && (
+                  <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg z-20 max-h-96 overflow-y-auto">
+                    {notifications.length === 0 ? (
+                      <div className="px-4 py-2 text-gray-500 dark:text-gray-400">
+                        Aucune notification
+                      </div>
+                    ) : (
+                      notifications.map((notif) => (
+                        <div
+                          key={notif._id}
+                          className={`px-4 py-2 border-b border-gray-200 dark:border-gray-700 ${
+                            notif.isRead ? 'bg-gray-100 dark:bg-gray-700' : 'bg-white dark:bg-gray-800'
+                          } hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200`}
+                          onClick={async () => {
+                            if (!notif.isRead) {
+                              await markAsRead(notif._id); // Marquer comme lu si cliqué individuellement
+                            }
+                            navigate(`/post/${notif.post._id}`);
+                            setIsNotificationOpen(false);
+                          }}
+                        >
+                          <div className="text-sm font-medium text-gray-800 dark:text-gray-200">
+                            {notif.message}
+                          </div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400">
+                            {new Date(notif.createdAt).toLocaleString()}
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
             <div className="relative" ref={menuRef}>
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -63,7 +110,6 @@ export const Header = () => {
                 {isMenuOpen ? <FaTimes className="w-5 h-5 md:w-6 md:h-6" /> : <FaBars className="w-5 h-5 md:w-6 md:h-6" />}
               </button>
 
-              {/* Menu déroulant */}
               {isMenuOpen && (
                 <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg z-20">
                   {menuItems.map((item) => (
@@ -90,7 +136,6 @@ export const Header = () => {
               )}
             </div>
 
-            {/* Si non authentifié, afficher Connexion/Inscription */}
             {!isAuthenticated && (
               <>
                 <button
@@ -108,7 +153,6 @@ export const Header = () => {
               </>
             )}
 
-            {/* Icône pour changer le thème */}
             <button
               onClick={toggleTheme}
               className="p-2 text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
@@ -125,7 +169,6 @@ export const Header = () => {
               )}
             </button>
 
-            {/* Bouton menu mobile */}
             <button
               className="md:hidden text-gray-700 dark:text-gray-200"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -138,7 +181,6 @@ export const Header = () => {
           </div>
         </div>
 
-        {/* Deuxième ligne : Barre de recherche */}
         <div className="w-full">
           <SearchBar
             query={query}
@@ -150,11 +192,11 @@ export const Header = () => {
       </div>
       {isMobileMenuOpen && <MobileMenu isOpen={false} onClose={function (): void {
         throw new Error('Function not implemented.');
-      } } menuItems={[]} isAuthenticated={false} toggleTheme={function (): void {
+      }} menuItems={[]} isAuthenticated={false} toggleTheme={function (): void {
         throw new Error('Function not implemented.');
-      } } theme={'light'} navigate={function (): void {
+      }} theme={'light'} navigate={function (): void {
         throw new Error('Function not implemented.');
-      } } />}
+      }} />}
     </header>
   );
 };

@@ -165,3 +165,28 @@ export const updatePost = async (postId: string, data: Partial<CreatePostData>):
   });
   return response.data;
 };
+
+export const getNotifications = async () => {
+  const response = await api.get("/notification");
+  return response.data;
+};
+
+export const markNotificationAsRead = async (notificationId: string) => {
+  const response = await api.put(`/notification/${notificationId}/read`);
+  return response.data;
+};
+export const markAllAsRead = async (notificationIds: string[]) => {
+  const response = await api.put("/notification/mark-all-read", { notificationIds });
+  return response.data;
+};
+
+export const createNotification = async (data: {
+  recipient: string;
+  sender: string;
+  post: string;
+  type: "application_accepted" | "new_application";
+  message: string;
+}) => {
+  const response = await api.post("/notification", data);
+  return response.data;
+};

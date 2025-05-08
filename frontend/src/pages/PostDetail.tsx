@@ -11,7 +11,6 @@ import { useHome } from "../hooks/useHome";
 import { PostDetailHeader } from "../components/posts/PostDetailHeader";
 import { PostDetailInfo } from "../components/posts/PostDetailInfo";
 import { PostDetailImage } from "../components/posts/PostDetailImage";
-import { PostDetailApplications } from "../components/posts/PostDetailApplications";
 import { ApplyToPostForm } from "../components/posts/ApplyToPostForm";
 
 const PostDetails = () => {
@@ -27,7 +26,7 @@ const PostDetails = () => {
         const data = await getPostById(postId);
         setPost(data);
       } catch (err) {
-        console.error("Erreur lors du chargement de l’offre:", err);
+        console.error("Erreur lors du chargement de l'offre:", err);
       } finally {
         setLoading(false);
       }
@@ -65,7 +64,6 @@ const PostDetails = () => {
           <div className="lg:col-span-4 space-y-8">
             <PostDetailInfo post={post} />
             {post.picture && <PostDetailImage picture={post.picture} title={post.title} />}
-            <PostDetailApplications applications={post.applications} />
           </div>
           <div className="lg:col-span-1">
             <motion.div

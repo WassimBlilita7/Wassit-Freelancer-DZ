@@ -257,7 +257,12 @@ export const updateApplicationStatus = async (req, res) => {
             });
           }
 
-        res.status(200).json({message: "Statut de l'application mis à jour avec succès" , post});
+        // Recharger le post avec le populate pour applications.freelancer
+        const populatedPost = await Post.findById(postId)
+          .populate("client", "username email")
+          .populate("applications.freelancer", "username email profilePicture")
+          .populate("category", "name");
+        res.status(200).json({message: "Statut de l'application mis à jour avec succès" , post: populatedPost});
 
     } catch (error) {
         console.error(error);

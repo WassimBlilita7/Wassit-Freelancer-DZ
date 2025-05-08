@@ -21,7 +21,7 @@ import { PostProvider } from "./context/PostContext";
 import PostDetails from "./pages/PostDetail"; // Correctement importé
 import { ProfilePage } from "./pages/ProfilePage";
 import EditPost from "./pages/EditPost";
-import ApplicationsPage from "./pages/ApplicationsPage";
+import { ApplicationsPage } from "./pages/ApplicationsPage";
 import MyApplicationsPage from "./pages/MyApplicationsPage";
 
 function AppContent() {

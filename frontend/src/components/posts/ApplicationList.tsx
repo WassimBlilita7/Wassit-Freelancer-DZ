@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { motion} from "framer-motion";
+import { motion } from "framer-motion";
 import { PostData } from "../../types";
 import { updateApplicationStatus } from "../../api/api";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
-import { FaUser, FaCheck, FaTimes, FaDownload, FaEnvelope } from "react-icons/fa";
+import { FaUser, FaCheck, FaTimes, FaEnvelope, FaFilePdf} from "react-icons/fa";
 import toast from "react-hot-toast";
 
 interface ApplicationListProps {
@@ -16,6 +16,7 @@ interface ApplicationListProps {
 
 export const ApplicationList = ({ post, onApplicationUpdate, filter = "all" }: ApplicationListProps) => {
   const [loading, setLoading] = useState<string | null>(null);
+  const [downloading, setDownloading] = useState<string | null>(null);
 
   const handleStatusUpdate = async (applicationId: string, status: "accepted" | "rejected") => {
     if (!post._id) return;
@@ -28,6 +29,34 @@ export const ApplicationList = ({ post, onApplicationUpdate, filter = "all" }: A
       toast.error("Erreur lors de la mise à jour du statut");
     } finally {
       setLoading(null);
+    }
+  };
+
+  const handleDownloadCV = async (cvUrl: string, freelancerName: string) => {
+    setDownloading(freelancerName);
+    try {
+      const response = await fetch(cvUrl);
+      const blob = await response.blob();
+
+      // Créer un objet URL pour le blob
+      const url = window.URL.createObjectURL(blob);
+
+      // Créer un lien temporaire pour le téléchargement
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${freelancerName}_CV.pdf`; // Forcer l'extension .pdf
+      document.body.appendChild(link);
+      link.click();
+
+      // Nettoyer
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      toast.success("CV téléchargé avec succès");
+    } catch (error) {
+      console.error("Erreur détaillée:", error);
+      toast.error("Erreur lors du téléchargement du CV");
+    } finally {
+      setDownloading(null);
     }
   };
 
@@ -119,33 +148,41 @@ export const ApplicationList = ({ post, onApplicationUpdate, filter = "all" }: A
                 <Button
                   variant="outline"
                   className="flex items-center gap-2"
-                  onClick={() => window.open(application.cv, "_blank")}
+                  onClick={() => handleDownloadCV(application.cv, typeof application.freelancer === 'object' && application.freelancer !== null && 'username' in application.freelancer ? (application.freelancer as { username: string }).username : "Utilisateur inconnu")}
+                  disabled={downloading === application._id}
                 >
-                  <FaDownload />
-                  <span>Télécharger le CV</span>
+                  {downloading === application._id ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-[var(--primary)] border-t-transparent rounded-full animate-spin" />
+                      <span>Téléchargement...</span>
+                    </>
+                  ) : (
+                    <>
+                      <FaFilePdf className="text-[var(--primary)]" />
+                      <span>Télécharger le CV</span>
+                    </>
+                  )}
                 </Button>
 
-                {application.status === "pending" && (
-                  <div className="flex items-center gap-3">
-                    <Button
-                      variant="destructive"
-                      className="flex items-center gap-2"
-                      onClick={() => handleStatusUpdate(application._id, "rejected")}
-                      disabled={loading === application._id}
-                    >
-                      <FaTimes />
-                      <span>Rejeter</span>
-                    </Button>
-                    <Button
-                      className="flex items-center gap-2 bg-[var(--success)] hover:bg-[var(--success)]/90"
-                      onClick={() => handleStatusUpdate(application._id, "accepted")}
-                      disabled={loading === application._id}
-                    >
-                      <FaCheck />
-                      <span>Accepter</span>
-                    </Button>
-                  </div>
-                )}
+                <div className="flex items-center gap-3">
+                  <Button
+                    variant="destructive"
+                    className="flex items-center gap-2"
+                    onClick={() => handleStatusUpdate(application._id, "rejected")}
+                    disabled={loading === application._id}
+                  >
+                    <FaTimes />
+                    <span>Rejeter</span>
+                  </Button>
+                  <Button
+                    className="flex items-center gap-2 bg-[var(--success)] hover:bg-[var(--success)]/90"
+                    onClick={() => handleStatusUpdate(application._id, "accepted")}
+                    disabled={loading === application._id}
+                  >
+                    <FaCheck />
+                    <span>Accepter</span>
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>

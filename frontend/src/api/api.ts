@@ -140,8 +140,10 @@ export const updateProfilePicture = async (file: File): Promise<ApiResponse> => 
   return response.data;
 };
 
-export const applyToPost = async (postId: string, data: ApplyToPostData): Promise<ApiResponse> => {
-  const response = await api.post(`/post/${postId}/apply`, data);
+export const applyToPost = async (postId: string, data: FormData): Promise<ApiResponse> => {
+  const response = await api.post(`/post/${postId}/apply`, data, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
   return response.data;
 };
 

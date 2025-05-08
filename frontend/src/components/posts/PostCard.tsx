@@ -54,7 +54,11 @@ export const PostCard = ({ post, isFreelancer, currentUserId, onDelete }: PostCa
 
   const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement;
-    if (target.closest("button") || target.tagName === "BUTTON") return;
+    if (target.closest("button") || target.tagName === "BUTTON" || target.closest(".apply-button")) {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
 
     if (post._id) {
       navigate(`/post/${post._id}`);

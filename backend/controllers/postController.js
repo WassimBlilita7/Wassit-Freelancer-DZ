@@ -117,7 +117,12 @@ export const applyToPost = async (req, res) => {
     try {
         const postId = req.params.id;
         const freelancerId = req.user.id;
-        const {cv,coverLetter,bidAmount} = req.body;
+        const { coverLetter, bidAmount } = req.body;
+        const cvFile = req.file; // Récupérer le fichier uploadé
+
+        if (!cvFile) {
+            return res.status(400).json({ message: "Veuillez fournir un CV au format PDF" });
+        }
 
         const freelancer = await User.findById(freelancerId);
         if(!freelancer || !freelancer.isFreelancer) {
@@ -141,7 +146,7 @@ export const applyToPost = async (req, res) => {
 
         post.applications.push({
             freelancer: freelancerId,
-            cv,
+            cv: cvFile.path, // Utiliser le chemin du fichier uploadé
             coverLetter,
             bidAmount
         });
@@ -153,12 +158,12 @@ export const applyToPost = async (req, res) => {
             post: postId,
             type: "new_application",
             message: `${freelancer.username} a postulé à votre offre "${post.title}"`,
-          });
+        });
 
-          await notification.save();
-         await User.findByIdAndUpdate(post.client, {
-      $push: { notifications: notification._id },
-    });
+        await notification.save();
+        await User.findByIdAndUpdate(post.client, {
+            $push: { notifications: notification._id },
+        });
         res.status(200).json({message: "Postulé avec succès" , post});
     } catch (error) {
         console.error(error);

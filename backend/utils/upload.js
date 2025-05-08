@@ -35,6 +35,16 @@ const profilePictureStorage = new CloudinaryStorage({
   },
 });
 
+// Stockage pour les CV (PDF)
+const cvStorage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "DZFreelancer/cv",
+    allowed_formats: ["pdf"],
+    resource_type: "raw",
+  },
+});
+
 // Middleware pour les "posts" (ton export original)
 export const upload = multer({
   storage: postsStorage,
@@ -61,5 +71,17 @@ export const uploadProfilePicture = multer({
       return cb(null, true);
     }
     cb(new Error("Seuls les fichiers JPEG, JPG et PNG sont autorisés"));
+  },
+});
+
+// Middleware pour les CV
+export const uploadCV = multer({
+  storage: cvStorage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype === "application/pdf") {
+      return cb(null, true);
+    }
+    cb(new Error("Seuls les fichiers PDF sont autorisés"));
   },
 });

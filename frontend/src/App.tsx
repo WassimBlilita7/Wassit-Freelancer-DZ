@@ -21,6 +21,8 @@ import { PostProvider } from "./context/PostContext";
 import PostDetails from "./pages/PostDetail"; // Correctement importé
 import { ProfilePage } from "./pages/ProfilePage";
 import EditPost from "./pages/EditPost";
+import ApplicationsPage from "./pages/ApplicationsPage";
+import MyApplicationsPage from "./pages/MyApplicationsPage";
 
 function AppContent() {
   const location = useLocation();
@@ -48,9 +50,11 @@ function AppContent() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/all-posts" element={<AllPosts />} />
           <Route path="/post/:postId" element={<PostDetails />} />
+          <Route path="/post/:postId/applications" element={<ApplicationsPage />} />
+          <Route path="/my-applications" element={<MyApplicationsPage />} />
           <Route path="/search-results" element={<SearchResults />} />
           <Route path="/category/:categoryId" element={<CategoryPage />} />
-          <Route path="/profile/:username" element={<ProfilePage />} /> {/* Nouvelle route */}
+          <Route path="/profile/:username" element={<ProfilePage />} />
           <Route path="/edit-post/:postId" element={<EditPost />} />
           <Route path="*" element={<div>404 - Page non trouvée</div>} />
         </Routes>

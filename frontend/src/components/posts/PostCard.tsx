@@ -13,6 +13,7 @@ import {
   FaShareAlt,
   FaBookmark,
   FaRegBookmark,
+  FaUsers,
 } from "react-icons/fa";
 import { Button } from "../ui/button";
 import { motion, AnimatePresence } from "framer-motion";
@@ -207,45 +208,26 @@ export const PostCard = ({ post, isFreelancer, currentUserId, onDelete }: PostCa
           </div>
         </div>
         <div className="flex items-center justify-between pt-4 border-t border-[var(--muted)]/20">
-          <div className="flex space-x-2">
+          <div className="flex items-center gap-3 w-full">
             <Badge className={statusVariants({ status: post.status })}>
               {post.status === "open" ? "Ouverte" : post.status === "in-progress" ? "En cours" : "Terminée"}
             </Badge>
             <Badge variant="outline" className="text-xs">
               {new Date(post.createdAt).toLocaleDateString()}
             </Badge>
-          </div>
-          <div className="flex space-x-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsLiked(!isLiked);
-              }}
-              className="text-[var(--muted)] hover:text-[var(--error)]"
-            >
-              {isLiked ? <FaHeart style={{ color: "var(--error)" }} /> : <FaRegHeart />}
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsBookmarked(!isBookmarked);
-              }}
-              className="text-[var(--muted)] hover:text-[var(--primary)]"
-            >
-              {isBookmarked ? <FaBookmark style={{ color: "var(--primary)" }} /> : <FaRegBookmark />}
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={(e) => e.stopPropagation()}
-              className="text-[var(--muted)] hover:text-[var(--text)]"
-            >
-              <FaShareAlt />
-            </Button>
+            {isPostOwner && (
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(`/post/${post._id}/applications`);
+                }}
+                className="flex items-center gap-1 font-medium text-xs bg-[var(--primary)] hover:bg-[var(--primary)]/90 px-3 py-1.5 rounded-md ml-auto"
+                style={{ minHeight: '32px', lineHeight: '1.1' }}
+              >
+                <FaUsers className="w-4 h-4" />
+                <span className="hidden sm:inline">Voir les candidatures</span>
+              </Button>
+            )}
           </div>
         </div>
       </div>

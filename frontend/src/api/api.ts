@@ -98,7 +98,7 @@ export const getAllPosts = async (): Promise<PostData[]> => {
     if (response.data && Array.isArray(response.data.posts)) {
       return response.data.posts;
     }
-    throw new Error("La réponse de l’API ne contient pas un tableau de posts valide");
+    throw new Error("La réponse de l'API ne contient pas un tableau de posts valide");
   } catch (err) {
     console.error("Erreur dans getAllPosts:", err);
     throw err;
@@ -188,5 +188,14 @@ export const createNotification = async (data: {
   message: string;
 }) => {
   const response = await api.post("/notification", data);
+  return response.data;
+};
+
+export const updateApplicationStatus = async (
+  postId: string,
+  applicationId: string,
+  status: "accepted" | "rejected"
+): Promise<ApiResponse> => {
+  const response = await api.put(`/post/${postId}/applications/${applicationId}`, { status });
   return response.data;
 };

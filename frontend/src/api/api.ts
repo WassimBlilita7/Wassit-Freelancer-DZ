@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ApiResponse, Category, PostData, ProfileData , ApplyToPostData, CreatePostData} from "@/types"; // Ajout de ProfileData
+import { ApiResponse, Category, PostData, ProfileData , CreatePostData} from "@/types"; // Ajout de ProfileData
 import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";

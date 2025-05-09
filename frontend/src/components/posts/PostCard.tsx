@@ -1,3 +1,4 @@
+/* eslint-disable no-empty-pattern */
 import { useState } from "react";
 import { PostData } from "../../types";
 import {
@@ -8,11 +9,6 @@ import {
   FaTags,
   FaTools,
   FaUser,
-  FaHeart,
-  FaRegHeart,
-  FaShareAlt,
-  FaBookmark,
-  FaRegBookmark,
   FaUsers,
 } from "react-icons/fa";
 import { Button } from "../ui/button";
@@ -47,8 +43,8 @@ interface PostCardProps {
 
 export const PostCard = ({ post, isFreelancer, currentUserId, onDelete }: PostCardProps) => {
   const [isDeleting, setIsDeleting] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
-  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [] = useState(false);
+  const [] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
 

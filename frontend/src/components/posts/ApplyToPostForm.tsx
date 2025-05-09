@@ -8,7 +8,6 @@ import { FaUpload, FaFilePdf, FaPaperPlane } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
-import { FileText } from "lucide-react";
 
 interface ApplyToPostFormProps {
   postId: string;

@@ -22,10 +22,8 @@ export const Header = () => {
   const toggleTheme = themeContext?.toggleTheme ?? (() => {});
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const { query, setQuery, suggestions, performSearch } = useSearchPosts();
   const menuRef = useRef<HTMLDivElement>(null);
-  const notificationRef = useRef<HTMLDivElement>(null);
 
   const menuItems = isAuthenticated
     ? getMenuItems(navigate, false)
@@ -35,9 +33,6 @@ export const Header = () => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setIsMenuOpen(false);
-      }
-      if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
-        setIsNotificationOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -58,47 +53,13 @@ export const Header = () => {
 
           <div className="flex items-center space-x-2 md:space-x-4">
             {isAuthenticated && (
-              <div className="relative" ref={notificationRef}>
-                <NotificationIcon
-                  unreadCount={unreadCount}
-                  notifications={notifications}
-                  markAsRead={markAsRead}
-                  markAllAsRead={() => markAllAsRead([])}
-                  onClick={() => setIsNotificationOpen(!isNotificationOpen)}
-                />
-                {isNotificationOpen && (
-                  <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg z-20 max-h-96 overflow-y-auto">
-                    {notifications.length === 0 ? (
-                      <div className="px-4 py-2 text-gray-500 dark:text-gray-400">
-                        Aucune notification
-                      </div>
-                    ) : (
-                      notifications.map((notif) => (
-                        <div
-                          key={notif._id}
-                          className={`px-4 py-2 border-b border-gray-200 dark:border-gray-700 ${
-                            notif.isRead ? 'bg-gray-100 dark:bg-gray-700' : 'bg-white dark:bg-gray-800'
-                          } hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200`}
-                          onClick={async () => {
-                            if (!notif.isRead) {
-                              await markAsRead(notif._id); // Marquer comme lu si cliqué individuellement
-                            }
-                            navigate(`/post/${notif.post._id}`);
-                            setIsNotificationOpen(false);
-                          }}
-                        >
-                          <div className="text-sm font-medium text-gray-800 dark:text-gray-200">
-                            {notif.message}
-                          </div>
-                          <div className="text-xs text-gray-500 dark:text-gray-400">
-                            {new Date(notif.createdAt).toLocaleString()}
-                          </div>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                )}
-              </div>
+              <NotificationIcon
+                unreadCount={unreadCount}
+                notifications={notifications}
+                markAsRead={markAsRead}
+                markAllAsRead={markAllAsRead}
+                onClick={() => {}}
+              />
             )}
 
             <div className="relative" ref={menuRef}>

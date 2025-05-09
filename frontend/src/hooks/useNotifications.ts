@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect } from "react";
 import { getNotifications, markNotificationAsRead } from "@/api/api";
 
@@ -26,7 +25,9 @@ export const useNotifications = (userId: string | null) => {
       setLoading(true);
       const response = await getNotifications();
       setNotifications(response);
-      setUnreadCount(response.filter((notif: Notification) => !notif.isRead).length);
+      if (unreadCount > 0) {
+        setUnreadCount(response.filter((notif: Notification) => !notif.isRead).length);
+      }
     } catch (error) {
       console.error("Erreur lors de la récupération des notifications:", error);
     } finally {
@@ -54,13 +55,14 @@ export const useNotifications = (userId: string | null) => {
     }
   };
 
-  const markAllAsRead = async (_unreadIds: string[]) => {
+  const markAllAsRead = async () => {
     try {
       const unreadIds = notifications
         .filter((notif) => !notif.isRead)
         .map((notif) => notif._id);
+      
       if (unreadIds.length > 0) {
-        await markAllAsRead(unreadIds); // Passer les IDs à l'API
+        await Promise.all(unreadIds.map(id => markNotificationAsRead(id)));
         setNotifications((prev) =>
           prev.map((notif) => ({ ...notif, isRead: true }))
         );

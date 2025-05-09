@@ -1,6 +1,6 @@
+/* eslint-disable no-empty-pattern */
 import { useState, useContext, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MobileMenu } from './MobileMenu';
 import { SearchBar } from './SearchBar';
 import { useSearchPosts } from '@/hooks/useSearchPosts';
 import { useProfile } from '@/hooks/useProfile';
@@ -10,7 +10,8 @@ import { ThemeContext } from '@/context/ThemeContext';
 import { AuthContext } from '@/context/AuthContext';
 import { getMenuItems } from '@/data/menuItems';
 import Logo from '../../assets/logo/logo-transparent-svg.svg';
-import { FaBars, FaTimes } from 'react-icons/fa';
+import { FaBars, FaTimes, FaSun, FaMoon } from 'react-icons/fa';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export const Header = () => {
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ export const Header = () => {
   const themeContext = useContext(ThemeContext);
   const theme = themeContext?.theme ?? 'light';
   const toggleTheme = themeContext?.toggleTheme ?? (() => {});
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { query, setQuery, suggestions, performSearch } = useSearchPosts();
   const menuRef = useRef<HTMLDivElement>(null);
@@ -40,18 +41,39 @@ export const Header = () => {
   }, []);
 
   return (
-    <header className="fixed top-0 left-0 w-full bg-[var(--card)] shadow-md z-50">
-      <div className="container mx-auto px-4 py-3 flex flex-col md:flex-row items-center justify-between gap-2 md:gap-4">
-        <div className="w-full flex items-center justify-between">
-          <div className="cursor-pointer" onClick={() => navigate('/')}>
+    <motion.header
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="fixed top-0 left-0 w-full bg-[var(--card)] shadow-lg backdrop-blur-sm bg-opacity-90 z-50 border-b border-[var(--muted)]/20"
+    >
+      <div className="container mx-auto px-4 py-3">
+        <div className="flex items-center justify-between gap-4">
+          {/* Logo */}
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            className="cursor-pointer"
+            onClick={() => navigate('/')}
+          >
             <img
               src={Logo}
               alt="Freelancer DZ Logo"
               className="h-8 md:h-10 w-auto object-contain"
             />
+          </motion.div>
+
+          {/* Search Bar */}
+          <div className="flex-1 max-w-2xl mx-4">
+            <SearchBar
+              query={query}
+              setQuery={setQuery}
+              suggestions={suggestions}
+              performSearch={performSearch}
+            />
           </div>
 
-          <div className="flex items-center space-x-2 md:space-x-4">
+          {/* Actions */}
+          <div className="flex items-center gap-2 md:gap-4">
             {isAuthenticated && (
               <NotificationIcon
                 unreadCount={unreadCount}
@@ -62,102 +84,91 @@ export const Header = () => {
               />
             )}
 
-            <div className="relative" ref={menuRef}>
-              <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="p-2 text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
-                aria-label="Ouvrir le menu"
-              >
-                {isMenuOpen ? <FaTimes className="w-5 h-5 md:w-6 md:h-6" /> : <FaBars className="w-5 h-5 md:w-6 md:h-6" />}
-              </button>
-
-              {isMenuOpen && (
-                <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg z-20">
-                  {menuItems.map((item) => (
-                    <button
-                      key={item.text}
-                      onClick={() => {
-                        item.action();
-                        setIsMenuOpen(false);
-                      }}
-                      className="w-full flex items-center space-x-3 px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 text-left"
-                    >
-                      {item.icon && <item.icon className="w-5 h-5" />}
-                      <div>
-                        <span className="block font-medium">{item.text}</span>
-                        {item.description && (
-                          <span className="block text-sm text-gray-500 dark:text-gray-400">
-                            {item.description}
-                          </span>
-                        )}
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {!isAuthenticated && (
-              <>
-                <button
-                  className="px-2 py-1 md:px-4 md:py-2 text-sm md:text-base text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
-                  onClick={() => navigate('/login')}
-                >
-                  Connexion
-                </button>
-                <button
-                  className="px-2 py-1 md:px-4 md:py-2 text-sm md:text-base bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200"
-                  onClick={() => navigate('/signup')}
-                >
-                  Inscription
-                </button>
-              </>
-            )}
-
-            <button
+            {/* Theme Toggle */}
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
               onClick={toggleTheme}
-              className="p-2 text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
+              className="p-2 rounded-full bg-[var(--background)] text-[var(--text)] hover:bg-[var(--primary)] hover:text-white transition-colors duration-200"
               aria-label="Changer le thème"
             >
               {theme === 'dark' ? (
-                <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
+                <FaSun className="w-5 h-5" />
               ) : (
-                <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                </svg>
+                <FaMoon className="w-5 h-5" />
               )}
-            </button>
+            </motion.button>
 
-            <button
-              className="md:hidden text-gray-700 dark:text-gray-200"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              aria-label="Ouvrir le menu mobile"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" />
-              </svg>
-            </button>
+            {/* Menu */}
+            <div className="relative" ref={menuRef}>
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="p-2 rounded-full bg-[var(--background)] text-[var(--text)] hover:bg-[var(--primary)] hover:text-white transition-colors duration-200"
+                aria-label="Menu"
+              >
+                {isMenuOpen ? <FaTimes className="w-5 h-5" /> : <FaBars className="w-5 h-5" />}
+              </motion.button>
+
+              <AnimatePresence>
+                {isMenuOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    className="absolute right-0 mt-2 w-64 bg-[var(--card)] border border-[var(--muted)]/20 rounded-lg shadow-xl z-20 overflow-hidden"
+                  >
+                    {menuItems.map((item) => (
+                      <motion.button
+                        key={item.text}
+                        whileHover={{ x: 5 }}
+                        onClick={() => {
+                          item.action();
+                          setIsMenuOpen(false);
+                        }}
+                        className="w-full flex items-center space-x-3 px-4 py-3 text-[var(--text)] hover:bg-[var(--background)] transition-colors duration-200 text-left"
+                      >
+                        {item.icon && <item.icon className="w-5 h-5 text-[var(--primary)]" />}
+                        <div>
+                          <span className="block font-medium">{item.text}</span>
+                          {item.description && (
+                            <span className="block text-sm text-[var(--muted)]">
+                              {item.description}
+                            </span>
+                          )}
+                        </div>
+                      </motion.button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Auth Buttons */}
+            {!isAuthenticated && (
+              <div className="flex items-center gap-2">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => navigate('/login')}
+                  className="px-4 py-2 text-sm font-medium text-[var(--text)] border border-[var(--muted)] rounded-lg hover:bg-[var(--background)] transition-colors duration-200"
+                >
+                  Connexion
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => navigate('/signup')}
+                  className="px-4 py-2 text-sm font-medium text-white bg-[var(--primary)] rounded-lg hover:bg-[var(--primary)]/90 transition-colors duration-200"
+                >
+                  Inscription
+                </motion.button>
+              </div>
+            )}
           </div>
         </div>
-
-        <div className="w-full">
-          <SearchBar
-            query={query}
-            setQuery={setQuery}
-            suggestions={suggestions}
-            performSearch={performSearch}
-          />
-        </div>
       </div>
-      {isMobileMenuOpen && <MobileMenu isOpen={false} onClose={function (): void {
-        throw new Error('Function not implemented.');
-      }} menuItems={[]} isAuthenticated={false} toggleTheme={function (): void {
-        throw new Error('Function not implemented.');
-      }} theme={'light'} navigate={function (): void {
-        throw new Error('Function not implemented.');
-      }} />}
-    </header>
+    </motion.header>
   );
 };

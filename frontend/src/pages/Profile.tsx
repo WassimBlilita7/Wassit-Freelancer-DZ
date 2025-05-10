@@ -4,7 +4,7 @@ import { Loader } from "../components/common/Loader";
 import { motion } from "framer-motion";
 
 export const Profile = () => {
-  const { profile, username, loading, isAuthenticated } = useProfile();
+  const { profile, username, loading, isAuthenticated, isFreelancer } = useProfile();
 
   if (loading) {
     return <Loader />;
@@ -31,7 +31,7 @@ export const Profile = () => {
         transition={{ duration: 0.5 }}
         className="w-full max-w-5xl"
       >
-        <ProfileForm initialProfile={profile} username={username} />
+        <ProfileForm initialProfile={profile} username={username} isFreelancer={isFreelancer} />
       </motion.div>
     </div>
   );

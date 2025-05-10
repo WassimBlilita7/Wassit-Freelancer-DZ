@@ -28,7 +28,10 @@ export const ProfilePage = () => {
           profilePicture={profile.profile.profilePicture}
           isFreelancer={profile.isFreelancer}
         />
-        <ProfileInfo profile={profile.profile as ProfileData} /> {/* Typage explicite */}
+        <ProfileInfo 
+          profile={profile.profile as ProfileData} 
+          isFreelancer={profile.isFreelancer}
+        />
       </div>
     </div>
   );

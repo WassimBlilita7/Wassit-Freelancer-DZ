@@ -1,73 +1,105 @@
-import { useState } from "react";
-import { useForm, UseFormReturn } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { profileSchema, ProfileFormData } from "../schemas/profileSchema";
 import { updateProfile, updateProfilePicture } from "../api/api";
-import { ProfileData, ApiResponse } from "../types";
-
-export type AlertType = "success" | "error" | "info" | null;
+import { useState } from "react";
+import { ProfileData } from "../types";
+import toast from "react-hot-toast";
 
 export const useProfileUpdate = (initialProfile: ProfileData) => {
-  const [submitting, setSubmitting] = useState<boolean>(false);
-  const [alert, setAlert] = useState<{ type: AlertType; message: string } | null>(null);
-  const [profilePicture, setProfilePicture] = useState<string>(initialProfile.profilePicture || "");
+  const [submitting, setSubmitting] = useState(false);
+  const [alert, setAlert] = useState<{ type: "success" | "error" | "info"; message: string } | null>(null);
+  const [profilePicture, setProfilePicture] = useState<string | null>(initialProfile.profilePicture || null);
 
-  const form: UseFormReturn<ProfileFormData> = useForm<ProfileFormData>({
+  const form = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
       firstName: initialProfile.firstName || "",
       lastName: initialProfile.lastName || "",
       bio: initialProfile.bio || "",
+      skills: initialProfile.skills || [],
       companyName: initialProfile.companyName || "",
       webSite: initialProfile.webSite || "",
+      github: initialProfile.github || "",
+      linkedIn: initialProfile.linkedIn || "",
     },
   });
 
   const onSubmit = async (data: ProfileFormData) => {
     setSubmitting(true);
+    setAlert(null);
+
     try {
-      const response: ApiResponse = await updateProfile(data);
-      form.reset({
-        firstName: response.userData?.profile?.firstName || "",
-        lastName: response.userData?.profile?.lastName || "",
-        bio: response.userData?.profile?.bio || "",
-        companyName: response.userData?.profile?.companyName || "",
-        webSite: response.userData?.profile?.webSite || "",
-      });
-      setAlert({ type: "success", message: response.message });
-    } catch (err: any) {
+      const response = await updateProfile(data);
+      if (response.userData) {
+        setAlert({
+          type: "success",
+          message: "Profil mis à jour avec succès !",
+        });
+        toast.success("Profil mis à jour avec succès !");
+      }
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour du profil:", error);
       setAlert({
         type: "error",
-        message: err.response?.data?.message || "Erreur lors de la mise à jour",
+        message: "Erreur lors de la mise à jour du profil. Veuillez réessayer.",
       });
+      toast.error("Erreur lors de la mise à jour du profil");
     } finally {
       setSubmitting(false);
-      setTimeout(() => setAlert(null), 5000);
     }
   };
 
   const resetForm = () => {
-    form.reset();
-    setAlert({ type: "info", message: "Modifications annulées." });
-    setTimeout(() => setAlert(null), 5000);
+    form.reset({
+      firstName: initialProfile.firstName || "",
+      lastName: initialProfile.lastName || "",
+      bio: initialProfile.bio || "",
+      skills: initialProfile.skills || [],
+      companyName: initialProfile.companyName || "",
+      webSite: initialProfile.webSite || "",
+      github: initialProfile.github || "",
+      linkedIn: initialProfile.linkedIn || "",
+    });
+    setAlert(null);
   };
 
   const handlePictureUpload = async (file: File) => {
     setSubmitting(true);
+    setAlert(null);
+
     try {
-      const response: ApiResponse = await updateProfilePicture(file);
-      setProfilePicture(response.userData?.profile?.profilePicture || "");
-      setAlert({ type: "success", message: response.message });
-    } catch (err: any) {
+      const formData = new FormData();
+      formData.append("profilePicture", file);
+
+      const response = await updateProfilePicture(formData);
+      if (response.userData?.profile?.profilePicture) {
+        setProfilePicture(response.userData.profile.profilePicture);
+        setAlert({
+          type: "success",
+          message: "Photo de profil mise à jour avec succès !",
+        });
+        toast.success("Photo de profil mise à jour avec succès !");
+      }
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour de la photo:", error);
       setAlert({
         type: "error",
-        message: err.response?.data?.message || "Erreur lors de l’upload",
+        message: "Erreur lors de la mise à jour de la photo. Veuillez réessayer.",
       });
+      toast.error("Erreur lors de la mise à jour de la photo");
     } finally {
       setSubmitting(false);
-      setTimeout(() => setAlert(null), 5000);
     }
   };
 
-  return { form, submitting, onSubmit, resetForm, alert, setAlert, profilePicture, handlePictureUpload };
+  return {
+    form,
+    submitting,
+    onSubmit,
+    resetForm,
+    alert,
+    profilePicture,
+    handlePictureUpload,
+  };
 };

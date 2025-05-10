@@ -12,9 +12,10 @@ import { ChangeEvent } from "react";
 interface ProfileFormProps {
   initialProfile: ProfileData;
   username: string;
+  isFreelancer: boolean;
 }
 
-export const ProfileForm = ({ initialProfile, username }: ProfileFormProps) => {
+export const ProfileForm = ({ initialProfile, username, isFreelancer }: ProfileFormProps) => {
   const { theme } = useTheme();
   const { form, submitting, onSubmit, resetForm, alert, profilePicture, handlePictureUpload } = useProfileUpdate(initialProfile);
 
@@ -78,7 +79,7 @@ export const ProfileForm = ({ initialProfile, username }: ProfileFormProps) => {
             </div>
             <div>
               <label className="text-lg font-medium flex items-center" style={{ color: "var(--text)" }}>
-                <FaUserCircle className="mr-2" style={{ color: "var(--profile-header-start)" }} /> Nom d’utilisateur
+                <FaUserCircle className="mr-2" style={{ color: "var(--profile-header-start)" }} /> Nom d'utilisateur
               </label>
               <input
                 value={username}
@@ -106,10 +107,12 @@ export const ProfileForm = ({ initialProfile, username }: ProfileFormProps) => {
             }}
           >
             <CardTitle className="text-3xl font-bold">
-            Devenez inoubliable avec un profil au top 🚀
+              {isFreelancer ? "Devenez inoubliable avec un profil au top 🚀" : "Complétez votre profil professionnel"}
             </CardTitle>
             <p className="mt-2 text-sm opacity-90">
-            Racontez votre histoire, montrez vos compétences et attirez les clients qui vous correspondent
+              {isFreelancer 
+                ? "Racontez votre histoire, montrez vos compétences et attirez les clients qui vous correspondent"
+                : "Présentez votre entreprise et vos besoins pour trouver les meilleurs freelancers"}
             </p>
           </CardHeader>
           <CardContent className="p-6">
@@ -135,7 +138,7 @@ export const ProfileForm = ({ initialProfile, username }: ProfileFormProps) => {
               </motion.div>
             )}
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <ProfileFields form={form} submitting={submitting} />
+              <ProfileFields form={form} submitting={submitting} isFreelancer={isFreelancer} />
               <div className="flex gap-4">
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                   <Button

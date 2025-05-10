@@ -2,44 +2,54 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
 :root, :root.light {
-  --primary: #3B82F6; /* Bleu vif et moderne (plus lumineux que #2770D1) */
-  --secondary: #14B8A6; /* Teal vibrant (plus punchy que #10B981) */
-  --background: #E5E7EB; /* Gris clair avec une touche de chaleur (moins fade que #F1F5F9) */
-  --card: #F9FAFB; /* Gris très clair (plus doux que #FFFFFF) */
-  --text: #1F2937; /* Gris anthracite (plus riche que #000) */
-  --header-text: #111827; /* Gris foncé profond (plus élégant que #000) */
-  --muted: #6B7280; /* Gris neutre moderne (légèrement plus foncé que #64748B) */
-  --error: #F43F5E; /* Rose-rouge vif (plus audacieux que #EF4444) */
-  --success: #34D399; /* Vert teal éclatant (plus vibrant que #22C55E) */
-  --accent: #FBBF24; /* Jaune ambre clair (emprunté au dark mode pour plus de punch) */
+  --primary: #3B82F6; /* Bleu vif et moderne */
+  --secondary: #14B8A6; /* Teal vibrant */
+  --background: #F8FAFC; /* Gris très clair */
+  --card: #FFFFFF; /* Blanc pur */
+  --text: #1F2937; /* Gris anthracite */
+  --header-text: #111827; /* Gris foncé profond */
+  --muted: #6B7280; /* Gris neutre moderne */
+  --error: #F43F5E; /* Rose-rouge vif */
+  --success: #34D399; /* Vert teal éclatant */
+  --accent: #FBBF24; /* Jaune ambre clair */
 
   /* Variables spécifiques pour la page Profil */
-  --profile-sidebar-bg: #D1D5DB; /* Gris clair moderne (plus lumineux que #E2E8F0) */
-  --profile-header-start: #3B82F6; /* Identique à --primary */
-  --profile-header-end: #93C5FD; /* Bleu ciel clair (plus vibrant que #60A5FA) */
-  --profile-button-save: #3B82F6; /* Identique à --primary */
-  --profile-button-cancel: #FBBF24; /* Identique à --accent */
+  --profile-sidebar-bg: #F1F5F9; /* Gris très clair */
+  --profile-header-start: #3B82F6; /* Bleu vif */
+  --profile-header-end: #60A5FA; /* Bleu ciel */
+  --profile-button-save: #3B82F6; /* Bleu vif */
+  --profile-button-cancel: #FBBF24; /* Jaune ambre */
+  --profile-input-bg: #F8FAFC; /* Gris très clair */
+  --profile-input-border: #E2E8F0; /* Gris clair */
+  --profile-input-focus: #3B82F6; /* Bleu vif */
+  --profile-skill-bg: #EFF6FF; /* Bleu très clair */
+  --profile-skill-text: #1E40AF; /* Bleu foncé */
 }
 
 :root.dark {
-  --primary: #C40D6C; /* Magenta vibrant */
-  --secondary: #34D399; /* Vert clair */
-  --background: #0F1419; /* Noir profond */
-  --card: #1A1F26; /* Noir grisâtre */
+  --primary: #EC4899; /* Rose néon */
+  --secondary: #8B5CF6; /* Violet profond */
+  --background: #0A0F1C; /* Bleu nuit très profond */
+  --card: #111827; /* Bleu nuit profond */
   --text: #E2E8F0; /* Gris clair */
   --header-text: #FFFFFF; /* Blanc */
-  --muted: #A1A9B3; /* Gris clair */
+  --muted: #94A3B8; /* Gris clair */
   --error: #F87171; /* Rouge clair */
   --error-dark: #EF4444; /* Rouge vif */
   --success: #6EE7B7; /* Vert clair */
-  --accent: #FBBF24; /* Jaune ambre clair, lumineux */
+  --accent: #FBBF24; /* Jaune ambre clair */
 
   /* Variables spécifiques pour la page Profil en mode sombre */
-  --profile-sidebar-bg: #2D3748; /* Gris foncé */
-  --profile-header-start: #C40D6C; /* Identique à --primary */
-  --profile-header-end: #F472B6; /* Magenta clair */
-  --profile-button-save: #C40D6C; /* Identique à --primary */
-  --profile-button-cancel: #FBBF24; /* Identique à --accent */
+  --profile-sidebar-bg: #111827; /* Bleu nuit profond */
+  --profile-header-start: #EC4899; /* Rose néon */
+  --profile-header-end: #8B5CF6; /* Violet profond */
+  --profile-button-save: #EC4899; /* Rose néon */
+  --profile-button-cancel: #FBBF24; /* Jaune ambre */
+  --profile-input-bg: #1F2937; /* Bleu nuit moyen */
+  --profile-input-border: #374151; /* Bleu nuit clair */
+  --profile-input-focus: #EC4899; /* Rose néon */
+  --profile-skill-bg: #1F2937; /* Bleu nuit moyen */
+  --profile-skill-text: #E0E7FF; /* Bleu clair */
 }
 
 html,
@@ -133,4 +143,98 @@ input:focus, select:focus, textarea:focus {
   background-color: transparent;
   color: var(--muted);
   transform: none;
+}
+
+/* Styles spécifiques pour la page de profil */
+.profile-card {
+  background-color: var(--card);
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.profile-input {
+  background-color: var(--profile-input-bg) !important;
+  border: 2px solid var(--profile-input-border) !important;
+  color: var(--text) !important;
+  transition: all 0.3s ease;
+}
+
+.profile-input:focus {
+  border-color: var(--profile-input-focus) !important;
+  box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1) !important;
+}
+
+.profile-input::placeholder {
+  color: var(--muted) !important;
+}
+
+.profile-input:disabled {
+  background-color: var(--profile-input-bg) !important;
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Style pour les labels des champs */
+.profile-label {
+  color: var(--text) !important;
+  font-weight: 500;
+}
+
+/* Style pour les messages d'erreur */
+.profile-error {
+  color: var(--error) !important;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+.profile-skill {
+  background-color: var(--profile-skill-bg);
+  color: var(--profile-skill-text);
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.profile-skill:hover {
+  transform: scale(1.05);
+}
+
+.profile-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.profile-button-save {
+  background-color: var(--profile-button-save);
+  color: white;
+}
+
+.profile-button-save:hover {
+  background-color: var(--profile-button-save);
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.profile-button-cancel {
+  background-color: var(--profile-button-cancel);
+  color: var(--text);
+}
+
+.profile-button-cancel:hover {
+  background-color: var(--profile-button-cancel);
+  opacity: 0.9;
+  transform: translateY(-1px);
 }

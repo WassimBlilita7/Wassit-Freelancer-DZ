@@ -1,9 +1,9 @@
 import { Controller, UseFormReturn } from "react-hook-form";
 import { ProfileFormData } from "../../schemas/profileSchema";
 import { motion } from "framer-motion";
-import { useTheme } from "../../context/ThemeContext";
-import { FaUser, FaBriefcase, FaGlobe, FaEdit } from "react-icons/fa";
+import { FaUser, FaBriefcase, FaGlobe, FaEdit, FaGithub, FaLinkedin, FaTools } from "react-icons/fa";
 import { JSX } from "react";
+import { SkillsInput } from "../ui/SkillsInput";
 
 interface FieldConfig {
   name: keyof ProfileFormData;
@@ -11,7 +11,8 @@ interface FieldConfig {
   placeholder: string;
   icon: JSX.Element;
   required?: boolean;
-  type?: "text" | "textarea";
+  type?: "text" | "textarea" | "skills";
+  freelancerOnly?: boolean;
 }
 
 const profileFieldsConfig: FieldConfig[] = [
@@ -37,6 +38,15 @@ const profileFieldsConfig: FieldConfig[] = [
     type: "textarea",
   },
   {
+    name: "skills",
+    label: "Compétences",
+    placeholder: "Ajoutez vos compétences...",
+    icon: <FaTools className="text-[var(--profile-header-start)]" />,
+    type: "skills",
+    required: true,
+    freelancerOnly: true,
+  },
+  {
     name: "companyName",
     label: "Nom de l'entreprise",
     placeholder: "Entrez le nom de votre entreprise",
@@ -45,23 +55,39 @@ const profileFieldsConfig: FieldConfig[] = [
   {
     name: "webSite",
     label: "Site web",
-    placeholder: "Entrez l’URL de votre site",
+    placeholder: "Entrez l'URL de votre site",
     icon: <FaGlobe className="text-[var(--profile-header-start)]" />,
+  },
+  {
+    name: "github",
+    label: "GitHub",
+    placeholder: "Entrez l'URL de votre profil GitHub",
+    icon: <FaGithub className="text-[var(--profile-header-start)]" />,
+    freelancerOnly: true,
+  },
+  {
+    name: "linkedIn",
+    label: "LinkedIn",
+    placeholder: "Entrez l'URL de votre profil LinkedIn",
+    icon: <FaLinkedin className="text-[var(--profile-header-start)]" />,
+    freelancerOnly: true,
   },
 ];
 
 interface ProfileFieldsProps {
   form: UseFormReturn<ProfileFormData>;
   submitting: boolean;
+  isFreelancer: boolean;
 }
 
-export const ProfileFields = ({ form, submitting }: ProfileFieldsProps) => {
-  const { theme } = useTheme();
+export const ProfileFields = ({ form, submitting, isFreelancer }: ProfileFieldsProps) => {
   const { control, formState: { errors } } = form;
+
+  const filteredFields = profileFieldsConfig.filter(field => !field.freelancerOnly || isFreelancer);
 
   return (
     <div className="space-y-6">
-      {profileFieldsConfig.map((field, index) => (
+      {filteredFields.map((field, index) => (
         <motion.div
           key={field.name}
           initial={{ opacity: 0, y: 20 }}
@@ -76,27 +102,50 @@ export const ProfileFields = ({ form, submitting }: ProfileFieldsProps) => {
           <Controller
             name={field.name}
             control={control}
-            render={({ field: controllerField }) => (
-              field.type === "textarea" ? (
-                <textarea
-                  {...controllerField}
-                  placeholder={field.placeholder}
-                  className={`w-full mt-2 p-3 rounded-lg border-2 ${errors[field.name] ? "border-[var(--error)]" : "border-[var(--muted)]/50"} focus:border-[var(--profile-header-start)] focus:ring-2 focus:ring-[var(--profile-header-start)]/30 transition-all h-32 resize-none`}
-                  style={{ backgroundColor: theme === "dark" ? "#475569" : "#EFF6FF", color: "var(--text)" }}
-                  disabled={submitting}
-                />
-              ) : (
-                <input
-                  {...controllerField}
-                  placeholder={field.placeholder}
-                  className={`w-full mt-2 p-3 rounded-lg border-2 ${errors[field.name] ? "border-[var(--error)]" : "border-[var(--muted)]/50"} focus:border-[var(--profile-header-start)] focus:ring-2 focus:ring-[var(--profile-header-start)]/30 transition-all`}
-                  style={{ backgroundColor: theme === "dark" ? "#475569" : "#EFF6FF", color: "var(--text)" }}
-                  disabled={submitting}
-                />
-              )
-            )}
+            defaultValue=""
+            render={({ field: controllerField }) => {
+              if (field.type === "textarea") {
+                return (
+                  <textarea
+                    {...controllerField}
+                    placeholder={field.placeholder}
+                    className={`w-full mt-2 p-3 rounded-lg border-2 ${errors[field.name] ? "border-[var(--error)]" : "border-[var(--profile-input-border)]"} focus:border-[var(--profile-input-focus)] focus:ring-2 focus:ring-[var(--profile-input-focus)]/30 transition-all h-32 resize-none`}
+                    style={{ 
+                      backgroundColor: "var(--profile-input-bg)", 
+                      color: "var(--text)" 
+                    }}
+                    disabled={submitting}
+                  />
+                );
+              } else if (field.type === "skills") {
+                return (
+                  <div className="mt-2">
+                    <SkillsInput
+                      skills={Array.isArray(controllerField.value) ? controllerField.value : []}
+                      onChange={controllerField.onChange}
+                      disabled={submitting}
+                    />
+                  </div>
+                );
+              } else {
+                return (
+                  <input
+                    {...controllerField}
+                    placeholder={field.placeholder}
+                    className={`w-full mt-2 p-3 rounded-lg border-2 ${errors[field.name] ? "border-[var(--error)]" : "border-[var(--profile-input-border)]"} focus:border-[var(--profile-input-focus)] focus:ring-2 focus:ring-[var(--profile-input-focus)]/30 transition-all`}
+                    style={{ 
+                      backgroundColor: "var(--profile-input-bg)", 
+                      color: "var(--text)" 
+                    }}
+                    disabled={submitting}
+                  />
+                );
+              }
+            }}
           />
-          {errors[field.name] && <p className="text-[var(--error)] text-sm mt-1">{errors[field.name]?.message}</p>}
+          {errors[field.name] && (
+            <p className="text-[var(--error)] text-sm mt-1">{errors[field.name]?.message}</p>
+          )}
         </motion.div>
       ))}
     </div>

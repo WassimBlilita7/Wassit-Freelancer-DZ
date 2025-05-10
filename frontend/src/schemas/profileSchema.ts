@@ -7,6 +7,15 @@ export const profileSchema = z.object({
   bio: z.string().max(500, "Maximum 500 caractères").optional(),
   companyName: z.string().max(100, "Maximum 100 caractères").optional(),
   webSite: z.string().url("URL invalide").optional().or(z.literal("")),
+  skills: z.array(z.string())
+    .min(1, "Au moins une compétence est requise")
+    .max(10, "Maximum 10 compétences")
+    .transform(skills => skills.filter(skill => skill && skill.trim() !== ""))
+    .refine(skills => skills.length > 0, {
+      message: "Au moins une compétence est requise"
+    }),
+  github: z.string().url("URL GitHub invalide").optional().or(z.literal("")),
+  linkedIn: z.string().url("URL LinkedIn invalide").optional().or(z.literal("")),
 });
 
 export type ProfileFormData = z.infer<typeof profileSchema>;

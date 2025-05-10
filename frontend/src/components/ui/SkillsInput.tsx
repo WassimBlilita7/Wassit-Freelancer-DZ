@@ -1,7 +1,7 @@
 // src/components/ui/SkillsInput.tsx
-import { useState } from "react";
+import { useState, KeyboardEvent } from "react";
 import { FaPlus, FaTimes } from "react-icons/fa";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface SkillsInputProps {
   skills: string[];
@@ -9,67 +9,84 @@ interface SkillsInputProps {
   disabled?: boolean;
 }
 
-export const SkillsInput = ({ skills, onChange, disabled = false }: SkillsInputProps) => {
+export const SkillsInput = ({ skills, onChange, disabled }: SkillsInputProps) => {
   const [inputValue, setInputValue] = useState("");
 
-  const handleAddSkill = () => {
-    if (inputValue.trim() && !skills.includes(inputValue.trim())) {
-      onChange([...skills, inputValue.trim()]);
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && inputValue.trim()) {
+      e.preventDefault();
+      addSkill();
+    }
+  };
+
+  const addSkill = () => {
+    const trimmedSkill = inputValue.trim();
+    if (trimmedSkill && !skills.includes(trimmedSkill) && skills.length < 10) {
+      const newSkills = [...skills, trimmedSkill];
+      onChange(newSkills);
       setInputValue("");
     }
   };
 
-  const handleRemoveSkill = (skill: string) => {
-    onChange(skills.filter((s) => s !== skill));
+  const removeSkill = (skillToRemove: string) => {
+    const newSkills = skills.filter((skill) => skill !== skillToRemove);
+    onChange(newSkills);
   };
 
   return (
-    <div className="space-y-2">
-      <label className="text-lg font-medium" style={{ color: "var(--text)" }}>
-        Compétences requises <span style={{ color: "var(--error)" }}>*</span>
-      </label>
-      <div className="flex items-center space-x-2">
+    <div className="space-y-3">
+      <div className="flex gap-2">
         <input
           type="text"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          placeholder="Ajouter une compétence"
-          className="w-full p-2 rounded-lg border-2 border-[var(--muted)] focus:border-[var(--primary)]"
+          onKeyDown={handleKeyDown}
+          placeholder="Ajouter une compétence..."
+          className="flex-1 p-3 rounded-lg border-2 border-[var(--muted)]/50 focus:border-[var(--profile-header-start)] focus:ring-2 focus:ring-[var(--profile-header-start)]/30 transition-all"
           style={{ backgroundColor: "var(--background)", color: "var(--text)" }}
-          disabled={disabled}
-          onKeyPress={(e) => e.key === "Enter" && handleAddSkill()}
+          disabled={disabled || skills.length >= 10}
         />
-        <motion.button
-          whileHover={{ scale: 1.1 }}
+        <button
           type="button"
-          onClick={handleAddSkill}
-          className="p-2 rounded-full bg-[var(--primary)] text-white"
-          disabled={disabled}
+          onClick={addSkill}
+          disabled={disabled || !inputValue.trim() || skills.length >= 10}
+          className="px-4 py-2 bg-[var(--primary)] text-white rounded-lg hover:bg-[var(--primary)]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <FaPlus />
-        </motion.button>
+        </button>
       </div>
+
       <div className="flex flex-wrap gap-2">
-        {skills.map((skill) => (
-          <motion.span
-            key={skill}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="flex items-center px-3 py-1 rounded-full bg-[var(--secondary)] text-white"
-          >
-            {skill}
-            <button
-              type="button"
-              onClick={() => handleRemoveSkill(skill)}
-              className="ml-2 focus:outline-none"
-              disabled={disabled}
+        <AnimatePresence>
+          {skills.map((skill, index) => (
+            <motion.div
+              key={skill}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="flex items-center gap-2 px-3 py-1.5 bg-[var(--primary)]/20 text-[var(--primary)] rounded-full text-sm font-medium"
             >
-              <FaTimes className="w-3 h-3" />
-            </button>
-          </motion.span>
-        ))}
+              <span>{skill}</span>
+              {!disabled && (
+                <button
+                  type="button"
+                  onClick={() => removeSkill(skill)}
+                  className="text-[var(--primary)] hover:text-[var(--error)] transition-colors"
+                >
+                  <FaTimes size={12} />
+                </button>
+              )}
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
+
+      {skills.length >= 10 && (
+        <p className="text-sm text-[var(--error)]">
+          Maximum 10 compétences atteint
+        </p>
+      )}
     </div>
   );
 };

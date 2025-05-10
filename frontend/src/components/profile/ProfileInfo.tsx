@@ -1,13 +1,14 @@
 // src/components/profile/ProfileInfo.tsx
 import { motion } from "framer-motion";
-import { FaBriefcase, FaGlobe, FaInfoCircle, FaTools, FaUser, FaUserCircle } from "react-icons/fa";
+import { FaBriefcase, FaGlobe, FaInfoCircle, FaTools, FaUser, FaUserCircle, FaGithub, FaLinkedin } from "react-icons/fa";
 import { ProfileData } from "../../types";
 
 interface ProfileInfoProps {
   profile: ProfileData;
+  isFreelancer: boolean;
 }
 
-export const ProfileInfo = ({ profile }: ProfileInfoProps) => {
+export const ProfileInfo = ({ profile, isFreelancer }: ProfileInfoProps) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -72,8 +73,8 @@ export const ProfileInfo = ({ profile }: ProfileInfoProps) => {
           </motion.div>
         )}
 
-        {/* Compétences */}
-        {profile.skills && profile.skills.length > 0 && (
+        {/* Compétences (uniquement pour les freelancers) */}
+        {isFreelancer && profile.skills && profile.skills.length > 0 && (
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -135,6 +136,51 @@ export const ProfileInfo = ({ profile }: ProfileInfoProps) => {
               >
                 {profile.webSite}
               </a>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Réseaux sociaux (uniquement pour les freelancers) */}
+        {isFreelancer && (profile.github || profile.linkedIn) && (
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.7 }}
+            className="p-4 bg-[var(--background)]/50 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300"
+          >
+            <div className="flex items-center gap-4 mb-3">
+              <FaGlobe className="text-2xl" style={{ color: "var(--primary)" }} />
+              <span className="text-sm text-[var(--muted)] uppercase tracking-wide">Réseaux sociaux</span>
+            </div>
+            <div className="flex flex-wrap gap-4">
+              {profile.github && (
+                <motion.a
+                  href={profile.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.8 }}
+                  className="flex items-center gap-2 text-[var(--text)] hover:text-[var(--primary)] transition-colors"
+                >
+                  <FaGithub className="text-2xl" />
+                  <span>GitHub</span>
+                </motion.a>
+              )}
+              {profile.linkedIn && (
+                <motion.a
+                  href={profile.linkedIn}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.9 }}
+                  className="flex items-center gap-2 text-[var(--text)] hover:text-[var(--primary)] transition-colors"
+                >
+                  <FaLinkedin className="text-2xl" />
+                  <span>LinkedIn</span>
+                </motion.a>
+              )}
             </div>
           </motion.div>
         )}

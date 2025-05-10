@@ -5,10 +5,11 @@ import { ProfileData } from "../types";
 import toast from "react-hot-toast";
 
 export const useProfile = () => {
-  const [profile, setProfile] = useState<ProfileData>({});
+  const [profile, setProfile] = useState<ProfileData>({} as ProfileData);
   const [username, setUsername] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isFreelancer, setIsFreelancer] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -16,9 +17,12 @@ export const useProfile = () => {
       setLoading(true);
       try {
         const profileResponse = await getProfile();
-        setIsAuthenticated(true);
-        setProfile(profileResponse.userData?.profile || {});
-        setUsername(profileResponse.userData?.username || "");
+        if (profileResponse.userData) {
+          setIsAuthenticated(true);
+          setProfile(profileResponse.userData.profile);
+          setUsername(profileResponse.userData.username);
+          setIsFreelancer(profileResponse.userData.isFreelancer);
+        }
       } catch (err) {
         console.error("Erreur lors de la récupération du profil:", err);
         setIsAuthenticated(false);
@@ -31,5 +35,5 @@ export const useProfile = () => {
     fetchProfile();
   }, [navigate]);
 
-  return { profile, username, loading, isAuthenticated };
+  return { profile, username, loading, isAuthenticated, isFreelancer };
 };

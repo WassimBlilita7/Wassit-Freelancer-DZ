@@ -248,22 +248,32 @@ export async function getProfile(req, res) {
 
 export async function updateProfile(req, res) {
   try {
-    const { firstName, lastName, bio, skills, companyName, webSite } = req.body;
+    const { firstName, lastName, bio, skills, companyName, webSite, github, linkedIn } = req.body;
 
     const user = await User.findById(req.user._id);
     if (!user) {
       return res.status(404).json({ message: "Utilisateur non trouvé" });
     }
 
+    // Mise à jour des champs du profil
     if (firstName !== undefined) user.profile.firstName = firstName;
     if (lastName !== undefined) user.profile.lastName = lastName;
     if (bio !== undefined) user.profile.bio = bio;
-    if (skills !== undefined) user.profile.skills = skills;
+    if (skills !== undefined) {
+      // S'assurer que skills est un tableau et qu'il ne contient pas de valeurs vides
+      user.profile.skills = Array.isArray(skills) 
+        ? skills.filter(skill => skill && skill.trim() !== "")
+        : [];
+    }
     if (companyName !== undefined) user.profile.companyName = companyName;
     if (webSite !== undefined) user.profile.webSite = webSite;
+    if (github !== undefined) user.profile.github = github;
+    if (linkedIn !== undefined) user.profile.linkedIn = linkedIn;
 
+    // Sauvegarder les modifications
     await user.save();
 
+    // Retourner les données mises à jour
     res.status(200).json({
       message: "Profil mis à jour avec succès",
       userData: {
@@ -275,6 +285,7 @@ export async function updateProfile(req, res) {
       },
     });
   } catch (error) {
+    console.error("Erreur lors de la mise à jour du profil:", error);
     res.status(500).json({ message: "Erreur serveur", error: error.message });
   }
 }

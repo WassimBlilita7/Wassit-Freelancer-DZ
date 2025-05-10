@@ -47,24 +47,25 @@ const userSchema = new mongoose.Schema({
         lastName: { type: String },
         bio: { type: String },
         skills: [{
-            type : mongoose.Schema.Types.ObjectId ,
-            ref : 'Skill'
+            type: String,
+            trim: true
         }],
         companyName: { type: String },
         webSite: { type: String },
         profilePicture: { type: String, default: "" },
+        github: { type: String },
+        linkedIn: { type: String },
     },
     notifications: [{ 
         type: mongoose.Schema.Types.ObjectId,
         ref: "Notification",
-      }],
-
-      resetOTP: {
+    }],
+    resetOTP: {
         type: String,
-      },
-      resetOTPExpires: {
+    },
+    resetOTPExpires: {
         type: Date,
-      },
+    },
 });
 
 const User = mongoose.model('User', userSchema);

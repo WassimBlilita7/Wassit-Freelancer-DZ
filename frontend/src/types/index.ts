@@ -29,6 +29,8 @@ export interface ApiResponse {
 }
 
 export interface ProfileData {
+  github: any;
+  linkedIn: any;
   firstName?: string;
   lastName?: string;
   bio?: string;

@@ -19,7 +19,7 @@ export const useProfile = () => {
         const profileResponse = await getProfile();
         if (profileResponse.userData) {
           setIsAuthenticated(true);
-          setProfile(profileResponse.userData.profile);
+          setProfile(profileResponse.userData.profile || {} as ProfileData);
           setUsername(profileResponse.userData.username);
           setIsFreelancer(profileResponse.userData.isFreelancer);
         }

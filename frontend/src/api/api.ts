@@ -130,12 +130,11 @@ export const fetchCategoryById = async (id: string): Promise<Category> => {
   return response.data;
 };
 
-export const updateProfilePicture = async (file: File): Promise<ApiResponse> => {
-  const formData = new FormData();
-  formData.append("profilePicture", file);
-  console.log("FormData envoyé :", formData.get("profilePicture"));
+export const updateProfilePicture = async (formData: FormData) => {
   const response = await api.put("/auth/profile/picture", formData, {
-    headers: { "Content-Type": "multipart/form-data" },
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
   });
   return response.data;
 };

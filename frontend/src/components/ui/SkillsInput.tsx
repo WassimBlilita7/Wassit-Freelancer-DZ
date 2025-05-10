@@ -58,7 +58,7 @@ export const SkillsInput = ({ skills, onChange, disabled }: SkillsInputProps) =>
 
       <div className="flex flex-wrap gap-2">
         <AnimatePresence>
-          {skills.map((skill, index) => (
+          {skills.map((skill) => (
             <motion.div
               key={skill}
               initial={{ scale: 0.8, opacity: 0 }}

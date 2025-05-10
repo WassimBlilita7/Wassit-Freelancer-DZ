@@ -200,3 +200,8 @@ export const updateApplicationStatus = async (
   const response = await api.put(`/post/${postId}/applications/${applicationId}`, { status });
   return response.data;
 };
+
+export const getClientStats = async () => {
+  const response = await api.get("/stats/client");
+  return response.data;
+};

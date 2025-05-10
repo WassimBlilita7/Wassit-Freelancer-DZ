@@ -10,6 +10,7 @@ import { motion } from "framer-motion";
 import { FaStar, FaProjectDiagram, FaUsers, FaMoneyBillWave, FaClock } from "react-icons/fa";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Progress } from "../components/ui/progress";
+import { useClientStats } from "../hooks/useClientStats";
 
 // Composant pour les statistiques des freelancers
 const FreelancerStats = () => {
@@ -70,61 +71,89 @@ const FreelancerStats = () => {
 
 // Composant pour les statistiques des clients
 const ClientStats = () => {
+  const { stats, loading, error } = useClientStats();
+
+  console.log("ClientStats render:", { stats, loading, error });
+
+  if (loading) {
+    return (
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {[1, 2, 3].map((i) => (
+          <Card key={i} className="animate-pulse">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                <div className="h-4 w-24 bg-gray-200 rounded"></div>
+              </CardTitle>
+              <div className="h-8 w-8 bg-gray-200 rounded-full"></div>
+            </CardHeader>
+            <CardContent>
+              <div className="h-8 w-16 bg-gray-200 rounded"></div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-red-500 text-center p-4">
+        {error}
+      </div>
+    );
+  }
+
+  if (!stats) {
+    return (
+      <div className="text-center p-4">
+        Aucune statistique disponible
+      </div>
+    );
+  }
+
+  const averageBudget = stats.totalOffers > 0 ? stats.totalBudget / stats.totalOffers : 0;
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8"
-    >
-      <Card className="bg-[var(--card)]/95 backdrop-blur-xl">
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Offres publiées</CardTitle>
-          <FaProjectDiagram className="h-4 w-4 text-[var(--primary)]" />
+          <FaProjectDiagram className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">15</div>
-          <div className="flex gap-2 mt-2">
-            <span className="text-xs bg-[var(--success)]/20 text-[var(--success)] px-2 py-1 rounded-full">
-              8 en cours
-            </span>
-            <span className="text-xs bg-[var(--muted)]/20 text-[var(--muted)] px-2 py-1 rounded-full">
-              7 complétées
-            </span>
-          </div>
+          <div className="text-2xl font-bold">{stats.totalOffers ?? 0}</div>
+          <p className="text-xs text-muted-foreground">
+            {stats.activeOffers ?? 0} actives, {stats.completedOffers ?? 0} complétées
+          </p>
         </CardContent>
       </Card>
 
-      <Card className="bg-[var(--card)]/95 backdrop-blur-xl">
+      <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Budget investi</CardTitle>
-          <FaMoneyBillWave className="h-4 w-4 text-[var(--success)]" />
+          <CardTitle className="text-sm font-medium">Budget total</CardTitle>
+          <FaMoneyBillWave className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">12,500 €</div>
-          <Progress value={75} className="mt-2" />
-          <p className="text-xs text-[var(--muted)] mt-2">Budget moyen par projet: 833€</p>
+          <div className="text-2xl font-bold">{(stats.totalBudget).toLocaleString()} DA</div>
+          <p className="text-xs text-muted-foreground">
+            Moyenne: {averageBudget.toLocaleString()} DA/offre
+          </p>
         </CardContent>
       </Card>
 
-      <Card className="bg-[var(--card)]/95 backdrop-blur-xl">
+      <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Freelancers engagés</CardTitle>
-          <FaUsers className="h-4 w-4 text-[var(--accent)]" />
+          <FaUsers className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">8</div>
-          <div className="flex gap-2 mt-2">
-            <span className="text-xs bg-[var(--primary)]/20 text-[var(--primary)] px-2 py-1 rounded-full">
-              5 actifs
-            </span>
-            <span className="text-xs bg-[var(--muted)]/20 text-[var(--muted)] px-2 py-1 rounded-full">
-              3 complétés
-            </span>
-          </div>
+          <div className="text-2xl font-bold">{stats.totalFreelancers ?? 0}</div>
+          <p className="text-xs text-muted-foreground">
+            {stats.activeFreelancers ?? 0} freelancers actifs
+          </p>
         </CardContent>
       </Card>
-    </motion.div>
+    </div>
   );
 };
 

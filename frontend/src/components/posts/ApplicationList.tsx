@@ -5,7 +5,7 @@ import { updateApplicationStatus } from "../../api/api";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
-import { FaUser, FaCheck, FaTimes, FaEnvelope, FaFilePdf} from "react-icons/fa";
+import { FaUser, FaCheck, FaTimes, FaEnvelope, FaFilePdf, FaLock } from "react-icons/fa";
 import toast from "react-hot-toast";
 
 interface ApplicationListProps {
@@ -121,13 +121,21 @@ export const ApplicationList = ({ post, onApplicationUpdate, filter = "all" }: A
                     </p>
                   </div>
                 </div>
-                <Badge className={getStatusBadgeColor(application.status)}>
-                  {application.status === "pending"
-                    ? "En attente"
-                    : application.status === "accepted"
-                    ? "Acceptée"
-                    : "Rejetée"}
-                </Badge>
+                <div className="flex items-center gap-2">
+                  <Badge className={getStatusBadgeColor(application.status)}>
+                    {application.status === "pending"
+                      ? "En attente"
+                      : application.status === "accepted"
+                      ? "Acceptée"
+                      : "Rejetée"}
+                  </Badge>
+                  {(application.status === "accepted" || application.status === "rejected") && (
+                    <Badge className="bg-gray-500/10 text-gray-500 hover:bg-gray-500/20 flex items-center gap-1">
+                      <FaLock className="w-3 h-3" />
+                      <span>Verrouillé</span>
+                    </Badge>
+                  )}
+                </div>
               </div>
             </CardHeader>
             <CardContent className="p-6">
@@ -165,23 +173,32 @@ export const ApplicationList = ({ post, onApplicationUpdate, filter = "all" }: A
                 </Button>
 
                 <div className="flex items-center gap-3">
-                  <Button
-                    variant="destructive"
-                    className="flex items-center gap-2"
-                    onClick={() => handleStatusUpdate(application._id, "rejected")}
-                    disabled={loading === application._id}
-                  >
-                    <FaTimes />
-                    <span>Rejeter</span>
-                  </Button>
-                  <Button
-                    className="flex items-center gap-2 bg-[var(--success)] hover:bg-[var(--success)]/90"
-                    onClick={() => handleStatusUpdate(application._id, "accepted")}
-                    disabled={loading === application._id}
-                  >
-                    <FaCheck />
-                    <span>Accepter</span>
-                  </Button>
+                  {application.status === "pending" ? (
+                    <>
+                      <Button
+                        variant="destructive"
+                        className="flex items-center gap-2"
+                        onClick={() => handleStatusUpdate(application._id, "rejected")}
+                        disabled={loading === application._id}
+                      >
+                        <FaTimes />
+                        <span>Rejeter</span>
+                      </Button>
+                      <Button
+                        className="flex items-center gap-2 bg-[var(--success)] hover:bg-[var(--success)]/90"
+                        onClick={() => handleStatusUpdate(application._id, "accepted")}
+                        disabled={loading === application._id}
+                      >
+                        <FaCheck />
+                        <span>Accepter</span>
+                      </Button>
+                    </>
+                  ) : (
+                    <div className="text-sm text-[var(--muted)] flex items-center gap-2">
+                      <FaLock className="w-4 h-4" />
+                      <span>Cette candidature ne peut plus être modifiée</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </CardContent>

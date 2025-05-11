@@ -7,6 +7,7 @@ import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { FaUser, FaCheck, FaTimes, FaEnvelope, FaFilePdf, FaLock } from "react-icons/fa";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 interface ApplicationListProps {
   post: PostData;
@@ -17,6 +18,7 @@ interface ApplicationListProps {
 export const ApplicationList = ({ post, onApplicationUpdate, filter = "all" }: ApplicationListProps) => {
   const [loading, setLoading] = useState<string | null>(null);
   const [downloading, setDownloading] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const handleStatusUpdate = async (applicationId: string, status: "accepted" | "rejected") => {
     if (!post._id) return;
@@ -58,6 +60,10 @@ export const ApplicationList = ({ post, onApplicationUpdate, filter = "all" }: A
     } finally {
       setDownloading(null);
     }
+  };
+
+  const handleFreelancerClick = (username: string) => {
+    navigate(`/profile/${username}`);
   };
 
   const filteredApplications = post.applications.filter(app => {
@@ -111,7 +117,10 @@ export const ApplicationList = ({ post, onApplicationUpdate, filter = "all" }: A
                     <FaUser className="text-[var(--primary)] text-xl" />
                   </div>
                   <div>
-                    <CardTitle className="text-lg font-semibold text-[var(--text)]">
+                    <CardTitle 
+                      className="text-lg font-semibold text-[var(--text)] cursor-pointer hover:text-[var(--primary)] transition-colors"
+                      onClick={() => handleFreelancerClick(typeof application.freelancer === 'object' && application.freelancer !== null && 'username' in application.freelancer ? (application.freelancer as { username: string }).username : "Utilisateur inconnu")}
+                    >
                       {typeof application.freelancer === 'object' && application.freelancer !== null && 'username' in application.freelancer
                         ? (application.freelancer as { username: string }).username
                         : "Utilisateur inconnu"}

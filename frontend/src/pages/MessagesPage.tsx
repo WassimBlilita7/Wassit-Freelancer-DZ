@@ -3,32 +3,6 @@ import { getUserConversations, getConversation, sendMessage } from "@/api/api";
 import { FaPaperPlane, FaUserPlus } from "react-icons/fa";
 import { AuthContext } from "@/context/AuthContext";
 
-// Styles UI/UX modernes pour la page de messages (clair et sombre)
-const isDark = () => document.documentElement.classList.contains('dark');
-const msgStyles = {
-  background: isDark()
-    ? { background: 'linear-gradient(135deg, #181824 0%, #23243a 100%)' }
-    : { background: 'linear-gradient(135deg, #f8fafc 0%, #e0e7ef 100%)' },
-  card: isDark()
-    ? { background: '#23243a', boxShadow: '0 2px 16px 0 #18182444' }
-    : { background: '#fff', boxShadow: '0 2px 16px 0 #e0e7ef44' },
-  sent: isDark()
-    ? { background: '#7c3aed', color: '#fff', borderRadius: '18px 18px 4px 18px', boxShadow: '0 2px 8px #7c3aed33' }
-    : { background: '#7c3aed', color: '#fff', borderRadius: '18px 18px 4px 18px', boxShadow: '0 2px 8px #7c3aed22' },
-  received: isDark()
-    ? { background: '#34d399', color: '#181824', borderRadius: '18px 18px 18px 4px', border: 'none', boxShadow: '0 2px 8px #34d39933' }
-    : { background: '#a7f3d0', color: '#181824', borderRadius: '18px 18px 18px 4px', border: 'none', boxShadow: '0 2px 8px #34d39922' },
-  input: isDark()
-    ? { background: '#23243a', color: '#fff', border: '1px solid #353652' }
-    : { background: '#fff', color: '#181824', border: '1px solid #e5e7eb' },
-  conversationItem: isDark()
-    ? { background: '#23243a', color: '#fff', border: 'none' }
-    : { background: '#f3f4f6', color: '#181824', border: 'none' },
-  conversationItemActive: isDark()
-    ? { background: '#7c3aed22', color: '#fff', border: 'none' }
-    : { background: '#ede9fe', color: '#7c3aed', border: 'none' },
-};
-
 export const MessagesPage = () => {
   const { currentUserId } = useContext(AuthContext);
   const [conversations, setConversations] = useState<any[]>([]);
@@ -36,6 +10,15 @@ export const MessagesPage = () => {
   const [messages, setMessages] = useState<any[]>([]);
   const [message, setMessage] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [isDark, setIsDark] = useState(() => document.documentElement.classList.contains('dark'));
+
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
 
   // Scroll automatique vers le bas
   useEffect(() => {
@@ -67,6 +50,31 @@ export const MessagesPage = () => {
     await sendMessage(selectedUser._id, message);
     setMessage("");
     // getConversation(selectedUser._id).then(setMessages); // plus besoin, polling s'en charge
+  };
+
+  // Styles UI/UX modernes pour la page de messages (clair et sombre)
+  const msgStyles = {
+    background: isDark
+      ? { background: 'linear-gradient(135deg, #181824 0%, #23243a 100%)' }
+      : { background: 'linear-gradient(135deg, #f8fafc 0%, #e0e7ef 100%)' },
+    card: isDark
+      ? { background: '#23243a', boxShadow: '0 2px 16px 0 #18182444' }
+      : { background: '#fff', boxShadow: '0 2px 16px 0 #e0e7ef44' },
+    sent: isDark
+      ? { background: '#7c3aed', color: '#fff', borderRadius: '18px 18px 4px 18px', boxShadow: '0 2px 8px #7c3aed33' }
+      : { background: '#7c3aed', color: '#fff', borderRadius: '18px 18px 4px 18px', boxShadow: '0 2px 8px #7c3aed22' },
+    received: isDark
+      ? { background: '#34d399', color: '#181824', borderRadius: '18px 18px 18px 4px', border: 'none', boxShadow: '0 2px 8px #34d39933' }
+      : { background: '#a7f3d0', color: '#181824', borderRadius: '18px 18px 18px 4px', border: 'none', boxShadow: '0 2px 8px #34d39922' },
+    input: isDark
+      ? { background: '#23243a', color: '#fff', border: '1px solid #353652' }
+      : { background: '#fff', color: '#181824', border: '1px solid #e5e7eb' },
+    conversationItem: isDark
+      ? { background: '#23243a', color: '#fff', border: 'none' }
+      : { background: '#f3f4f6', color: '#181824', border: 'none' },
+    conversationItemActive: isDark
+      ? { background: '#7c3aed22', color: '#fff', border: 'none' }
+      : { background: '#ede9fe', color: '#7c3aed', border: 'none' },
   };
 
   return (

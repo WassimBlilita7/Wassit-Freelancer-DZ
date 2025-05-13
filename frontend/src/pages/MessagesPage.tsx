@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext, useRef } from "react";
-import { getUserConversations, getConversation, sendMessage, deleteMessage as deleteMessageApi } from "@/api/api";
-import { FaPaperPlane, FaUserPlus, FaTrashAlt } from "react-icons/fa";
+import { getUserConversations, getConversation, sendMessage, deleteMessage as deleteMessageApi, markMessageAsRead } from "@/api/api";
+import { FaPaperPlane, FaUserPlus, FaTrashAlt, FaCheckDouble } from "react-icons/fa";
 import { AuthContext } from "@/context/AuthContext";
 
 export const MessagesPage = () => {
@@ -58,6 +58,23 @@ export const MessagesPage = () => {
     if (window.confirm("Supprimer ce message ?")) {
       await deleteMessageApi(msgId);
       // Le polling va rafraîchir la conversation
+    }
+  };
+
+  // Marquer tous les messages reçus comme lus au focus sur l'input
+  const handleInputFocus = async () => {
+    const unread = messages.filter((msg) => {
+      let receiverId = msg.receiver;
+      if (typeof receiverId === "object" && receiverId !== null && receiverId._id) {
+        receiverId = receiverId._id;
+      }
+      return String(receiverId) === String(currentUserId) && !msg.read && !msg.isDeleted;
+    });
+    for (const msg of unread) {
+      await markMessageAsRead(msg._id);
+    }
+    if (selectedUser) {
+      await getConversation(selectedUser._id).then(setMessages);
     }
   };
 
@@ -165,6 +182,10 @@ export const MessagesPage = () => {
                             <FaTrashAlt />
                           </button>
                         )}
+                        {/* Double check vu pour les messages envoyés et lus */}
+                        {isMe && msg.read && !msg.isDeleted && (
+                          <FaCheckDouble className="ml-2 inline-block text-blue-300 text-xs align-bottom" title="Vu" />
+                        )}
                       </>
                     )}
                   </div>
@@ -194,6 +215,7 @@ export const MessagesPage = () => {
               onChange={e => setMessage(e.target.value)}
               placeholder="Écrire un message..."
               onKeyDown={e => e.key === "Enter" && handleSend()}
+              onFocus={handleInputFocus}
             />
             <button
               className="p-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl shadow-lg flex items-center justify-center text-xl transition-all"

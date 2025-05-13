@@ -225,3 +225,8 @@ export const deleteMessage = async (messageId: string) => {
   const response = await api.delete(`/message/${messageId}`);
   return response.data;
 };
+
+export const markMessageAsRead = async (messageId: string) => {
+  const response = await api.put(`/message/${messageId}/read`);
+  return response.data;
+};

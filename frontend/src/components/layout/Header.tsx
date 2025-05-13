@@ -62,6 +62,9 @@ export const Header = () => {
     return () => clearInterval(interval);
   }, [currentUserId]);
 
+  // Calcul du nombre de notifications non lues
+  const unreadNotificationsCount = notifications.filter(n => !n.isRead).length;
+
   return (
     <motion.header
       initial={{ y: -100 }}
@@ -98,6 +101,7 @@ export const Header = () => {
           <div className="flex items-center gap-2 md:gap-4">
             {isAuthenticated && (
               <NotificationIcon
+                unreadCount={unreadNotificationsCount}
                 notifications={notifications}
                 markAsRead={markAsRead}
                 markAllAsRead={markAllAsRead}

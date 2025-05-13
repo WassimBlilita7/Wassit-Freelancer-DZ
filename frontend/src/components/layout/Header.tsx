@@ -1,4 +1,3 @@
-/* eslint-disable no-empty-pattern */
 import { useState, useContext, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SearchBar } from './SearchBar';
@@ -12,19 +11,20 @@ import { getMenuItems } from '@/data/menuItems';
 import Logo from '../../assets/logo/logo-transparent-svg.svg';
 import { FaBars, FaTimes, FaSun, FaMoon, FaFacebookMessenger } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getUserConversations, getConversation } from '@/api/api';
 
 export const Header = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useProfile();
   const { currentUserId } = useContext(AuthContext);
-  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications(currentUserId);
+  const { notifications, markAsRead, markAllAsRead } = useNotifications(currentUserId);
   const themeContext = useContext(ThemeContext);
   const theme = themeContext?.theme ?? 'light';
   const toggleTheme = themeContext?.toggleTheme ?? (() => {});
-  const [] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { query, setQuery, suggestions, performSearch } = useSearchPosts();
   const menuRef = useRef<HTMLDivElement>(null);
+  const [unreadMessagesCount, setUnreadMessagesCount] = useState(0);
 
   const menuItems = isAuthenticated
     ? getMenuItems(navigate, false)
@@ -39,6 +39,28 @@ export const Header = () => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    const fetchUnread = async () => {
+      if (!currentUserId) return;
+      let total = 0;
+      const conversations = await getUserConversations();
+      for (const user of conversations) {
+        const msgs = await getConversation(user._id);
+        total += msgs.filter(
+          (msg: any) => {
+            let receiverId = msg.receiver;
+            if (typeof receiverId === 'object' && receiverId !== null && receiverId._id) receiverId = receiverId._id;
+            return String(receiverId) === String(currentUserId) && !msg.read && !msg.isDeleted;
+          }
+        ).length;
+      }
+      setUnreadMessagesCount(total);
+    };
+    fetchUnread();
+    const interval = setInterval(fetchUnread, 3000);
+    return () => clearInterval(interval);
+  }, [currentUserId]);
 
   return (
     <motion.header
@@ -76,11 +98,9 @@ export const Header = () => {
           <div className="flex items-center gap-2 md:gap-4">
             {isAuthenticated && (
               <NotificationIcon
-                unreadCount={unreadCount}
                 notifications={notifications}
                 markAsRead={markAsRead}
                 markAllAsRead={markAllAsRead}
-                onClick={() => {}}
               />
             )}
 
@@ -90,10 +110,15 @@ export const Header = () => {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => navigate('/messages')}
-                className="p-2 rounded-full bg-[var(--background)] text-[var(--text)] hover:bg-[var(--primary)] hover:text-white transition-colors duration-200"
+                className="relative p-2 rounded-full bg-[var(--background)] text-[var(--text)] hover:bg-[var(--primary)] hover:text-white transition-colors duration-200"
                 aria-label="Messages"
               >
                 <FaFacebookMessenger className="w-5 h-5" />
+                {unreadMessagesCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full px-1.5 py-0.5 shadow-lg border-2 border-[var(--background)]">
+                    {unreadMessagesCount}
+                  </span>
+                )}
               </motion.button>
             )}
 

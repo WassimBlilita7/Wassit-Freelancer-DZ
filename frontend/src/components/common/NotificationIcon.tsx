@@ -15,14 +15,14 @@ interface Notification {
 }
 
 interface NotificationIconProps {
-  unreadCount: number;
+  unreadCount?: number;
   notifications: Notification[];
   markAsRead: (notificationId: string) => Promise<void>;
   markAllAsRead: () => Promise<void>;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
-export const NotificationIcon = ({ unreadCount, notifications, markAsRead, markAllAsRead, onClick }: NotificationIconProps) => {
+export const NotificationIcon = ({ unreadCount = 0, notifications, markAsRead, markAllAsRead, onClick = () => {} }: NotificationIconProps) => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 

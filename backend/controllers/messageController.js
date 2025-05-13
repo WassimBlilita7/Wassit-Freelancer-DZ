@@ -100,3 +100,23 @@ export const deleteMessage = async (req, res) => {
         res.status(500).json({ message: "Erreur Serveur" });
     }
 };
+
+export const getUserConversations = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const messages = await Message.find({
+      $or: [{ sender: userId }, { receiver: userId }]
+    }).sort({ createdAt: -1 });
+
+    const interlocutors = new Set();
+    messages.forEach(msg => {
+      if (msg.sender.toString() !== userId) interlocutors.add(msg.sender.toString());
+      if (msg.receiver.toString() !== userId) interlocutors.add(msg.receiver.toString());
+    });
+
+    const users = await User.find({ _id: { $in: Array.from(interlocutors) } }).select('username profile.profilePicture');
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ message: "Erreur serveur", error: error.message });
+  }
+};

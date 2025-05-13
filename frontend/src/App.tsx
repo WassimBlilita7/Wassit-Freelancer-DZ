@@ -24,6 +24,7 @@ import EditPost from "./pages/EditPost";
 import { ApplicationsPage } from "./pages/ApplicationsPage";
 import MyApplicationsPage from "./pages/MyApplicationsPage";
 import NotFoundPage from './pages/NotFoundPage';
+import { MessagesPage } from "./pages/MessagesPage";
 
 function AppContent() {
   const location = useLocation();
@@ -57,6 +58,7 @@ function AppContent() {
           <Route path="/category/:categoryId" element={<CategoryPage />} />
           <Route path="/profile/:username" element={<ProfilePage />} />
           <Route path="/edit-post/:postId" element={<EditPost />} />
+          <Route path="/messages" element={<MessagesPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>

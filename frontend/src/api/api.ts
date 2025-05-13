@@ -205,3 +205,18 @@ export const getClientStats = async () => {
   const response = await api.get("/stats/client");
   return response.data;
 };
+
+export const getUserConversations = async () => {
+  const response = await api.get("/message/conversations");
+  return response.data;
+};
+
+export const getConversation = async (userId: string) => {
+  const response = await api.get(`/message/conversation/${userId}`);
+  return response.data;
+};
+
+export const sendMessage = async (receiverId: string, content: string) => {
+  const response = await api.post("/message", { receiverId, content });
+  return response.data;
+};

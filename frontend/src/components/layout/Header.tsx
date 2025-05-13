@@ -10,7 +10,7 @@ import { ThemeContext } from '@/context/ThemeContext';
 import { AuthContext } from '@/context/AuthContext';
 import { getMenuItems } from '@/data/menuItems';
 import Logo from '../../assets/logo/logo-transparent-svg.svg';
-import { FaBars, FaTimes, FaSun, FaMoon } from 'react-icons/fa';
+import { FaBars, FaTimes, FaSun, FaMoon, FaFacebookMessenger } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export const Header = () => {
@@ -82,6 +82,19 @@ export const Header = () => {
                 markAllAsRead={markAllAsRead}
                 onClick={() => {}}
               />
+            )}
+
+            {/* Messenger Icon */}
+            {isAuthenticated && (
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => navigate('/messages')}
+                className="p-2 rounded-full bg-[var(--background)] text-[var(--text)] hover:bg-[var(--primary)] hover:text-white transition-colors duration-200"
+                aria-label="Messages"
+              >
+                <FaFacebookMessenger className="w-5 h-5" />
+              </motion.button>
             )}
 
             {/* Theme Toggle */}

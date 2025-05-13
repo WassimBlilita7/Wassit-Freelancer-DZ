@@ -34,32 +34,13 @@ export const ApplicationList = ({ post, onApplicationUpdate, filter = "all" }: A
     }
   };
 
-  const handleDownloadCV = async (cvUrl: string, freelancerName: string) => {
-    setDownloading(freelancerName);
-    try {
-      const response = await fetch(cvUrl);
-      const blob = await response.blob();
-
-      // Créer un objet URL pour le blob
-      const url = window.URL.createObjectURL(blob);
-
-      // Créer un lien temporaire pour le téléchargement
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `${freelancerName}_CV.pdf`; // Forcer l'extension .pdf
-      document.body.appendChild(link);
-      link.click();
-
-      // Nettoyer
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-      toast.success("CV téléchargé avec succès");
-    } catch (error) {
-      console.error("Erreur détaillée:", error);
-      toast.error("Erreur lors du téléchargement du CV");
-    } finally {
-      setDownloading(null);
+  const handleDownloadCV = (cvUrl: string, freelancerName: string) => {
+    if (!cvUrl) {
+      toast.error("CV non disponible");
+      return;
     }
+    window.open(cvUrl, "_blank");
+    toast.success("Le CV s'est ouvert dans un nouvel onglet");
   };
 
   const handleFreelancerClick = (username: string) => {

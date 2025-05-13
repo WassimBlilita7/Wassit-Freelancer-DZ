@@ -70,8 +70,8 @@ const FreelancerStats = () => {
 };
 
 // Composant pour les statistiques des clients
-const ClientStats = () => {
-  const { stats, loading, error } = useClientStats();
+const ClientStats = ({ username }: { username: string }) => {
+  const { stats, loading, error } = useClientStats(username);
 
   console.log("ClientStats render:", { stats, loading, error });
 
@@ -180,7 +180,7 @@ export const ProfilePage = () => {
         />
         
         {/* Statistiques spécifiques selon le type d'utilisateur */}
-        {profile.isFreelancer ? <FreelancerStats /> : <ClientStats />}
+        {profile.isFreelancer ? <FreelancerStats /> : <ClientStats username={profile.username} />}
         
         <ProfileInfo 
           profile={profile.profile as ProfileData} 

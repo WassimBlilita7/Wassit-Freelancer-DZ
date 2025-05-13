@@ -230,3 +230,8 @@ export const markMessageAsRead = async (messageId: string) => {
   const response = await api.put(`/message/${messageId}/read`);
   return response.data;
 };
+
+export const getClientStatsByUsername = async (username: string) => {
+  const response = await api.get(`/stats/client/${username}`);
+  return response.data;
+};

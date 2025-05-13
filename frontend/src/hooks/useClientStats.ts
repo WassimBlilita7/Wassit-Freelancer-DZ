@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getClientStats } from "../api/api";
+import { getClientStats, getClientStatsByUsername } from "../api/api";
 import { toast } from "react-hot-toast";
 
 interface ClientStats {
@@ -11,7 +11,7 @@ interface ClientStats {
   activeFreelancers: number;
 }
 
-export const useClientStats = () => {
+export const useClientStats = (username?: string) => {
   const [stats, setStats] = useState<ClientStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -22,7 +22,7 @@ export const useClientStats = () => {
       setLoading(true);
       setError(null);
       
-      const data = await getClientStats();
+      const data = username ? await getClientStatsByUsername(username) : await getClientStats();
       console.log("Client stats response:", data);
       
       // Correction robuste : désimbrication récursive
@@ -77,7 +77,7 @@ export const useClientStats = () => {
 
   useEffect(() => {
     fetchStats();
-  }, []);
+  }, [username]);
 
   return { stats, loading, error, refetch: fetchStats };
 }; 

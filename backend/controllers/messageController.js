@@ -48,6 +48,7 @@ export const getConversation = async (req, res)=>{
         }).sort({ createdAt: 1 })
         .populate("sender" , "username")
         .populate("receiver" , "username")
+        .select("_id sender receiver content read createdAt isDeleted deletedAt");
 
         res.status(200).json(message);
     } catch (error) {
@@ -83,7 +84,6 @@ export const deleteMessage = async (req, res) => {
         const { messageId } = req.params;
         const userId = req.user.id;
         
-
         const message = await Message.findOne({
             _id : messageId,
             sender : userId
@@ -93,7 +93,11 @@ export const deleteMessage = async (req, res) => {
             return res.status(404).json({ message: "Message non trouvé ou non autorisé" });
         }
 
-        await Message.findByIdAndDelete(messageId);
+        // Suppression logique : on garde la trace
+        message.isDeleted = true;
+        message.content = "[deleted]";
+        message.deletedAt = new Date();
+        await message.save();
         res.status(200).json({ message: "Message supprimé avec succès" });
     } catch (error) {
         console.log(error);

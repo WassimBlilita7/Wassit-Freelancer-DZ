@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext, useRef } from "react";
-import { getUserConversations, getConversation, sendMessage } from "@/api/api";
-import { FaPaperPlane, FaUserPlus } from "react-icons/fa";
+import { getUserConversations, getConversation, sendMessage, deleteMessage as deleteMessageApi } from "@/api/api";
+import { FaPaperPlane, FaUserPlus, FaTrashAlt } from "react-icons/fa";
 import { AuthContext } from "@/context/AuthContext";
 
 export const MessagesPage = () => {
@@ -11,6 +11,7 @@ export const MessagesPage = () => {
   const [message, setMessage] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [isDark, setIsDark] = useState(() => document.documentElement.classList.contains('dark'));
+  const [hoveredMsgId, setHoveredMsgId] = useState<string | null>(null);
 
   useEffect(() => {
     const observer = new MutationObserver(() => {
@@ -50,6 +51,14 @@ export const MessagesPage = () => {
     await sendMessage(selectedUser._id, message);
     setMessage("");
     // getConversation(selectedUser._id).then(setMessages); // plus besoin, polling s'en charge
+  };
+
+  // Suppression d'un message
+  const handleDeleteMessage = async (msgId: string) => {
+    if (window.confirm("Supprimer ce message ?")) {
+      await deleteMessageApi(msgId);
+      // Le polling va rafraîchir la conversation
+    }
   };
 
   // Styles UI/UX modernes pour la page de messages (clair et sombre)
@@ -124,6 +133,8 @@ export const MessagesPage = () => {
                 <div
                   key={msg._id}
                   className={`flex items-end mb-2 ${isMe ? "justify-end" : "justify-start"}`}
+                  onMouseEnter={() => setHoveredMsgId(msg._id)}
+                  onMouseLeave={() => setHoveredMsgId(null)}
                 >
                   {/* Avatar pour les messages reçus */}
                   {!isMe && (
@@ -134,10 +145,28 @@ export const MessagesPage = () => {
                     />
                   )}
                   <div
-                    className={`max-w-xs px-4 py-2 shadow-lg font-medium text-base`}
+                    className={`max-w-xs px-4 py-2 shadow-lg font-medium text-base relative group`}
                     style={isMe ? msgStyles.sent : msgStyles.received}
                   >
-                    {msg.content}
+                    {msg.isDeleted ? (
+                      <span className="italic text-sm text-red-400 flex items-center gap-1">
+                        <FaTrashAlt className="inline-block text-red-400" /> Ce message a été supprimé
+                      </span>
+                    ) : (
+                      <>
+                        {msg.content}
+                        {/* Icône suppression visible seulement pour l'expéditeur au hover */}
+                        {isMe && hoveredMsgId === msg._id && !msg.isDeleted && (
+                          <button
+                            className="absolute top-1 right-1 p-1 rounded-full bg-white/80 hover:bg-red-100 text-red-500 shadow transition-all"
+                            title="Supprimer"
+                            onClick={() => handleDeleteMessage(msg._id)}
+                          >
+                            <FaTrashAlt />
+                          </button>
+                        )}
+                      </>
+                    )}
                   </div>
                   {isMe && (
                     <img

@@ -220,3 +220,8 @@ export const sendMessage = async (receiverId: string, content: string) => {
   const response = await api.post("/message", { receiverId, content });
   return response.data;
 };
+
+export const deleteMessage = async (messageId: string) => {
+  const response = await api.delete(`/message/${messageId}`);
+  return response.data;
+};

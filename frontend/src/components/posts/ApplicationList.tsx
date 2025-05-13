@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { PostData } from "../../types";
@@ -17,7 +18,7 @@ interface ApplicationListProps {
 
 export const ApplicationList = ({ post, onApplicationUpdate, filter = "all" }: ApplicationListProps) => {
   const [loading, setLoading] = useState<string | null>(null);
-  const [downloading, setDownloading] = useState<string | null>(null);
+  const [downloading] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleStatusUpdate = async (applicationId: string, status: "accepted" | "rejected") => {
@@ -34,7 +35,7 @@ export const ApplicationList = ({ post, onApplicationUpdate, filter = "all" }: A
     }
   };
 
-  const handleDownloadCV = (cvUrl: string, freelancerName: string) => {
+  const handleDownloadCV = (cvUrl: string, _freelancerName: string) => {
     if (!cvUrl) {
       toast.error("CV non disponible");
       return;

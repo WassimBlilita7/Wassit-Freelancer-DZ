@@ -18,7 +18,7 @@ import { SearchResults } from "./pages/SearchResults";
 import CategoryPage from "./pages/CategoryPage";
 import { Footer } from "./components/layout/Footer";
 import { PostProvider } from "./context/PostContext";
-import PostDetails from "./pages/PostDetail"; // Correctement importé
+import PostDetails from "./pages/PostDetail";
 import { ProfilePage } from "./pages/ProfilePage";
 import EditPost from "./pages/EditPost";
 import { ApplicationsPage } from "./pages/ApplicationsPage";
@@ -28,12 +28,16 @@ import { MessagesPage } from "./pages/MessagesPage";
 
 function AppContent() {
   const location = useLocation();
-
-  const hideHeader = ["/signup", "/login", "/verify-otp", "/forgot-password", "/reset-password"].includes(
-    location.pathname
-  );
-
   const showFooter = location.pathname === "/";
+  // Définir les routes où le header doit être masqué
+  const hideHeaderRoutes = [
+    "/login",
+    "/signup",
+    "/verify-otp",
+    "/forgot-password",
+    "/reset-password"
+  ];
+  const hideHeader = hideHeaderRoutes.includes(location.pathname);
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "var(--background)" }}>

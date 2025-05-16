@@ -15,7 +15,7 @@ import { getUserConversations, getConversation } from '@/api/api';
 
 export const Header = () => {
   const navigate = useNavigate();
-  const { isAuthenticated } = useProfile();
+  const { isAuthenticated } = useProfile({ redirectToLogin: false });
   const { currentUserId } = useContext(AuthContext);
   const { notifications, markAsRead, markAllAsRead } = useNotifications(currentUserId);
   const themeContext = useContext(ThemeContext);

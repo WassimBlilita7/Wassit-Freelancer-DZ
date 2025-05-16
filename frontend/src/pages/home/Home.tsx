@@ -7,7 +7,6 @@ import { InspirationSection } from "../../components/home/InspirationSection";
 import { useProfile } from "../../hooks/useProfile";
 import { Loader } from "../../components/common/Loader";
 import { motion } from "framer-motion";
-import { Button } from "../../components/ui/button";
 import { useNavigate } from "react-router-dom";
 
 export const Home = () => {

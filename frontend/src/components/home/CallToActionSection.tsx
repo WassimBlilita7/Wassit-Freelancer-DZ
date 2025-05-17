@@ -30,7 +30,7 @@ export const CallToActionSection = () => {
             className="py-3 px-6 text-lg bg-[var(--primary)] hover:bg-[var(--primary)]/90"
             style={{ color: "var(--card)" }}
           >
-            Commencer maintenant <FaArrowRight className="ml-2" />
+            Profitiez de notre service <FaArrowRight className="ml-2" />
           </Button>
         </motion.div>
       </motion.div>

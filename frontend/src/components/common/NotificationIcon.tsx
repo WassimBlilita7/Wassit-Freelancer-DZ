@@ -8,7 +8,7 @@ interface Notification {
   recipient: string;
   sender: { _id: string; username: string };
   post: { _id: string; title: string };
-  type: "application_accepted" | "new_application";
+  type: "application_accepted" | "new_application" | "application_accepted_by_client";
   message: string;
   isRead: boolean;
   createdAt: string;

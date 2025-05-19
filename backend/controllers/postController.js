@@ -251,8 +251,8 @@ export const updateApplicationStatus = async (req, res) => {
               recipient: application.freelancer,
               sender: req.user.id,
               post: postId,
-              type: "application_accepted",
-              message: `Votre candidature pour "${post.title}" a été acceptée par ${req.user.username}`,
+              type: "application_accepted_by_client",
+              message: `Vous avez été accepté pour "${post.title}". Suivez l'avancement dans la section Projets.`,
             });
             await notification.save();
       

@@ -24,8 +24,8 @@ const ProjectFinalization: React.FC = () => {
         // Sécurité d'accès :
         const acceptedApp = data.applications.find(app => app.status === 'accepted');
         let acceptedFreelancerId = acceptedApp?.freelancer;
-        if (acceptedFreelancerId && typeof acceptedFreelancerId === 'object' && acceptedFreelancerId._id) {
-          acceptedFreelancerId = acceptedFreelancerId._id;
+        if (acceptedFreelancerId && typeof acceptedFreelancerId === 'object') {
+          acceptedFreelancerId = (acceptedFreelancerId as { _id: string })._id;
         }
         const clientId = data.client?._id;
         if (
@@ -88,8 +88,8 @@ const ProjectFinalization: React.FC = () => {
   // Trouver le freelancer accepté
   const acceptedApp = post.applications.find(app => app.status === 'accepted');
   let acceptedFreelancerId = acceptedApp?.freelancer;
-  if (acceptedFreelancerId && typeof acceptedFreelancerId === 'object' && acceptedFreelancerId._id) {
-    acceptedFreelancerId = acceptedFreelancerId._id;
+  if (acceptedFreelancerId && typeof acceptedFreelancerId === 'object') {
+    acceptedFreelancerId = (acceptedFreelancerId as { _id: string })._id;
   }
   const clientId = post.client?._id;
   const isFreelancer = String(currentUserId) === String(acceptedFreelancerId);

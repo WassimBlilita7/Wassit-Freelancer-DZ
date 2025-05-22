@@ -8,7 +8,7 @@ interface Notification {
   recipient: string;
   sender: { _id: string; username: string };
   post: { _id: string; title: string };
-  type: "application_accepted" | "new_application" | "application_accepted_by_client";
+  type: "application_accepted" | "new_application" | "application_accepted_by_client" | "project_submitted" | "project_completed";
   message: string;
   isRead: boolean;
   createdAt: string;
@@ -35,7 +35,22 @@ export const NotificationIcon = ({ unreadCount = 0, notifications, markAsRead, m
     if (!notif.isRead) {
       await markAsRead(notif._id);
     }
-    navigate(`/post/${notif.post._id}`);
+
+    // Navigation basée sur le type de notification
+    switch (notif.type) {
+      case "new_application":
+        // Pour les nouvelles candidatures, naviguer vers la page des applications
+        navigate(`/post/${notif.post._id}/applications`);
+        break;
+      case "project_submitted":
+        // Pour les soumissions de projet, naviguer vers la page de finalisation
+        navigate(`/post/${notif.post._id}/finalize`);
+        break;
+      default:
+        // Pour les autres types de notifications, naviguer vers la page du post
+        navigate(`/post/${notif.post._id}`);
+    }
+    
     setIsOpen(false);
   };
 

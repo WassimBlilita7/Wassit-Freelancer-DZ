@@ -6,7 +6,7 @@ import { getPostById, submitProjectFinalization, acceptProjectFinalization } fro
 import { toast } from 'react-toastify';
 import { PostData } from '../types';
 import { motion } from 'framer-motion';
-import { FaFileDownload, FaDownload, FaFileAlt, FaExternalLinkAlt, FaLink } from 'react-icons/fa';
+import { FaFileDownload, FaDownload, FaFileAlt } from 'react-icons/fa';
 import Lottie from 'lottie-react';
 import successAnimation from '../assets/lottie/true.json';
 

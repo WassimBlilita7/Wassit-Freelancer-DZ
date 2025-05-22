@@ -43,10 +43,13 @@ interface PostCardProps {
 
 export const PostCard = ({ post, isFreelancer, currentUserId, onDelete }: PostCardProps) => {
   const [isDeleting, setIsDeleting] = useState(false);
-  const [] = useState(false);
-  const [] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
+
+  // Masquer les offres terminées pour les freelancers
+  if (isFreelancer && post.status === 'completed') {
+    return null;
+  }
 
   const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement;
@@ -83,7 +86,26 @@ export const PostCard = ({ post, isFreelancer, currentUserId, onDelete }: PostCa
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="relative h-2 bg-gradient-to-r from-[var(--primary)] to-[var(--secondary)]" />
+      {/* Image du projet */}
+      <div className="relative h-48 w-full overflow-hidden">
+        {post.picture ? (
+          <img
+            src={post.picture}
+            alt={post.title}
+            className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-[var(--primary)]/20 to-[var(--secondary)]/20 flex items-center justify-center">
+            <FaTags className="w-12 h-12 text-[var(--primary)]/40" />
+          </div>
+        )}
+        <div className="absolute top-2 right-2">
+          <Badge className={statusVariants({ status: post.status })}>
+            {post.status === "open" ? "Ouverte" : post.status === "in-progress" ? "En cours" : "Terminée"}
+          </Badge>
+        </div>
+      </div>
+
       <div className="p-6 relative z-10">
         <div className="flex justify-between items-start mb-4">
           <div>
@@ -209,9 +231,6 @@ export const PostCard = ({ post, isFreelancer, currentUserId, onDelete }: PostCa
         </div>
         <div className="flex items-center justify-between pt-4 border-t border-[var(--muted)]/20">
           <div className="flex items-center gap-3 w-full">
-            <Badge className={statusVariants({ status: post.status })}>
-              {post.status === "open" ? "Ouverte" : post.status === "in-progress" ? "En cours" : "Terminée"}
-            </Badge>
             <Badge variant="outline" className="text-xs">
               {new Date(post.createdAt).toLocaleDateString()}
             </Badge>

@@ -352,3 +352,126 @@ export const searchPosts = async (req, res) => {
         res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
 };
+
+export const submitFinalization = async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const freelancerId = req.user.id;
+        const { description } = req.body;
+        const files = req.files ? req.files.map(file => file.path) : [];
+
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).json({ message: "Offre non trouvée" });
+        }
+
+        // Vérifier si le freelancer est accepté pour ce projet
+        const acceptedApplication = post.applications.find(
+            app => app.freelancer.toString() === freelancerId && app.status === 'accepted'
+        );
+
+        if (!acceptedApplication) {
+            return res.status(403).json({ message: "Vous n'êtes pas autorisé à finaliser ce projet" });
+        }
+
+        // Mettre à jour le statut de finalisation
+        post.finalization = {
+            files,
+            description,
+            submittedAt: new Date(),
+            status: 'submitted'
+        };
+
+        await post.save();
+
+        // Créer une notification pour le client
+        const notification = new Notification({
+            recipient: post.client,
+            sender: freelancerId,
+            post: postId,
+            type: "project_submitted",
+            message: `Le projet "${post.title}" a été soumis pour finalisation`,
+        });
+
+        await notification.save();
+        await User.findByIdAndUpdate(post.client, {
+            $push: { notifications: notification._id },
+        });
+
+        res.status(200).json({ message: "Projet soumis avec succès", post });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+};
+
+export const acceptFinalization = async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const clientId = req.user.id;
+
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).json({ message: "Offre non trouvée" });
+        }
+
+        // Vérifier si l'utilisateur est le client
+        if (post.client.toString() !== clientId) {
+            return res.status(403).json({ message: "Vous n'êtes pas autorisé à accepter cette finalisation" });
+        }
+
+        // Vérifier si le projet a été soumis
+        if (post.finalization.status !== 'submitted') {
+            return res.status(400).json({ message: "Le projet n'a pas encore été soumis" });
+        }
+
+        // Mettre à jour le statut
+        post.finalization.status = 'completed';
+        post.finalization.acceptedAt = new Date();
+        post.status = 'completed';
+
+        await post.save();
+
+        // Créer une notification pour le freelancer
+        const acceptedApplication = post.applications.find(app => app.status === 'accepted');
+        if (acceptedApplication) {
+            const notification = new Notification({
+                recipient: acceptedApplication.freelancer,
+                sender: clientId,
+                post: postId,
+                type: "project_completed",
+                message: `Votre projet "${post.title}" a été marqué comme terminé`,
+            });
+
+            await notification.save();
+            await User.findByIdAndUpdate(acceptedApplication.freelancer, {
+                $push: { notifications: notification._id },
+            });
+        }
+
+        res.status(200).json({ message: "Projet marqué comme terminé", post });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+};
+
+export const getAcceptedPostsForFreelancer = async (req, res) => {
+  try {
+    const freelancerId = req.user.id;
+    // Chercher tous les posts où une application a ce freelancer et status 'accepted'
+    const posts = await Post.find({
+      'applications': {
+        $elemMatch: {
+          freelancer: freelancerId,
+          status: 'accepted'
+        }
+      }
+    })
+      .populate('client', 'username email')
+      .populate('category', 'name');
+    res.status(200).json({ posts });
+  } catch (error) {
+    res.status(500).json({ message: 'Erreur serveur', error: error.message });
+  }
+};

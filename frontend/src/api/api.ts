@@ -235,3 +235,33 @@ export const getClientStatsByUsername = async (username: string) => {
   const response = await api.get(`/stats/client/${username}`);
   return response.data;
 };
+
+// Finalisation du projet
+export const submitProjectFinalization = async (postId: string, data: FormData) => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const response = await api.post(`/post/${postId}/finalize`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const acceptProjectFinalization = async (postId: string) => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const response = await api.put(`/post/${postId}/accept-finalization`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getAcceptedPostsForFreelancer = async () => {
+  const response = await api.get("/post/accepted");
+  return response.data;
+};

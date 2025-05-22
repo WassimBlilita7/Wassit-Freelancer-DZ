@@ -48,7 +48,7 @@ const postSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['open', 'closed', 'in-progress'],
+        enum: ['open', 'closed', 'in-progress', 'completed'],
         default: 'open'
     },
     applications: [{
@@ -78,7 +78,30 @@ const postSchema = new mongoose.Schema({
             type: Date,
             default: Date.now
         }
-    }]
+    }],
+    finalization: {
+        files: [{
+            type: String, // URLs des fichiers
+            required: false
+        }],
+        description: {
+            type: String,
+            required: false
+        },
+        submittedAt: {
+            type: Date,
+            required: false
+        },
+        acceptedAt: {
+            type: Date,
+            required: false
+        },
+        status: {
+            type: String,
+            enum: ['pending', 'submitted', 'completed'],
+            default: 'pending'
+        }
+    }
 });
 
 const Post = mongoose.model('Post', postSchema);

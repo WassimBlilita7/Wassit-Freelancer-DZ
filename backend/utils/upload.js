@@ -45,6 +45,15 @@ const cvStorage = new CloudinaryStorage({
   },
 });
 
+// Stockage pour les fichiers du projet
+const projectFilesStorage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "DZFreelancer/project_files",
+    resource_type: "auto", // Permet tous les types de fichiers
+  },
+});
+
 // Middleware pour les "posts" (ton export original)
 export const upload = multer({
   storage: postsStorage,
@@ -83,5 +92,15 @@ export const uploadCV = multer({
       return cb(null, true);
     }
     cb(new Error("Seuls les fichiers PDF sont autorisés"));
+  },
+});
+
+// Middleware pour les fichiers du projet
+export const uploadProjectFiles = multer({
+  storage: projectFilesStorage,
+  limits: { fileSize: 50 * 1024 * 1024 }, // 50MB
+  fileFilter: (req, file, cb) => {
+    // Accepter tous les types de fichiers
+    cb(null, true);
   },
 });

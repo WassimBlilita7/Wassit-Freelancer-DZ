@@ -9,13 +9,13 @@ import { ThemeContext } from '@/context/ThemeContext';
 import { AuthContext } from '@/context/AuthContext';
 import { getMenuItems } from '@/data/menuItems';
 import Logo from '../../assets/logo/logo-transparent-svg.svg';
-import { FaBars, FaTimes, FaSun, FaMoon, FaFacebookMessenger } from 'react-icons/fa';
+import { FaBars, FaTimes, FaSun, FaMoon, FaFacebookMessenger, FaClipboardCheck } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getUserConversations, getConversation } from '@/api/api';
+import { getUserConversations, getConversation, getAcceptedPostsForFreelancer } from '@/api/api';
 
 export const Header = () => {
   const navigate = useNavigate();
-  const { isAuthenticated } = useProfile({ redirectToLogin: false });
+  const { isAuthenticated, isFreelancer } = useProfile({ redirectToLogin: false });
   const { currentUserId } = useContext(AuthContext);
   const { notifications, markAsRead, markAllAsRead } = useNotifications(currentUserId);
   const themeContext = useContext(ThemeContext);
@@ -25,6 +25,9 @@ export const Header = () => {
   const { query, setQuery, suggestions, performSearch } = useSearchPosts();
   const menuRef = useRef<HTMLDivElement>(null);
   const [unreadMessagesCount, setUnreadMessagesCount] = useState(0);
+  const [showAccepted, setShowAccepted] = useState(false);
+  const [acceptedPosts, setAcceptedPosts] = useState<any[]>([]);
+  const [loadingAccepted, setLoadingAccepted] = useState(false);
 
   const menuItems = isAuthenticated
     ? getMenuItems(navigate, false)
@@ -61,6 +64,16 @@ export const Header = () => {
     const interval = setInterval(fetchUnread, 3000);
     return () => clearInterval(interval);
   }, [currentUserId]);
+
+  // Fetch accepted posts for freelancer
+  useEffect(() => {
+    if (showAccepted && isFreelancer) {
+      setLoadingAccepted(true);
+      getAcceptedPostsForFreelancer()
+        .then(res => setAcceptedPosts(res.posts || []))
+        .finally(() => setLoadingAccepted(false));
+    }
+  }, [showAccepted, isFreelancer]);
 
   // Calcul du nombre de notifications non lues
   const unreadNotificationsCount = notifications.filter(n => !n.isRead).length;
@@ -99,6 +112,48 @@ export const Header = () => {
 
           {/* Actions */}
           <div className="flex items-center gap-2 md:gap-4">
+            {isAuthenticated && isFreelancer && (
+              <div className="relative">
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => setShowAccepted((v) => !v)}
+                  className="p-2 rounded-full bg-[var(--background)] text-[var(--text)] hover:bg-[var(--primary)] hover:text-white transition-colors duration-200"
+                  aria-label="Projets acceptés"
+                >
+                  <FaClipboardCheck className="w-5 h-5" />
+                </motion.button>
+                {showAccepted && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    className="absolute right-0 mt-2 w-80 bg-[var(--card)] border border-[var(--muted)]/20 rounded-lg shadow-xl z-30 overflow-hidden"
+                  >
+                    <div className="p-3 border-b border-[var(--muted)]/20 font-semibold text-[var(--primary)]">Projets à finaliser</div>
+                    <div className="max-h-96 overflow-y-auto">
+                      {loadingAccepted ? (
+                        <div className="p-4 text-center text-[var(--muted)]">Chargement...</div>
+                      ) : acceptedPosts.length === 0 ? (
+                        <div className="p-4 text-center text-[var(--muted)]">Aucun projet accepté</div>
+                      ) : (
+                        acceptedPosts.map((post) => (
+                          <button
+                            key={post._id}
+                            onClick={() => { setShowAccepted(false); navigate(`/post/${post._id}/finalize`); }}
+                            className="w-full text-left px-4 py-3 hover:bg-[var(--background)]/80 border-b border-[var(--muted)]/10 last:border-b-0"
+                          >
+                            <div className="font-bold text-[var(--text)]">{post.title}</div>
+                            <div className="text-xs text-[var(--muted)]">Client : {post.client?.username}</div>
+                          </button>
+                        ))
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </div>
+            )}
+
             {isAuthenticated && (
               <NotificationIcon
                 unreadCount={unreadNotificationsCount}

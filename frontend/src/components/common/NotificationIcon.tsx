@@ -20,9 +20,17 @@ interface NotificationIconProps {
   markAsRead: (notificationId: string) => Promise<void>;
   markAllAsRead: () => Promise<void>;
   onClick?: () => void;
+  isFreelancer?: boolean;
 }
 
-export const NotificationIcon = ({ unreadCount = 0, notifications, markAsRead, markAllAsRead, onClick = () => {} }: NotificationIconProps) => {
+export const NotificationIcon = ({ 
+  unreadCount = 0, 
+  notifications, 
+  markAsRead, 
+  markAllAsRead, 
+  onClick = () => {},
+  isFreelancer = false 
+}: NotificationIconProps) => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -36,19 +44,33 @@ export const NotificationIcon = ({ unreadCount = 0, notifications, markAsRead, m
       await markAsRead(notif._id);
     }
 
-    // Navigation basée sur le type de notification
-    switch (notif.type) {
-      case "new_application":
-        // Pour les nouvelles candidatures, naviguer vers la page des applications
-        navigate(`/post/${notif.post._id}/applications`);
-        break;
-      case "project_submitted":
-        // Pour les soumissions de projet, naviguer vers la page de finalisation
-        navigate(`/post/${notif.post._id}/finalize`);
-        break;
-      default:
-        // Pour les autres types de notifications, naviguer vers la page du post
-        navigate(`/post/${notif.post._id}`);
+    // Navigation basée sur le type de notification et le rôle de l'utilisateur
+    if (isFreelancer) {
+      // Navigation pour les freelancers
+      switch (notif.type) {
+        case "application_accepted_by_client":
+          // Quand le freelancer est accepté, naviguer vers la page de finalisation pour soumettre les fichiers
+          navigate(`/post/${notif.post._id}/finalize`);
+          break;
+        case "project_completed":
+          // Quand le projet est terminé, naviguer vers la page de finalisation pour voir le statut
+          navigate(`/post/${notif.post._id}/finalize`);
+          break;
+        default:
+          navigate(`/post/${notif.post._id}`);
+      }
+    } else {
+      // Navigation pour les clients
+      switch (notif.type) {
+        case "new_application":
+          navigate(`/post/${notif.post._id}/applications`);
+          break;
+        case "project_submitted":
+          navigate(`/post/${notif.post._id}/finalize`);
+          break;
+        default:
+          navigate(`/post/${notif.post._id}`);
+      }
     }
     
     setIsOpen(false);

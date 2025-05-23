@@ -10,5 +10,7 @@ export const ENV_VARS = {
     JWT_SECRET : process.env.JWT_SECRET,
     VITE_URL : process.env.VITE_URL,
     API_URL : process.env.API_URL,
-    
+    CHARGILY_API_KEY : process.env.CHARGILY_API_KEY,
+    CHARGILY_SECRET_KEY : process.env.CHARGILY_SECRET_KEY,
+
 }; 

@@ -129,7 +129,6 @@ const ProjectFinalization: React.FC = () => {
   if (acceptedFreelancerId && typeof acceptedFreelancerId === 'object') {
     acceptedFreelancerId = (acceptedFreelancerId as { _id: string })._id;
   }
-  const clientId = post.client?._id;
   const isFreelancer = String(currentUserId) === String(acceptedFreelancerId);
   const finalization = (post as any).finalization || { status: 'pending', files: [], description: '' };
 

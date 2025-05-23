@@ -34,7 +34,7 @@ export const HeroSection = ({ isFreelancer, navigate }: HeroSectionProps) => {
         </p>
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
           <Button
-            onClick={() => navigate(isFreelancer ? "/dashboard" : "/new-project")}
+            onClick={() => navigate(isFreelancer ? "/all-posts" : "/new-project")}
             className="py-3 px-6 text-lg bg-gradient-to-r from-[var(--primary)] to-[var(--secondary)] hover:from-[var(--primary)]/90 hover:to-[var(--secondary)]/90"
             style={{ color: "var(--card)" }}
           >

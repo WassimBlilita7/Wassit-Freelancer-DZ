@@ -7,7 +7,7 @@ interface Notification {
   _id: string;
   recipient: string;
   sender: { _id: string; username: string };
-  post: { _id: string; title: string };
+  post: { _id: string; title: string; finalization?: { status: string } };
   type: "application_accepted" | "new_application" | "application_accepted_by_client" | "project_submitted" | "project_completed";
   message: string;
   isRead: boolean;
@@ -76,6 +76,15 @@ export const NotificationIcon = ({
     setIsOpen(false);
   };
 
+  const getStatusIcon = (notif: Notification) => {
+    if (notif.type === "project_completed") {
+      return "✅";
+    } else if (notif.type === "project_submitted" || notif.type === "application_accepted_by_client") {
+      return "⏳";
+    }
+    return null;
+  };
+
   return (
     <div className="relative">
       <button
@@ -133,9 +142,14 @@ export const NotificationIcon = ({
                     <div className="flex items-start gap-3">
                       <div className={`w-2 h-2 rounded-full mt-2 ${!notif.isRead ? 'bg-blue-500' : 'bg-gray-300 dark:bg-gray-600'}`} />
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
-                          {notif.message}
-                        </p>
+                        <div className="flex items-center justify-between">
+                          <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
+                            {notif.message}
+                          </p>
+                          {getStatusIcon(notif) && (
+                            <span className="text-lg ml-2">{getStatusIcon(notif)}</span>
+                          )}
+                        </div>
                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                           {new Date(notif.createdAt).toLocaleString()}
                         </p>

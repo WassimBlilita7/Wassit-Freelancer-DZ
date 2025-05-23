@@ -456,6 +456,61 @@ export const acceptFinalization = async (req, res) => {
     }
 };
 
+export const rejectFinalization = async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const clientId = req.user.id;
+
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).json({ message: "Offre non trouvée" });
+        }
+
+        // Vérifier si l'utilisateur est le client
+        if (post.client.toString() !== clientId) {
+            return res.status(403).json({ message: "Vous n'êtes pas autorisé à rejeter cette finalisation" });
+        }
+
+        // Vérifier si le projet a été soumis
+        if (post.finalization.status !== 'submitted') {
+            return res.status(400).json({ message: "Le projet n'a pas encore été soumis" });
+        }
+
+        // Réinitialiser la finalisation
+        post.finalization = {
+            files: [],
+            description: "",
+            submittedAt: null,
+            acceptedAt: null,
+            status: 'pending'
+        };
+
+        await post.save();
+
+        // Créer une notification pour le freelancer
+        const acceptedApplication = post.applications.find(app => app.status === 'accepted');
+        if (acceptedApplication) {
+            const notification = new Notification({
+                recipient: acceptedApplication.freelancer,
+                sender: clientId,
+                post: postId,
+                type: "project_submitted",
+                message: `Le client a demandé des modifications pour le projet "${post.title}". Veuillez soumettre une nouvelle version.`,
+            });
+
+            await notification.save();
+            await User.findByIdAndUpdate(acceptedApplication.freelancer, {
+                $push: { notifications: notification._id },
+            });
+        }
+
+        res.status(200).json({ message: "Projet rejeté, le freelancer peut soumettre une nouvelle version", post });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+};
+
 export const getAcceptedPostsForFreelancer = async (req, res) => {
   try {
     const freelancerId = req.user.id;

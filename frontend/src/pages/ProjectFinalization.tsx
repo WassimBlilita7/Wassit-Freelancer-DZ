@@ -2,13 +2,14 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { getPostById, submitProjectFinalization, acceptProjectFinalization } from '../api/api';
+import { getPostById, submitProjectFinalization, acceptProjectFinalization, rejectProjectFinalization } from '../api/api';
 import { toast } from 'react-toastify';
 import { PostData } from '../types';
 import { motion } from 'framer-motion';
 import { FaFileDownload, FaDownload, FaFileAlt } from 'react-icons/fa';
 import Lottie from 'lottie-react';
 import successAnimation from '../assets/lottie/true.json';
+import { Loader } from '../components/common/Loader';
 
 const ProjectFinalization: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -18,6 +19,7 @@ const ProjectFinalization: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [files, setFiles] = useState<File[]>([]);
   const [description, setDescription] = useState('');
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -40,6 +42,7 @@ const ProjectFinalization: React.FC = () => {
           toast.error("Vous n'avez pas accès à cette page");
           navigate('/');
         }
+        setIsClient(currentUserId === clientId);
       } catch (e) {
         toast.error('Erreur lors du chargement du projet');
         navigate('/');
@@ -79,10 +82,23 @@ const ProjectFinalization: React.FC = () => {
     if (!id) return;
     try {
       await acceptProjectFinalization(id);
-      toast.success('Projet marqué comme terminé');
-      navigate(`/post/${id}`);
-    } catch {
-      toast.error('Erreur lors de la validation du projet');
+      toast.success('Projet accepté avec succès');
+      navigate('/all-posts');
+    } catch (error) {
+      console.error('Error accepting project:', error);
+      toast.error('Erreur lors de l\'acceptation du projet');
+    }
+  };
+
+  const handleReject = async () => {
+    if (!id) return;
+    try {
+      await rejectProjectFinalization(id);
+      toast.success('Projet rejeté, le freelancer peut soumettre une nouvelle version');
+      navigate('/all-posts');
+    } catch (error) {
+      console.error('Error rejecting project:', error);
+      toast.error('Erreur lors du rejet du projet');
     }
   };
 
@@ -99,12 +115,12 @@ const ProjectFinalization: React.FC = () => {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error('Erreur lors du téléchargement:', error);
+      console.error('Error downloading file:', error);
       toast.error('Erreur lors du téléchargement du fichier');
     }
   };
 
-  if (loading) return <div>Chargement...</div>;
+  if (loading) return <Loader />;
   if (!post) return <div>Projet introuvable</div>;
 
   // Trouver le freelancer accepté
@@ -115,7 +131,6 @@ const ProjectFinalization: React.FC = () => {
   }
   const clientId = post.client?._id;
   const isFreelancer = String(currentUserId) === String(acceptedFreelancerId);
-  const isClient = String(currentUserId) === String(clientId);
   const finalization = (post as any).finalization || { status: 'pending', files: [], description: '' };
 
   return (
@@ -263,14 +278,29 @@ const ProjectFinalization: React.FC = () => {
               transition={{ delay: 0.4 }}
               className="flex justify-center mt-8"
             >
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={handleAccept}
-                className="bg-green-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors duration-200"
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="flex gap-4"
               >
-                Accepter la livraison
-              </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleAccept}
+                  className="bg-green-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors duration-200"
+                >
+                  Accepter la livraison
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleReject}
+                  className="bg-red-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-red-700 transition-colors duration-200"
+                >
+                  Demander des modifications
+                </motion.button>
+              </motion.div>
             </motion.div>
           </motion.div>
         )}

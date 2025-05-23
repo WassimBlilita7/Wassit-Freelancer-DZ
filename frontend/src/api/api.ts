@@ -261,6 +261,16 @@ export const acceptProjectFinalization = async (postId: string) => {
   }
 };
 
+export const rejectProjectFinalization = async (postId: string) => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const response = await api.put(`/post/${postId}/reject-finalization`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const getAcceptedPostsForFreelancer = async () => {
   const response = await api.get("/post/accepted");
   return response.data;

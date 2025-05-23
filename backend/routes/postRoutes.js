@@ -1,5 +1,5 @@
 import express from "express";
-import { applyToPost, createPost, deletePost, getAllPosts, getPostById, searchPosts, updateApplicationStatus, updateFreelancerApplication, updatePost, submitFinalization, acceptFinalization, getAcceptedPostsForFreelancer } from "../controllers/postController.js";
+import { applyToPost, createPost, deletePost, getAllPosts, getPostById, searchPosts, updateApplicationStatus, updateFreelancerApplication, updatePost, submitFinalization, acceptFinalization, getAcceptedPostsForFreelancer, rejectFinalization } from "../controllers/postController.js";
 import { protect } from "../middleware/authMiddleware.js";
 import { upload, uploadCV, uploadProjectFiles } from "../utils/upload.js";
 const router = express.Router();
@@ -16,5 +16,6 @@ router.put("/:postId/applications/:applicationId/update", protect, updateFreelan
 router.post("/search", protect, searchPosts);
 router.post("/:id/finalize", protect, uploadProjectFiles.array('files', 5), submitFinalization);
 router.put("/:id/accept-finalization", protect, acceptFinalization);
+router.put("/:id/reject-finalization", protect, rejectFinalization);
 
 export default router;

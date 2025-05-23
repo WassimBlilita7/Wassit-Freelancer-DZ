@@ -32,10 +32,12 @@ app.use(passport.initialize());
 
 app.use(
     cors({
-      origin:[ 
+      origin:[
         ENV_VARS.VITE_URL,
-        ENV_VARS.API_URL
-      ], // Port par défaut de Vite
+        ENV_VARS.API_URL,
+        "https://www.wassitfreedz.com",
+        "https://wassitfreedz.com"
+      ],
       credentials: true,
     })
   );

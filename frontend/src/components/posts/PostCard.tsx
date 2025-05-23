@@ -10,6 +10,7 @@ import {
   FaTools,
   FaUser,
   FaUsers,
+  FaCheck,
 } from "react-icons/fa";
 import { Button } from "../ui/button";
 import { motion, AnimatePresence } from "framer-motion";
@@ -20,7 +21,7 @@ import { useNavigate } from "react-router-dom";
 import { handleDeletePost, handleEditPost } from "../../utils/postUtils";
 
 const statusVariants = cva(
-  "px-3 py-1 rounded-full text-xs font-medium tracking-wide uppercase border",
+  "px-3 py-1.5 rounded-full text-xs font-medium tracking-wide uppercase border flex items-center gap-2",
   {
     variants: {
       status: {
@@ -99,9 +100,24 @@ export const PostCard = ({ post, isFreelancer, currentUserId, onDelete }: PostCa
             <FaTags className="w-12 h-12 text-[var(--primary)]/40" />
           </div>
         )}
-        <div className="absolute top-2 right-2">
+        <div className="absolute top-4 right-4">
           <Badge className={statusVariants({ status: post.status })}>
-            {post.status === "open" ? "Ouverte" : post.status === "in-progress" ? "En cours" : "Terminée"}
+            {post.status === "open" ? (
+              <>
+                <FaClock className="w-3 h-3" />
+                Ouverte
+              </>
+            ) : post.status === "in-progress" ? (
+              <>
+                <FaTools className="w-3 h-3" />
+                En cours
+              </>
+            ) : (
+              <>
+                <FaCheck className="w-3 h-3" />
+                Terminée
+              </>
+            )}
           </Badge>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import swaggerJsdoc from 'swagger-jsdoc';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { ENV_VARS } from '../envVars.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,16 +16,20 @@ const options = {
       contact: {
         name: 'Wassit Support',
         email: 'wassim.blilita19@gmail.com'
+      },
+      license: {
+        name: 'MIT',
+        url: 'https://opensource.org/licenses/MIT'
       }
     },
     servers: [
       {
-        url: 'http://localhost:5000/api/v1',
-        description: 'Development server'
+        url: `${ENV_VARS.API_URL}/api/v1`,
+        description: 'Production server'
       },
       {
-        url: 'https://api.wassitfreedz.com/api/v1',
-        description: 'Production server'
+        url: 'http://localhost:5000/api/v1',
+        description: 'Development server'
       }
     ],
     components: {
@@ -32,7 +37,8 @@ const options = {
         bearerAuth: {
           type: 'http',
           scheme: 'bearer',
-          bearerFormat: 'JWT'
+          bearerFormat: 'JWT',
+          description: 'JWT token obtained from login endpoint'
         }
       }
     },

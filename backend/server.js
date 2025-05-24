@@ -28,9 +28,8 @@ app.use(passport.initialize());
 //app.use(rateLimitMiddleware);
 //app.use(antiDosMiddleware);
 
-// Swagger documentation route
-app.use('/api-docs', swaggerUi.serve);
-app.get('/api-docs', swaggerUi.setup(specs, {
+// Swagger documentation route with basic auth in production
+const swaggerOptions = {
   explorer: true,
   customCss: '.swagger-ui .topbar { display: none }',
   customSiteTitle: "Wassit Freelance API Documentation",
@@ -40,7 +39,22 @@ app.get('/api-docs', swaggerUi.setup(specs, {
     filter: true,
     showCommonExtensions: true
   }
-}));
+};
+
+// Serve Swagger UI
+app.use('/api-docs', swaggerUi.serve);
+
+// Setup Swagger UI with environment-specific configuration
+if (process.env.NODE_ENV === 'production') {
+  // In production, add basic auth protection
+  const basicAuth = require('express-basic-auth');
+  app.use('/api-docs', basicAuth({
+    users: { [ENV_VARS.SWAGGER_USER]: ENV_VARS.SWAGGER_PASSWORD },
+    challenge: true
+  }));
+}
+
+app.get('/api-docs', swaggerUi.setup(specs, swaggerOptions));
 
 app.use(
     cors({

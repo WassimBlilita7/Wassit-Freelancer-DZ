@@ -24,7 +24,7 @@ const options = {
     },
     servers: [
       {
-        url: `${ENV_VARS.API_URL}/api/v1`,
+        url: `www.wassitfreedz.com/api/v1`,
         description: 'Production server'
       },
       {

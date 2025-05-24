@@ -6,7 +6,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/v1/message:
+ * /message:
  *   post:
  *     summary: Send a message
  *     tags: [Messages]
@@ -36,7 +36,7 @@ router.post("/",protect,sendMessage);
 
 /**
  * @swagger
- * /api/v1/message/conversation/{userId}:
+ * /message/conversation/{userId}:
  *   get:
  *     summary: Get conversation with a user
  *     tags: [Messages]
@@ -56,7 +56,7 @@ router.get('/conversation/:userId', protect, getConversation);
 
 /**
  * @swagger
- * /api/v1/message/{messageId}/read:
+ * /message/{messageId}/read:
  *   put:
  *     summary: Mark message as read
  *     tags: [Messages]
@@ -78,7 +78,7 @@ router.put('/:messageId/read', protect, markAsRead);
 
 /**
  * @swagger
- * /api/v1/message/{messageId}:
+ * /message/{messageId}:
  *   delete:
  *     summary: Delete a message
  *     tags: [Messages]
@@ -100,7 +100,7 @@ router.delete('/:messageId', protect, deleteMessage);
 
 /**
  * @swagger
- * /api/v1/message/conversations:
+ * /message/conversations:
  *   get:
  *     summary: Get all user conversations
  *     tags: [Messages]

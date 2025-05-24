@@ -25,7 +25,7 @@ configureGoogleAuth();
 
 /**
  * @swagger
- * /api/v1/auth/signup:
+ * /auth/signup:
  *   post:
  *     summary: Register a new user
  *     tags: [Auth]
@@ -63,7 +63,7 @@ router.post("/signup", signup);
 
 /**
  * @swagger
- * /api/v1/auth/verify-otp:
+ * /auth/verify-otp:
  *   post:
  *     summary: Verify user's OTP
  *     tags: [Auth]
@@ -93,7 +93,7 @@ router.post("/verify-otp", verifyOTP);
 
 /**
  * @swagger
- * /api/v1/auth/login:
+ * /auth/login:
  *   post:
  *     summary: Login user
  *     tags: [Auth]
@@ -131,7 +131,7 @@ router.post("/login", login);
 
 /**
  * @swagger
- * /api/v1/auth/logout:
+ * /auth/logout:
  *   post:
  *     summary: Logout user
  *     tags: [Auth]
@@ -145,7 +145,7 @@ router.post("/logout", logout);
 
 /**
  * @swagger
- * /api/v1/auth/check:
+ * /auth/check:
  *   get:
  *     summary: Check authentication status
  *     tags: [Auth]
@@ -161,7 +161,7 @@ router.get("/check", protect, authCheck);
 
 /**
  * @swagger
- * /api/v1/auth/google:
+ * /auth/google:
  *   get:
  *     summary: Authenticate with Google
  *     tags: [Auth]
@@ -183,7 +183,7 @@ router.get(
 
 /**
  * @swagger
- * /api/v1/auth/forgot-password:
+ * /auth/forgot-password:
  *   post:
  *     summary: Request password reset
  *     tags: [Auth]
@@ -209,7 +209,7 @@ router.post("/forgot-password", forgotPassword);
 
 /**
  * @swagger
- * /api/v1/auth/reset-password:
+ * /auth/reset-password:
  *   post:
  *     summary: Reset password with OTP
  *     tags: [Auth]
@@ -242,7 +242,7 @@ router.post("/reset-password", resetPassword);
 
 /**
  * @swagger
- * /api/v1/auth/profile:
+ * /auth/profile:
  *   get:
  *     summary: Get user profile
  *     tags: [Auth]
@@ -258,7 +258,7 @@ router.get("/profile", protect, getProfile);
 
 /**
  * @swagger
- * /api/v1/auth/profile:
+ * /auth/profile:
  *   put:
  *     summary: Update user profile
  *     tags: [Auth]
@@ -299,7 +299,7 @@ router.put("/profile", protect, updateProfile);
 
 /**
  * @swagger
- * /api/v1/auth/profile/picture:
+ * /auth/profile/picture:
  *   put:
  *     summary: Update profile picture
  *     tags: [Auth]
@@ -325,7 +325,7 @@ router.put("/profile/picture", protect, uploadProfilePicture.single("profilePict
 
 /**
  * @swagger
- * /api/v1/auth/profile/{username}:
+ * /auth/profile/{username}:
  *   get:
  *     summary: Get profile by username
  *     tags: [Auth]

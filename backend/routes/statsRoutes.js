@@ -6,7 +6,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/v1/stats/client:
+ * /stats/client:
  *   get:
  *     summary: Get client statistics
  *     tags: [Statistics]
@@ -42,7 +42,7 @@ router.get("/client", protect, getClientStats);
 
 /**
  * @swagger
- * /api/v1/stats/client/{username}:
+ * /stats/client/{username}:
  *   get:
  *     summary: Get client statistics by username
  *     tags: [Statistics]

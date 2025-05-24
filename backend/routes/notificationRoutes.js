@@ -6,7 +6,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/v1/notification:
+ * /notification:
  *   get:
  *     summary: Get user notifications
  *     tags: [Notifications]
@@ -26,7 +26,7 @@ router.get("/", protect, getNotifications);
 
 /**
  * @swagger
- * /api/v1/notification/{id}/read:
+ * /notification/{id}/read:
  *   put:
  *     summary: Mark notification as read
  *     tags: [Notifications]

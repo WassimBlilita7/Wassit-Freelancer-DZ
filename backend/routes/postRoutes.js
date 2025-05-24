@@ -6,7 +6,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/v1/post:
+ * /post:
  *   get:
  *     summary: Get all posts
  *     tags: [Posts]
@@ -29,7 +29,7 @@ router.get("/",protect, getAllPosts);
 
 /**
  * @swagger
- * /api/v1/post/createPost:
+ * /post/createPost:
  *   post:
  *     summary: Create a new post
  *     tags: [Posts]
@@ -77,7 +77,7 @@ router.post("/createPost",protect, upload.single('picture'), createPost);
 
 /**
  * @swagger
- * /api/v1/post/accepted:
+ * /post/accepted:
  *   get:
  *     summary: Get accepted posts for freelancer
  *     tags: [Posts]
@@ -91,7 +91,7 @@ router.get("/accepted", protect, getAcceptedPostsForFreelancer);
 
 /**
  * @swagger
- * /api/v1/post/{id}:
+ * /post/{id}:
  *   get:
  *     summary: Get post by ID
  *     tags: [Posts]
@@ -111,7 +111,7 @@ router.get("/:id", getPostById);
 
 /**
  * @swagger
- * /api/v1/post/{id}/apply:
+ * /post/{id}/apply:
  *   post:
  *     summary: Apply to a post
  *     tags: [Posts]
@@ -151,7 +151,7 @@ router.post("/:id/apply", protect, uploadCV.single('cv'), applyToPost);
 
 /**
  * @swagger
- * /api/v1/post/{id}:
+ * /post/{id}:
  *   put:
  *     summary: Update a post
  *     tags: [Posts]
@@ -195,7 +195,7 @@ router.put("/:id", protect,upload.single('picture'), updatePost);
 
 /**
  * @swagger
- * /api/v1/post/{id}:
+ * /post/{id}:
  *   delete:
  *     summary: Delete a post
  *     tags: [Posts]
@@ -217,7 +217,7 @@ router.delete("/:id", protect, deletePost);
 
 /**
  * @swagger
- * /api/v1/post/{postId}/applications/{applicationId}:
+ * /post/{postId}/applications/{applicationId}:
  *   put:
  *     summary: Update application status
  *     tags: [Posts]
@@ -254,7 +254,7 @@ router.put("/:postId/applications/:applicationId", protect, updateApplicationSta
 
 /**
  * @swagger
- * /api/v1/post/{postId}/applications/{applicationId}/update:
+ * /post/{postId}/applications/{applicationId}/update:
  *   put:
  *     summary: Update freelancer application
  *     tags: [Posts]
@@ -292,7 +292,7 @@ router.put("/:postId/applications/:applicationId/update", protect, updateFreelan
 
 /**
  * @swagger
- * /api/v1/post/search:
+ * /post/search:
  *   post:
  *     summary: Search posts
  *     tags: [Posts]
@@ -317,7 +317,7 @@ router.post("/search", protect, searchPosts);
 
 /**
  * @swagger
- * /api/v1/post/{id}/finalize:
+ * /post/{id}/finalize:
  *   post:
  *     summary: Submit project finalization
  *     tags: [Posts]
@@ -353,7 +353,7 @@ router.post("/:id/finalize", protect, uploadProjectFiles.array('files', 5), subm
 
 /**
  * @swagger
- * /api/v1/post/{id}/accept-finalization:
+ * /post/{id}/accept-finalization:
  *   put:
  *     summary: Accept project finalization
  *     tags: [Posts]
@@ -373,7 +373,7 @@ router.put("/:id/accept-finalization", protect, acceptFinalization);
 
 /**
  * @swagger
- * /api/v1/post/{id}/reject-finalization:
+ * /post/{id}/reject-finalization:
  *   put:
  *     summary: Reject project finalization
  *     tags: [Posts]

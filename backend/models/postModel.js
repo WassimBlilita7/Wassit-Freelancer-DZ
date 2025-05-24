@@ -1,5 +1,66 @@
 import mongoose from 'mongoose';
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Post:
+ *       type: object
+ *       required:
+ *         - title
+ *         - description
+ *         - budget
+ *         - category
+ *         - client
+ *       properties:
+ *         title:
+ *           type: string
+ *           description: Title of the post
+ *         description:
+ *           type: string
+ *           description: Detailed description of the post
+ *         budget:
+ *           type: number
+ *           description: Budget for the project
+ *         category:
+ *           type: string
+ *           description: Category of the post
+ *         client:
+ *           type: string
+ *           description: ID of the client who created the post
+ *         status:
+ *           type: string
+ *           enum: [open, in-progress, completed, cancelled]
+ *           default: open
+ *           description: Current status of the post
+ *         skills:
+ *           type: array
+ *           items:
+ *             type: string
+ *           description: Required skills for the project
+ *         attachments:
+ *           type: array
+ *           items:
+ *             type: string
+ *           description: URLs of attached files
+ *         offers:
+ *           type: array
+ *           items:
+ *             type: string
+ *           description: IDs of offers made on this post
+ *         selectedOffer:
+ *           type: string
+ *           description: ID of the selected offer
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           description: Creation timestamp
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           description: Last update timestamp
+ */
+
 const postSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -18,6 +79,7 @@ const postSchema = new mongoose.Schema({
     budget: {
         type: Number,
         required: true,
+        min: 0
     },
     duration: {
         type: String,
@@ -102,6 +164,8 @@ const postSchema = new mongoose.Schema({
             default: 'pending'
         }
     }
+}, {
+    timestamps: true
 });
 
 const Post = mongoose.model('Post', postSchema);

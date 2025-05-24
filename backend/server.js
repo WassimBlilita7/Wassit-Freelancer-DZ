@@ -14,11 +14,10 @@ import passport from "passport";
 import cookieParser from "cookie-parser";
 import rateLimitMiddleware from "./middleware/rateLimitMiddleware.js";
 import antiDosMiddleware from "./middleware/antiDosMiddleware.js";
-
-
+import swaggerUi from 'swagger-ui-express';
+import { specs } from './config/swagger/swagger.js';
 
 const app = express();
-
 
 const PORT = ENV_VARS.PORT;
 app.use(express.json());
@@ -29,6 +28,19 @@ app.use(passport.initialize());
 //app.use(rateLimitMiddleware);
 //app.use(antiDosMiddleware);
 
+// Swagger documentation route
+app.use('/api-docs', swaggerUi.serve);
+app.get('/api-docs', swaggerUi.setup(specs, {
+  explorer: true,
+  customCss: '.swagger-ui .topbar { display: none }',
+  customSiteTitle: "Wassit Freelance API Documentation",
+  swaggerOptions: {
+    persistAuthorization: true,
+    docExpansion: 'list',
+    filter: true,
+    showCommonExtensions: true
+  }
+}));
 
 app.use(
     cors({

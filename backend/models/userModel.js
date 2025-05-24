@@ -1,5 +1,64 @@
 import mongoose from 'mongoose';
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       required:
+ *         - username
+ *         - email
+ *         - isFreelancer
+ *       properties:
+ *         username:
+ *           type: string
+ *           minLength: 5
+ *           maxLength: 20
+ *           description: Unique username for the user
+ *         email:
+ *           type: string
+ *           format: email
+ *           description: User's email address
+ *         password:
+ *           type: string
+ *           description: User's password (required for non-OAuth users)
+ *         isOAuthUser:
+ *           type: boolean
+ *           default: false
+ *           description: Whether the user signed up through OAuth
+ *         isFreelancer:
+ *           type: boolean
+ *           description: Whether the user is a freelancer
+ *         isVerified:
+ *           type: boolean
+ *           default: false
+ *           description: Whether the user's email is verified
+ *         profile:
+ *           type: object
+ *           properties:
+ *             firstName:
+ *               type: string
+ *             lastName:
+ *               type: string
+ *             bio:
+ *               type: string
+ *             skills:
+ *               type: array
+ *               items:
+ *                 type: string
+ *             companyName:
+ *               type: string
+ *             webSite:
+ *               type: string
+ *             profilePicture:
+ *               type: string
+ *             github:
+ *               type: string
+ *             linkedIn:
+ *               type: string
+ */
+
 const userSchema = new mongoose.Schema({
     username: {
         type: String,

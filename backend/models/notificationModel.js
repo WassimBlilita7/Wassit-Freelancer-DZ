@@ -16,7 +16,7 @@ import mongoose from "mongoose";
  *           description: ID of the user receiving the notification
  *         type:
  *           type: string
- *           enum: [offer, message, system]
+ *           enum: [offer, message, system, new_application, application_accepted, application_accepted_by_client, project_submitted, project_completed]
  *           description: Type of notification
  *         message:
  *           type: string
@@ -56,7 +56,7 @@ const notificationSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ["offer", "message", "system"], 
+    enum: ["offer", "message", "system", "new_application", "application_accepted", "application_accepted_by_client", "project_submitted", "project_completed"], 
     required: true,
   },
   message: {

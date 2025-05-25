@@ -118,10 +118,17 @@ export const applyToPost = async (req, res) => {
         const postId = req.params.id;
         const freelancerId = req.user.id;
         const { coverLetter, bidAmount } = req.body;
-        const cvFile = req.file; // Récupérer le fichier uploadé
+        const cvFile = req.file;
 
-        if (!cvFile) {
+        // Validation stricte des champs
+        if (!cvFile || !cvFile.path) {
             return res.status(400).json({ message: "Veuillez fournir un CV au format PDF" });
+        }
+        if (!coverLetter || typeof coverLetter !== 'string' || coverLetter.trim().length < 10) {
+            return res.status(400).json({ message: "La lettre de motivation doit contenir au moins 10 caractères" });
+        }
+        if (bidAmount === undefined || bidAmount === null || isNaN(Number(bidAmount)) || Number(bidAmount) <= 0) {
+            return res.status(400).json({ message: "Le montant proposé doit être un nombre supérieur à 0" });
         }
 
         const freelancer = await User.findById(freelancerId);
@@ -134,21 +141,24 @@ export const applyToPost = async (req, res) => {
             return res.status(404).json({message: "Offre non trouvée"});
         }
 
-        if(post.status === "accepted") {
-            return res.status(400).json({message: "Cette offre est déjà acceptée. Vous ne pouvez pas postuler"});
+        if(post.status !== "open") {
+            return res.status(400).json({message: "Cette offre n'est pas ouverte aux candidatures."});
         }
 
-        // si le freelancer a déjà postulé
-        const hasApplied = post.applications.find(application => application.freelancer.toString() === freelancerId);
+        // Vérifier si le freelancer a déjà postulé (même si l'id est un objet)
+        const hasApplied = post.applications.find(application => {
+            const appId = application.freelancer && application.freelancer.toString ? application.freelancer.toString() : application.freelancer;
+            return appId === freelancerId;
+        });
         if(hasApplied) {
             return res.status(400).json({message: "Vous avez déjà postulé à cette offre"});
         }
 
         post.applications.push({
             freelancer: freelancerId,
-            cv: cvFile.path, // Utiliser le chemin du fichier uploadé
+            cv: cvFile.path,
             coverLetter,
-            bidAmount
+            bidAmount: Number(bidAmount)
         });
 
         await post.save();
@@ -157,7 +167,7 @@ export const applyToPost = async (req, res) => {
             sender: freelancerId,
             post: postId,
             type: "new_application",
-            message: `${freelancer.username} a postulé à votre offre "${post.title}"`,
+            message: `${freelancer.username} a postulé à votre offre \"${post.title}\"`,
         });
 
         await notification.save();
@@ -166,8 +176,8 @@ export const applyToPost = async (req, res) => {
         });
         res.status(200).json({message: "Postulé avec succès" , post});
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Erreur serveur" });
+        console.error("Erreur dans applyToPost:", error);
+        res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
 };
 

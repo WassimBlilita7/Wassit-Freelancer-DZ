@@ -62,9 +62,23 @@ const PaymentPage: React.FC = () => {
               <div className="text-green-600 font-bold text-2xl mt-6">Projet payé avec succès !</div>
             </div>
           ) : (
-            <Button className="w-full" onClick={handlePay} disabled={loading}>
-              Payer maintenant
-            </Button>
+            <div className="space-y-6">
+              <h2 className="text-2xl font-bold text-center mb-4 text-[var(--primary)]">Récapitulatif du paiement</h2>
+              <div className="space-y-2 text-[var(--text)]">
+                <div><span className="font-semibold">Titre du projet :</span> {post.title}</div>
+                <div><span className="font-semibold">Montant à payer :</span> <span className="text-green-600 font-bold">{post.budget.toLocaleString()} DA</span></div>
+                <div><span className="font-semibold">Client :</span> {post.client?.username}</div>
+                <div><span className="font-semibold">Durée :</span> {post.duration}</div>
+                {post.category && <div><span className="font-semibold">Catégorie :</span> {typeof post.category === 'object' ? post.category.name : post.category}</div>}
+                <div><span className="font-semibold">Description :</span> <span className="text-sm text-[var(--muted)]">{post.description}</span></div>
+              </div>
+              <div className="bg-blue-50 border-l-4 border-blue-400 p-3 rounded text-blue-700 text-sm">
+                <span className="font-semibold">Sécurité :</span> Votre paiement est sécurisé et sera transféré au freelancer une fois le projet terminé.
+              </div>
+              <Button className="w-full mt-4" onClick={handlePay} disabled={loading}>
+                {loading ? "Paiement en cours..." : "Payer maintenant"}
+              </Button>
+            </div>
           )}
         </CardContent>
       </Card>

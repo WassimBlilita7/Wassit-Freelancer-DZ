@@ -1,6 +1,6 @@
 // src/data/menuItems.ts
 import { IconType } from "react-icons";
-import { FaHome, FaUser, FaPlusCircle, FaSignOutAlt, FaList } from "react-icons/fa";
+import { FaHome, FaUser, FaPlusCircle, FaSignOutAlt, FaList, FaCreditCard } from "react-icons/fa";
 
 export interface MenuItemData {
   text: string;
@@ -35,6 +35,13 @@ export const getMenuItems = (navigate: (path: string) => void, isFreelancer: boo
       icon: FaPlusCircle,
       action: () => navigate("/new-project"),
       description: "Créer une nouvelle offre de projet",
+      restrictedTo: "client",
+    },
+    {
+      text: "Mes Paiements",
+      icon: FaCreditCard,
+      action: () => navigate("/my-payments"),
+      description: "Voir l'historique de mes paiements",
       restrictedTo: "client",
     },
     {

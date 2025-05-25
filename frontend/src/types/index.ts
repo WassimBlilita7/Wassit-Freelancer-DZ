@@ -79,6 +79,7 @@ export interface PostData {
   profile?: ProfileData;
   picture?: string;
   __v?: number;
+  paid?: boolean;
 }
 
 export interface Category {
@@ -93,4 +94,21 @@ export interface ApplyToPostData {
   cv: string;
   coverLetter: string;
   bidAmount: number;
+}
+
+export interface PaymentData {
+  _id: string;
+  postId: string;
+  clientId: string;
+  freelancerId: string;
+  amount: number;
+  status: "pending" | "succeeded" | "failed";
+  provider: "stripe" | "paypal" | "mock";
+  createdAt: string;
+}
+
+export interface PaymentStatus {
+  status: "pending" | "succeeded" | "failed";
+  paymentId?: string;
+  paid?: boolean;
 }

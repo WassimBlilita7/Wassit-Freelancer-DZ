@@ -26,6 +26,8 @@ import MyApplicationsPage from "./pages/MyApplicationsPage";
 import NotFoundPage from './pages/NotFoundPage';
 import { MessagesPage } from "./pages/MessagesPage";
 import ProjectFinalization from './pages/ProjectFinalization';
+import PaymentPage from "./pages/payment/PaymentPage";
+import PaymentHistoryPage from "./pages/payment/PaymentHistoryPage";
 
 function AppContent() {
   const location = useLocation();
@@ -65,6 +67,8 @@ function AppContent() {
           <Route path="/edit-post/:postId" element={<EditPost />} />
           <Route path="/messages" element={<MessagesPage />} />
           <Route path="/post/:id/finalize" element={<ProjectFinalization />} />
+          <Route path="/post/:postId/payment" element={<PaymentPage />} />
+          <Route path="/my-payments" element={<PaymentHistoryPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>

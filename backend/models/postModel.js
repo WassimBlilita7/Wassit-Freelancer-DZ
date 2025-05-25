@@ -163,6 +163,10 @@ const postSchema = new mongoose.Schema({
             enum: ['pending', 'submitted', 'completed'],
             default: 'pending'
         }
+    },
+    paid: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true

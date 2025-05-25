@@ -275,3 +275,20 @@ export const getAcceptedPostsForFreelancer = async () => {
   const response = await api.get("/post/accepted");
   return response.data;
 };
+
+export const initiatePayment = async (postId: string, amount: number) => {
+  if (!postId || typeof postId !== 'string') throw new Error('postId manquant ou invalide');
+  if (amount === undefined || amount === null || isNaN(Number(amount)) || Number(amount) <= 0) throw new Error('amount manquant ou invalide');
+  const response = await api.post("/payment/initiate", { postId: String(postId), amount: Number(amount) });
+  return response.data;
+};
+
+export const verifyPayment = async (paymentId: string, data: any) => {
+  const response = await api.post(`/payment/verify`, { paymentId, ...data });
+  return response.data;
+};
+
+export const getPaymentStatus = async (postId: string) => {
+  const response = await api.get(`/payment/${postId}/status`);
+  return response.data;
+};

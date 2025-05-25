@@ -1,6 +1,7 @@
 import Payment from "../models/paymentModel.js";
 import Post from "../models/postModel.js";
 import User from "../models/userModel.js";
+import Notification from "../models/notificationModel.js";
 
 // Initie un paiement (mock)
 export const initiatePayment = async (req, res) => {
@@ -41,6 +42,17 @@ export const initiatePayment = async (req, res) => {
     await payment.save();
     post.paid = true;
     await post.save();
+    // Notifier le freelancer
+    const clientUser = await User.findById(clientId);
+    const notification = new Notification({
+      recipient: freelancerId,
+      sender: clientId,
+      post: postId,
+      type: "project_paid",
+      message: `${clientUser?.username || "Un client"} a payé le projet "${post.title}". Les fonds sont désormais disponibles après validation.`
+    });
+    await notification.save();
+    await User.findByIdAndUpdate(freelancerId, { $push: { notifications: notification._id } });
     res.status(201).json({ message: "Paiement effectué avec succès", payment });
   } catch (err) {
     console.error("Erreur dans initiatePayment:", err);

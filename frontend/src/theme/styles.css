@@ -238,3 +238,31 @@ input:focus, select:focus, textarea:focus {
   opacity: 0.9;
   transform: translateY(-1px);
 }
+
+.card-gradient-light {
+  background: linear-gradient(135deg, #ff9800 0%, #ff3d00 100%);
+}
+.card-gradient-dark {
+  background: linear-gradient(135deg, #3a7bd5 0%, #3a6073 100%);
+}
+.card-gradient {
+  transition: background 0.5s;
+}
+
+:root.light .card-gradient {
+  background: linear-gradient(135deg, #ff9800 0%, #ff3d00 100%);
+}
+:root.dark .card-gradient {
+  background: linear-gradient(135deg, #3a7bd5 0%, #3a6073 100%);
+}
+
+.card-gradient, .card-gradient-light, .card-gradient-dark {
+  color: #fff;
+}
+
+/* Optionnel : animation subtile */
+@media (prefers-color-scheme: dark) {
+  .card-gradient {
+    background: linear-gradient(135deg, #232526 0%, #414345 100%);
+  }
+}

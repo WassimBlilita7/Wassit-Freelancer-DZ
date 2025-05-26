@@ -13,7 +13,13 @@ export const useFetchPosts = () => {
     setLoading(true);
     try {
       const authResponse = await checkAuth();
-      setIsFreelancer(authResponse.userData?.isFreelancer || false);
+      let isFreelancerValue = false;
+      if (authResponse && typeof authResponse.user === 'object' && typeof authResponse.user.isFreelancer === 'boolean') {
+        isFreelancerValue = authResponse.user.isFreelancer;
+      } else if (authResponse && typeof authResponse.userData === 'object' && typeof authResponse.userData.isFreelancer === 'boolean') {
+        isFreelancerValue = authResponse.userData.isFreelancer;
+      }
+      setIsFreelancer(isFreelancerValue);
 
       const fetchedPosts = await getAllPosts();
       setPosts(fetchedPosts);

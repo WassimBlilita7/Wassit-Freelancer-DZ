@@ -320,14 +320,25 @@ const ProjectFinalization: React.FC = () => {
             <p className="text-gray-600 dark:text-gray-400 mb-6">
               Le projet a été marqué comme terminé. Merci d'avoir utilisé notre plateforme.
             </p>
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => navigate(`/post/${id}`)}
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200"
-            >
-              Retour au projet
-            </motion.button>
+            {isClient ? (
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => navigate(`/post/${id}/payment`)}
+                className="bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors duration-200"
+              >
+                Payer le freelancer
+              </motion.button>
+            ) : isFreelancer ? null : (
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => navigate(`/post/${id}`)}
+                className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200"
+              >
+                Retour au projet
+              </motion.button>
+            )}
           </motion.div>
         )}
       </motion.div>

@@ -72,9 +72,6 @@ export const AllPosts = () => {
   };
 
   // Gestion du filtre catégorie
-  const handleFilterChange = (categoryId: string | null) => {
-    filterPosts(categoryId, statusFilter, budgetMin, budgetMax);
-  };
 
   // Gestion du filtre statut
   const handleStatusFilterChange = (status: string) => {

@@ -12,6 +12,7 @@ import ReactPaginate from "react-paginate";
 import { AuthContext } from "../context/AuthContext";
 import { Button } from "../components/ui/button";
 import { FaCheckCircle, FaListAlt } from "react-icons/fa";
+import { Input } from "../components/ui/input";
 
 const ITEMS_PER_PAGE = 9;
 
@@ -26,6 +27,8 @@ export const AllPosts = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [filteredPosts, setFilteredPosts] = useState<PostData[]>([]);
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [budgetMin, setBudgetMin] = useState<string>("");
+  const [budgetMax, setBudgetMax] = useState<string>("");
   const { currentUserId } = useContext(AuthContext);
 
   const { currentPage, setCurrentPage, pageCount, paginatedItems, handlePageChange } = usePagination(filteredPosts, ITEMS_PER_PAGE);
@@ -42,8 +45,8 @@ export const AllPosts = () => {
     loadCategories();
   }, []);
 
-  // Fonction de filtrage combinée (catégorie + statut)
-  const filterPosts = (categoryId: string | null, status: string) => {
+  // Fonction de filtrage combinée (catégorie + statut + budget)
+  const filterPosts = (categoryId: string | null, status: string, min: string, max: string) => {
     let result = posts;
     if (categoryId) {
       result = result.filter((post) => post.category?._id === categoryId);
@@ -53,26 +56,44 @@ export const AllPosts = () => {
     } else if (status === "not_completed") {
       result = result.filter((post) => post.status !== "completed");
     }
+    // Filtrage budget pour freelancer uniquement
+    if (isFreelancer === true) {
+      const minVal = min ? parseFloat(min) : null;
+      const maxVal = max ? parseFloat(max) : null;
+      if (minVal !== null) {
+        result = result.filter((post) => post.budget >= minVal);
+      }
+      if (maxVal !== null) {
+        result = result.filter((post) => post.budget <= maxVal);
+      }
+    }
     setFilteredPosts(result);
     setCurrentPage(0);
   };
 
   // Gestion du filtre catégorie
   const handleFilterChange = (categoryId: string | null) => {
-    filterPosts(categoryId, statusFilter);
+    filterPosts(categoryId, statusFilter, budgetMin, budgetMax);
   };
 
   // Gestion du filtre statut
   const handleStatusFilterChange = (status: string) => {
     setStatusFilter(status);
-    filterPosts(selectedCategory, status);
+    filterPosts(selectedCategory, status, budgetMin, budgetMax);
   };
 
   // Pour garder la catégorie sélectionnée (pour la combiner avec le filtre statut)
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const handleCategoryChange = (categoryId: string | null) => {
     setSelectedCategory(categoryId);
-    filterPosts(categoryId, statusFilter);
+    filterPosts(categoryId, statusFilter, budgetMin, budgetMax);
+  };
+
+  // Gestion du filtre budget (pour freelancer)
+  const handleBudgetChange = (min: string, max: string) => {
+    setBudgetMin(min);
+    setBudgetMax(max);
+    filterPosts(selectedCategory, statusFilter, min, max);
   };
 
   // Initialisation : tous les posts
@@ -121,6 +142,28 @@ export const AllPosts = () => {
                       {filter.label}
                     </Button>
                   ))}
+                </div>
+              )}
+              {/* Filtre budget : visible uniquement pour le freelancer */}
+              {isFreelancer === true && (
+                <div className="flex items-center gap-2 ml-2">
+                  <Input
+                    type="number"
+                    min={0}
+                    placeholder="Budget min"
+                    value={budgetMin}
+                    onChange={e => handleBudgetChange(e.target.value, budgetMax)}
+                    className="w-28 text-xs"
+                  />
+                  <span className="text-[var(--muted)]">-</span>
+                  <Input
+                    type="number"
+                    min={0}
+                    placeholder="Budget max"
+                    value={budgetMax}
+                    onChange={e => handleBudgetChange(budgetMin, e.target.value)}
+                    className="w-28 text-xs"
+                  />
                 </div>
               )}
             </div>

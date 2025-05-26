@@ -101,12 +101,22 @@ export const getPostById = async (req, res) => {
       const postId = req.params.id;
       const post = await Post.findById(postId)
         .populate("client", "username email")
-        .populate("applications.freelancer", "username email")
-        .populate("category", "name"); // Add this line to populate category
+        .populate({
+          path: "applications.freelancer",
+          select: "username email profile.profilePicture profilePicture"
+        })
+        .populate("category", "name");
       if (!post) {
         return res.status(404).json({ message: "Offre non trouvée" });
       }
-      res.status(200).json({ post });
+      // Vérifier si le client a déjà laissé un avis pour ce projet
+      let reviewed = false;
+      if (req.user && post.client && String(post.client._id) === String(req.user._id)) {
+        const Review = (await import('../models/reviewModel.js')).default;
+        const existingReview = await Review.findOne({ client: req.user._id, post: postId });
+        reviewed = !!existingReview;
+      }
+      res.status(200).json({ post: { ...post.toObject(), reviewed } });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Erreur serveur" });
@@ -275,7 +285,7 @@ export const updateApplicationStatus = async (req, res) => {
         // Recharger le post avec le populate pour applications.freelancer
         const populatedPost = await Post.findById(postId)
           .populate("client", "username email")
-          .populate("applications.freelancer", "username email profilePicture")
+          .populate("applications.freelancer", "username email")
           .populate("category", "name");
         res.status(200).json({message: "Statut de l'application mis à jour avec succès" , post: populatedPost});
 

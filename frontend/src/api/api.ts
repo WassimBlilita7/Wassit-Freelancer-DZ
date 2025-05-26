@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ApiResponse, Category, PostData, ProfileData , CreatePostData} from "@/types"; // Ajout de ProfileData
+import { ApiResponse, Category, PostData, ProfileData , CreatePostData, ReviewData, ReviewResponse} from "@/types"; // Ajout de ProfileData
 import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
@@ -290,5 +290,20 @@ export const verifyPayment = async (paymentId: string, data: any) => {
 
 export const getPaymentStatus = async (postId: string) => {
   const response = await api.get(`/payment/${postId}/status`);
+  return response.data;
+};
+
+export const addReview = async (data: {
+  freelancerId: string;
+  postId: string;
+  rating: number;
+  comment: string;
+}): Promise<ReviewResponse> => {
+  const response = await api.post("/review", data);
+  return response.data;
+};
+
+export const getFreelancerReviews = async (freelancerId: string): Promise<ReviewData[]> => {
+  const response = await api.get(`/review/freelancer/${freelancerId}`);
   return response.data;
 };

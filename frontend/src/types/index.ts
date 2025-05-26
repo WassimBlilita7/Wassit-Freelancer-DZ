@@ -80,6 +80,7 @@ export interface PostData {
   picture?: string;
   __v?: number;
   paid?: boolean;
+  reviewed?: boolean;
 }
 
 export interface Category {
@@ -111,4 +112,19 @@ export interface PaymentStatus {
   status: "pending" | "succeeded" | "failed";
   paymentId?: string;
   paid?: boolean;
+}
+
+export interface ReviewData {
+  _id?: string;
+  client: string;
+  freelancer: string;
+  post: string;
+  rating: number;
+  comment: string;
+  createdAt?: string;
+}
+
+export interface ReviewResponse {
+  message: string;
+  review?: ReviewData;
 }

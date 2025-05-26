@@ -28,6 +28,7 @@ import { MessagesPage } from "./pages/MessagesPage";
 import ProjectFinalization from './pages/ProjectFinalization';
 import PaymentPage from "./pages/payment/PaymentPage";
 import PaymentHistoryPage from "./pages/payment/PaymentHistoryPage";
+import ReviewPage from "./pages/ReviewPage";
 
 function AppContent() {
   const location = useLocation();
@@ -69,6 +70,7 @@ function AppContent() {
           <Route path="/post/:id/finalize" element={<ProjectFinalization />} />
           <Route path="/post/:postId/payment" element={<PaymentPage />} />
           <Route path="/my-payments" element={<PaymentHistoryPage />} />
+          <Route path="/post/:postId/review" element={<ReviewPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>

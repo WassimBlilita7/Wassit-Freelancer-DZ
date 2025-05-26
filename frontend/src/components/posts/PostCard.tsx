@@ -52,14 +52,22 @@ export const PostCard = ({ post, isFreelancer, currentUserId, onDelete }: PostCa
     return null;
   }
 
+  // Déterminer si le projet est terminé
+  const isCompleted = post.status === 'completed';
+
   const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Rendre la card incliquable si terminée (pour le client)
+    if (isCompleted && !isFreelancer) {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
     const target = e.target as HTMLElement;
     if (target.closest("button") || target.tagName === "BUTTON" || target.closest(".apply-button")) {
       e.preventDefault();
       e.stopPropagation();
       return;
     }
-
     if (post._id) {
       navigate(`/post/${post._id}`);
     } else {
@@ -80,12 +88,13 @@ export const PostCard = ({ post, isFreelancer, currentUserId, onDelete }: PostCa
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -5 }}
+      whileHover={{ y: isCompleted && !isFreelancer ? 0 : -5 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
-      className="bg-[var(--card)] rounded-xl shadow-lg overflow-hidden border border-[var(--muted)]/20 hover:shadow-xl transition-all duration-300 w-full max-w-md cursor-pointer relative"
+      className={`bg-[var(--card)] rounded-xl shadow-lg overflow-hidden border border-[var(--muted)]/20 hover:shadow-xl transition-all duration-300 w-full max-w-md relative ${isCompleted && !isFreelancer ? 'opacity-80 cursor-not-allowed pointer-events-auto' : 'cursor-pointer'}`}
       onClick={handleCardClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      style={isCompleted && !isFreelancer ? { filter: 'grayscale(0.15)' } : {}}
     >
       {/* Image du projet */}
       <div className="relative h-48 w-full overflow-hidden">
@@ -100,7 +109,7 @@ export const PostCard = ({ post, isFreelancer, currentUserId, onDelete }: PostCa
             <FaTags className="w-12 h-12 text-[var(--primary)]/40" />
           </div>
         )}
-        <div className="absolute top-4 right-4">
+        <div className="absolute top-4 right-4 flex items-center gap-2">
           <Badge className={statusVariants({ status: post.status })}>
             {post.status === "open" ? (
               <>
@@ -114,11 +123,15 @@ export const PostCard = ({ post, isFreelancer, currentUserId, onDelete }: PostCa
               </>
             ) : (
               <>
-                <FaCheck className="w-3 h-3" />
+                <FaCheck className="w-3 h-3 text-green-600" />
                 Terminée
               </>
             )}
           </Badge>
+          {/* Icône ✅ bien visible pour projet terminé */}
+          {isCompleted && !isFreelancer && (
+            <span title="Projet terminé" className="text-green-600 text-2xl ml-2">✅</span>
+          )}
         </div>
       </div>
 
@@ -133,7 +146,8 @@ export const PostCard = ({ post, isFreelancer, currentUserId, onDelete }: PostCa
               <span>Par {post.client?.username || "Anonyme"}</span>
             </div>
           </div>
-          {isPostOwner && (
+          {/* Masquer les icônes d'édition/suppression si terminé */}
+          {isPostOwner && !isCompleted && (
             <div className="flex space-x-1">
               <Tooltip.Provider>
                 <Tooltip.Root>
@@ -250,7 +264,8 @@ export const PostCard = ({ post, isFreelancer, currentUserId, onDelete }: PostCa
             <Badge variant="outline" className="text-xs">
               {new Date(post.createdAt).toLocaleDateString()}
             </Badge>
-            {isPostOwner && (
+            {/* Masquer le bouton "voir les candidatures" si terminé */}
+            {isPostOwner && !isCompleted && (
               <Button
                 onClick={(e) => {
                   e.stopPropagation();

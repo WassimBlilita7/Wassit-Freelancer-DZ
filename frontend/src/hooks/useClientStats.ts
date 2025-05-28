@@ -99,7 +99,20 @@ export const useFreelancerStats = (username?: string) => {
         } else {
           data = await getFreelancerStats();
         }
-        setStats(data.stats);
+        // Désimbrication robuste
+        let statsObj = data;
+        while (
+          statsObj &&
+          typeof statsObj === "object" &&
+          "stats" in statsObj &&
+          typeof statsObj.stats === "object"
+        ) {
+          statsObj = statsObj.stats;
+        }
+        if (!statsObj || typeof statsObj !== 'object') {
+          throw new Error("Utilisateur non trouvé ou format de réponse invalide");
+        }
+        setStats(statsObj);
       } catch (err: any) {
         setError(err.message || "Erreur lors du chargement des statistiques");
       } finally {

@@ -349,7 +349,9 @@ export async function getProfileByUsername(req, res) {
         companyName: user.profile?.companyName || "",
         webSite: user.profile?.webSite || "",
         offers: user.profile?.offers || [],
-        profilePicture: user.profile?.profilePicture || "", // Inclure explicitement l'URL de la photo
+        profilePicture: user.profile?.profilePicture || "",
+        github: user.profile?.github || "",
+        linkedIn: user.profile?.linkedIn || "",
       },
     };
 

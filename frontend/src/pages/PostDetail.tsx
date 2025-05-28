@@ -12,6 +12,7 @@ import { PostDetailHeader } from "../components/posts/PostDetailHeader";
 import { PostDetailInfo } from "../components/posts/PostDetailInfo";
 import { PostDetailImage } from "../components/posts/PostDetailImage";
 import { ApplyToPostForm } from "../components/posts/ApplyToPostForm";
+import { Helmet } from 'react-helmet-async';
 
 const PostDetails = () => {
   const { postId } = useParams<{ postId: string }>();
@@ -52,32 +53,40 @@ const PostDetails = () => {
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 1 }}
-      className="min-h-screen bg-[var(--background)] py-16"
-    >
-      <div className="container mx-auto max-w-6xl px-6">
-        <PostDetailHeader title={post.title} />
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-          <div className="lg:col-span-4 space-y-8">
-            <PostDetailInfo post={post} />
-            {post.picture && <PostDetailImage picture={post.picture} title={post.title} />}
-          </div>
-          <div className="lg:col-span-1">
-            <motion.div
-              initial={{ y: 50, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="sticky top-6"
-            >
-              <ApplyToPostForm postId={postId!} isFreelancer={isFreelancer || false} />
-            </motion.div>
+    <>
+      <Helmet>
+        <title>{post ? `${post.title} | Projet | Wassit Freelance DZ` : 'Projet | Wassit Freelance DZ'}</title>
+        <meta name="description" content={post ? post.description : 'Détail du projet sur Wassit Freelance DZ.'} />
+        <meta property="og:title" content={post ? `${post.title} | Projet | Wassit Freelance DZ` : 'Projet | Wassit Freelance DZ'} />
+        <meta property="og:description" content={post ? post.description : 'Détail du projet sur Wassit Freelance DZ.'} />
+      </Helmet>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+        className="min-h-screen bg-[var(--background)] py-16"
+      >
+        <div className="container mx-auto max-w-6xl px-6">
+          <PostDetailHeader title={post.title} />
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+            <div className="lg:col-span-4 space-y-8">
+              <PostDetailInfo post={post} />
+              {post.picture && <PostDetailImage picture={post.picture} title={post.title} />}
+            </div>
+            <div className="lg:col-span-1">
+              <motion.div
+                initial={{ y: 50, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+                className="sticky top-6"
+              >
+                <ApplyToPostForm postId={postId!} isFreelancer={isFreelancer || false} />
+              </motion.div>
+            </div>
           </div>
         </div>
-      </div>
-    </motion.div>
+      </motion.div>
+    </>
   );
 };
 

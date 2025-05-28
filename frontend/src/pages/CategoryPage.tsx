@@ -6,6 +6,7 @@ import { Category } from "@/types";
 import { WavyHeader } from "@/components/category/WavyHeader";
 import { CategoryHeader } from "@/components/category/CategoryHeader";
 import { CategorySummary } from "@/components/category/CategorySummary";
+import { Helmet } from 'react-helmet-async';
 
 const CategoryPage = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
@@ -44,24 +45,38 @@ const CategoryPage = () => {
 
   if (error || !category) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "var(--background)" }}>
-        <div className="text-center bg-[var(--card)] p-6 rounded-lg shadow-md">
-          <h2 className="text-3xl font-bold" style={{ color: "var(--text)" }}>
-            {error || "Catégorie non trouvée"}
-          </h2>
+      <>
+        <Helmet>
+          <title>Catégorie non trouvée | Wassit Freelance DZ</title>
+          <meta name="description" content="La catégorie demandée n'existe pas ou a été supprimée." />
+        </Helmet>
+        <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "var(--background)" }}>
+          <div className="text-center bg-[var(--card)] p-6 rounded-lg shadow-md">
+            <h2 className="text-3xl font-bold" style={{ color: "var(--text)" }}>
+              {error || "Catégorie non trouvée"}
+            </h2>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "var(--background)" }}>
-      <WavyHeader />
-      <CategoryHeader category={category} />
-      <div className="container mx-auto px-6 py-12 max-w-6xl">
-        <CategorySummary category={category} />
+    <>
+      <Helmet>
+        <title>Catégorie : {category.name} | Wassit Freelance DZ</title>
+        <meta name="description" content={`Découvrez les projets et offres de la catégorie ${category.name} sur Wassit Freelance DZ.`} />
+        <meta property="og:title" content={`Catégorie : ${category.name} | Wassit Freelance DZ`} />
+        <meta property="og:description" content={`Découvrez les projets et offres de la catégorie ${category.name} sur Wassit Freelance DZ.`} />
+      </Helmet>
+      <div className="min-h-screen" style={{ backgroundColor: "var(--background)" }}>
+        <WavyHeader />
+        <CategoryHeader category={category} />
+        <div className="container mx-auto px-6 py-12 max-w-6xl">
+          <CategorySummary category={category} />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

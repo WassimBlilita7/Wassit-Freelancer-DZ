@@ -10,6 +10,7 @@ import { CustomTextField } from "../components/common/CustomTextField";
 import { Loader } from "../components/common/Loader";
 import { motion } from "framer-motion";
 import signupBgImage from "../assets/signupPicture.png";
+import { Helmet } from 'react-helmet-async';
 
 interface SignupFormData extends SignupData {
   confirmPassword: string;
@@ -55,139 +56,145 @@ export const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-x-hidden">
-      <div className="w-full max-w-4xl flex flex-col md:flex-row items-center">
-        <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-          className="w-full md:w-3/5 p-8 z-10"
-        >
-          <div className="pb-6">
-            <h1 className="text-3xl font-bold" style={{ color: "var(--text)" }}>
-              Inscription
-            </h1>
-            <p className="mt-2" style={{ color: "var(--muted)", fontSize: "16px" }}>
-              Créez votre compte pour commencer votre aventure.
-            </p>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-3">
-              <Label htmlFor="username" style={{ color: "var(--text)", fontSize: "16px" }}>
-                Nom d'utilisateur
-              </Label>
-              <CustomTextField
-                id="username"
-                name="username"
-                type="text"
-                value={formData.username}
-                onChange={handleChange}
-                placeholder="Entrez votre nom d'utilisateur"
-                icon="user"
-                required
-                minLength={5}
-                maxLength={20}
-                disabled={loading}
-              />
+    <>
+      <Helmet>
+        <title>Inscription | Wassit Freelance DZ</title>
+        <meta name="description" content="Créez un compte sur Wassit Freelance DZ pour trouver des missions ou des freelances." />
+      </Helmet>
+      <div className="min-h-screen flex items-center justify-center relative overflow-x-hidden">
+        <div className="w-full max-w-4xl flex flex-col md:flex-row items-center">
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="w-full md:w-3/5 p-8 z-10"
+          >
+            <div className="pb-6">
+              <h1 className="text-3xl font-bold" style={{ color: "var(--text)" }}>
+                Inscription
+              </h1>
+              <p className="mt-2" style={{ color: "var(--muted)", fontSize: "16px" }}>
+                Créez votre compte pour commencer votre aventure.
+              </p>
             </div>
 
-            <div className="space-y-3">
-              <Label htmlFor="email" style={{ color: "var(--text)", fontSize: "16px" }}>
-                Email
-              </Label>
-              <CustomTextField
-                id="email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="Entrez votre email"
-                icon="email"
-                required
-                disabled={loading}
-              />
-            </div>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-3">
+                <Label htmlFor="username" style={{ color: "var(--text)", fontSize: "16px" }}>
+                  Nom d'utilisateur
+                </Label>
+                <CustomTextField
+                  id="username"
+                  name="username"
+                  type="text"
+                  value={formData.username}
+                  onChange={handleChange}
+                  placeholder="Entrez votre nom d'utilisateur"
+                  icon="user"
+                  required
+                  minLength={5}
+                  maxLength={20}
+                  disabled={loading}
+                />
+              </div>
 
-            <div className="space-y-3">
-              <Label htmlFor="password" style={{ color: "var(--text)", fontSize: "16px" }}>
-                Mot de passe
-              </Label>
-              <CustomTextField
-                id="password"
-                name="password"
-                type="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="Entrez votre mot de passe"
-                icon="password"
-                required
-                minLength={6}
-                disabled={loading}
-              />
-            </div>
+              <div className="space-y-3">
+                <Label htmlFor="email" style={{ color: "var(--text)", fontSize: "16px" }}>
+                  Email
+                </Label>
+                <CustomTextField
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="Entrez votre email"
+                  icon="email"
+                  required
+                  disabled={loading}
+                />
+              </div>
 
-            <div className="space-y-3">
-              <Label htmlFor="confirmPassword" style={{ color: "var(--text)", fontSize: "16px" }}>
-                Confirmer le mot de passe
-              </Label>
-              <CustomTextField
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                placeholder="Confirmez votre mot de passe"
-                icon="password"
-                required
-                minLength={6}
-                disabled={loading}
-              />
-            </div>
+              <div className="space-y-3">
+                <Label htmlFor="password" style={{ color: "var(--text)", fontSize: "16px" }}>
+                  Mot de passe
+                </Label>
+                <CustomTextField
+                  id="password"
+                  name="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="Entrez votre mot de passe"
+                  icon="password"
+                  required
+                  minLength={6}
+                  disabled={loading}
+                />
+              </div>
 
-            <div className="flex items-center space-x-3">
-              <CustomCheckbox
-                id="isFreelancer"
-                checked={formData.isFreelancer}
-                onCheckedChange={(checked) =>
-                  setFormData((prev) => ({ ...prev, isFreelancer: !!checked }))
-                }
+              <div className="space-y-3">
+                <Label htmlFor="confirmPassword" style={{ color: "var(--text)", fontSize: "16px" }}>
+                  Confirmer le mot de passe
+                </Label>
+                <CustomTextField
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  placeholder="Confirmez votre mot de passe"
+                  icon="password"
+                  required
+                  minLength={6}
+                  disabled={loading}
+                />
+              </div>
+
+              <div className="flex items-center space-x-3">
+                <CustomCheckbox
+                  id="isFreelancer"
+                  checked={formData.isFreelancer}
+                  onCheckedChange={(checked) =>
+                    setFormData((prev) => ({ ...prev, isFreelancer: !!checked }))
+                  }
+                  disabled={loading}
+                />
+                <Label
+                  htmlFor="isFreelancer"
+                  style={{ color: "var(--text)", fontSize: "16px" }}
+                  className="cursor-pointer hover:text-[var(--primary)] transition-colors duration-200"
+                >
+                  Je suis un freelancer
+                </Label>
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full py-6 text-lg"
+                style={{ backgroundColor: "var(--primary)", color: "#FFFFFF" }}
                 disabled={loading}
-              />
-              <Label
-                htmlFor="isFreelancer"
-                style={{ color: "var(--text)", fontSize: "16px" }}
-                className="cursor-pointer hover:text-[var(--primary)] transition-colors duration-200"
               >
-                Je suis un freelancer
-              </Label>
-            </div>
+                S'inscrire
+              </Button>
 
-            <Button
-              type="submit"
-              className="w-full py-6 text-lg"
-              style={{ backgroundColor: "var(--primary)", color: "#FFFFFF" }}
-              disabled={loading}
-            >
-              S'inscrire
-            </Button>
+              <p className="text-sm text-center" style={{ color: "var(--muted)" }}>
+                Déjà un compte ?{" "}
+                <a href="/login" style={{ color: "var(--secondary)" }} className="hover:underline">
+                  Connectez-vous
+                </a>
+              </p>
+            </form>
+          </motion.div>
 
-            <p className="text-sm text-center" style={{ color: "var(--muted)" }}>
-              Déjà un compte ?{" "}
-              <a href="/login" style={{ color: "var(--secondary)" }} className="hover:underline">
-                Connectez-vous
-              </a>
-            </p>
-          </form>
-        </motion.div>
-
-        <div
-          className="hidden md:block fixed top-0 right-0 w-2/5 h-full bg-cover bg-center z-0"
-          style={{ backgroundImage: `url(${signupBgImage})` }}
-        />
+          <div
+            className="hidden md:block fixed top-0 right-0 w-2/5 h-full bg-cover bg-center z-0"
+            style={{ backgroundImage: `url(${signupBgImage})` }}
+          />
+        </div>
       </div>
 
       {loading && <Loader />}
-    </div>
+    </>
   );
 };

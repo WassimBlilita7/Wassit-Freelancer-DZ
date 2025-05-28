@@ -4,11 +4,14 @@ import './index.css';
 import App from './App.tsx';
 import "./theme/styles.css";
 import { AuthProvider } from "./context/AuthContext";
+import { HelmetProvider } from 'react-helmet-async';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <AuthProvider>
-      <App />
+      <HelmetProvider>
+        <App />
+      </HelmetProvider>
     </AuthProvider>
   </StrictMode>,
 );

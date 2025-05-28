@@ -1,5 +1,5 @@
 import express from "express";
-import { deleteMessage, getConversation, markAsRead, sendMessage, getUserConversations } from "../controllers/messageController.js";
+import { deleteMessage, getConversation, markAsRead, sendMessage, getUserConversations, deleteConversation } from "../controllers/messageController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
@@ -111,5 +111,27 @@ router.delete('/:messageId', protect, deleteMessage);
  *         description: List of conversations
  */
 router.get('/conversations', protect, getUserConversations);
+
+/**
+ * @swagger
+ * /message/conversation/{userId}:
+ *   delete:
+ *     summary: Delete a conversation
+ *     tags: [Messages]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Conversation deleted successfully
+ *       404:
+ *         description: Conversation not found
+ */
+router.delete('/conversation/:userId', protect, deleteConversation);
 
 export default router;

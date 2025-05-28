@@ -231,6 +231,11 @@ export const markMessageAsRead = async (messageId: string) => {
   return response.data;
 };
 
+export const deleteConversation = async (userId: string) => {
+  const response = await api.delete(`/message/conversation/${userId}`);
+  return response.data;
+};
+
 export const getClientStatsByUsername = async (username: string) => {
   const response = await api.get(`/stats/client/${username}`);
   return response.data;

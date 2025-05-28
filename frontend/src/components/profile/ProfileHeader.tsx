@@ -1,14 +1,16 @@
 // src/components/profile/ProfileHeader.tsx
 import { motion } from "framer-motion";
-import { FaUserCircle } from "react-icons/fa";
+import { FaUserCircle, FaGithub, FaLinkedin } from "react-icons/fa";
 
 interface ProfileHeaderProps {
   username: string;
   profilePicture?: string; // URL de la photo renvoyée par le backend
   isFreelancer: boolean;
+  github?: string;
+  linkedIn?: string;
 }
 
-export const ProfileHeader = ({ username, profilePicture, isFreelancer }: ProfileHeaderProps) => {
+export const ProfileHeader = ({ username, profilePicture, isFreelancer, github, linkedIn }: ProfileHeaderProps) => {
   return (
     <div className="relative bg-[var(--card)] h-72 rounded-t-2xl shadow-xl overflow-hidden">
       {/* Couverture avec SVG */}
@@ -63,9 +65,24 @@ export const ProfileHeader = ({ username, profilePicture, isFreelancer }: Profil
           transition={{ delay: 0.5, duration: 0.5 }}
           className="flex flex-col justify-end"
         >
-          <h1 className="text-3xl md:text-4xl font-bold text-white drop-shadow-lg">{username}</h1>
+          <div className="flex items-center gap-2 mb-2">
+            <h1 className="text-3xl md:text-4xl font-bold text-white drop-shadow-lg">{username}</h1>
+            {isFreelancer && (
+              <span className="ml-2 px-2 py-1 rounded bg-[var(--primary)] text-white text-xs font-semibold">Freelancer</span>
+            )}
+          </div>
           <p className="text-sm md:text-base text-white/80 drop-shadow-md">
-            {isFreelancer ? "Freelancer" : "Client"}
+            {/* Réseaux sociaux */}
+            {github && (
+              <a href={github} target="_blank" rel="noopener noreferrer" className="text-gray-700 dark:text-white hover:text-black dark:hover:text-[var(--primary)] transition-colors">
+                <FaGithub className="h-6 w-6" />
+              </a>
+            )}
+            {linkedIn && (
+              <a href={linkedIn} target="_blank" rel="noopener noreferrer" className="text-blue-700 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 transition-colors">
+                <FaLinkedin className="h-6 w-6" />
+              </a>
+            )}
           </p>
         </motion.div>
       </div>

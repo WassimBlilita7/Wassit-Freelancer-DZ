@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { getClientStats, getClientStatsByUsername } from "../api/api";
+import { getClientStats, getClientStatsByUsername, getFreelancerStats, getFreelancerStatsByUsername } from "../api/api";
 import { toast } from "react-hot-toast";
+import { FreelancerStats } from "../types";
 
 interface ClientStats {
   totalOffers: number;
@@ -80,4 +81,33 @@ export const useClientStats = (username?: string) => {
   }, [username]);
 
   return { stats, loading, error, refetch: fetchStats };
+};
+
+export const useFreelancerStats = (username?: string) => {
+  const [stats, setStats] = useState<FreelancerStats | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        let data;
+        if (username) {
+          data = await getFreelancerStatsByUsername(username);
+        } else {
+          data = await getFreelancerStats();
+        }
+        setStats(data.stats);
+      } catch (err: any) {
+        setError(err.message || "Erreur lors du chargement des statistiques");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStats();
+  }, [username]);
+
+  return { stats, loading, error };
 }; 

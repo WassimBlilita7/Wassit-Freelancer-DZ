@@ -1,5 +1,6 @@
 import Post from "../models/postModel.js";
 import User from "../models/userModel.js";
+import Review from "../models/reviewModel.js";
 
 export const getClientStats = async (req, res) => {
     try {
@@ -97,4 +98,78 @@ export const getClientStatsByUsername = async (req, res) => {
         console.error("Erreur dans getClientStatsByUsername:", error);
         res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
+};
+
+export const getFreelancerStats = async (req, res) => {
+  try {
+    const freelancerId = req.user.id;
+    const posts = await Post.find({
+      'applications': {
+        $elemMatch: {
+          freelancer: freelancerId,
+          status: 'accepted'
+        }
+      }
+    });
+    const completedProjects = posts.filter(post => post.status === 'completed').length;
+    const totalProjects = posts.length;
+    // Reviews
+    const reviews = await Review.find({ freelancer: freelancerId });
+    const totalReviews = reviews.length;
+    const satisfactionRate = totalReviews > 0 ? (reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews) : 0;
+    // Nombre de clients différents
+    const clientIds = new Set(posts.map(post => String(post.client)));
+    // Mock pour le temps de réponse
+    const averageResponseTime = 2; // heures
+    res.status(200).json({
+      stats: {
+        totalProjects,
+        completedProjects,
+        satisfactionRate: Number(satisfactionRate.toFixed(2)),
+        totalReviews,
+        averageResponseTime,
+        totalClients: clientIds.size
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Erreur serveur", error: error.message });
+  }
+};
+
+export const getFreelancerStatsByUsername = async (req, res) => {
+  try {
+    const { username } = req.params;
+    const user = await User.findOne({ username: username.toLowerCase() });
+    if (!user || !user.isFreelancer) {
+      return res.status(404).json({ message: "Freelancer non trouvé" });
+    }
+    const freelancerId = user._id;
+    const posts = await Post.find({
+      'applications': {
+        $elemMatch: {
+          freelancer: freelancerId,
+          status: 'accepted'
+        }
+      }
+    });
+    const completedProjects = posts.filter(post => post.status === 'completed').length;
+    const totalProjects = posts.length;
+    const reviews = await Review.find({ freelancer: freelancerId });
+    const totalReviews = reviews.length;
+    const satisfactionRate = totalReviews > 0 ? (reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews) : 0;
+    const clientIds = new Set(posts.map(post => String(post.client)));
+    const averageResponseTime = 2;
+    res.status(200).json({
+      stats: {
+        totalProjects,
+        completedProjects,
+        satisfactionRate: Number(satisfactionRate.toFixed(2)),
+        totalReviews,
+        averageResponseTime,
+        totalClients: clientIds.size
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Erreur serveur", error: error.message });
+  }
 }; 

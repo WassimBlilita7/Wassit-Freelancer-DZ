@@ -307,3 +307,13 @@ export const getFreelancerReviews = async (freelancerId: string): Promise<Review
   const response = await api.get(`/review/freelancer/${freelancerId}`);
   return response.data;
 };
+
+export const getFreelancerStats = async () => {
+  const response = await api.get("/stats/freelancer");
+  return response.data;
+};
+
+export const getFreelancerStatsByUsername = async (username: string) => {
+  const response = await api.get(`/stats/freelancer/${username}`);
+  return response.data;
+};

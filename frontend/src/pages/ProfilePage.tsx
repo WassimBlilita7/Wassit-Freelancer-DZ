@@ -7,65 +7,115 @@ import { ProfileInfo } from "../components/profile/ProfileInfo";
 import { Loader } from "../components/common/Loader";
 import { ProfileData } from "../types";
 import { motion } from "framer-motion";
-import { FaStar, FaProjectDiagram, FaUsers, FaMoneyBillWave, FaClock } from "react-icons/fa";
+import { FaStar, FaProjectDiagram, FaUsers, FaMoneyBillWave, FaClock, FaGithub, FaLinkedin, FaCommentDots, FaSmile } from "react-icons/fa";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Progress } from "../components/ui/progress";
-import { useClientStats } from "../hooks/useClientStats";
+import { useClientStats, useFreelancerStats } from "../hooks/useClientStats";
+import { getFreelancerReviews } from "../api/api";
+import { useEffect, useState } from "react";
 
 // Composant pour les statistiques des freelancers
-const FreelancerStats = () => {
+const FreelancerStats = ({ username, profile, id }: { username: string; profile: any; id: string }) => {
+  const { stats, loading, error } = useFreelancerStats(username);
+  const [reviews, setReviews] = useState<any[]>([]);
+  useEffect(() => {
+    if (id) {
+      getFreelancerReviews(id).then(setReviews);
+    }
+  }, [id]);
+
+  if (loading) {
+    return <div className="text-center p-4">Chargement des statistiques...</div>;
+  }
+  if (error) {
+    return <div className="text-red-500 text-center p-4">{error}</div>;
+  }
+  if (!stats) {
+    return <div className="text-center p-4">Aucune statistique disponible</div>;
+  }
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8"
-    >
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
       <Card className="bg-[var(--card)]/95 backdrop-blur-xl">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Projets complétés</CardTitle>
           <FaProjectDiagram className="h-4 w-4 text-[var(--primary)]" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">24</div>
-          <Progress value={80} className="mt-2" />
-          <p className="text-xs text-[var(--muted)] mt-2">+12% par rapport au mois dernier</p>
+          <div className="text-2xl font-bold">{stats.completedProjects}</div>
+          <p className="text-xs text-[var(--muted)] mt-2">Total : {stats.totalProjects}</p>
         </CardContent>
       </Card>
-
       <Card className="bg-[var(--card)]/95 backdrop-blur-xl">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Taux de satisfaction</CardTitle>
-          <FaStar className="h-4 w-4 text-[var(--accent)]" />
+          <FaSmile className="h-4 w-4 text-[var(--accent)]" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">4.8/5</div>
+          <div className="text-2xl font-bold">{stats.satisfactionRate}/5</div>
           <div className="flex mt-2">
             {[1, 2, 3, 4, 5].map((star) => (
               <FaStar
                 key={star}
-                className={`h-4 w-4 ${
-                  star <= 4 ? "text-[var(--accent)]" : "text-[var(--muted)]"
-                }`}
+                className={`h-4 w-4 ${star <= Math.round(stats.satisfactionRate) ? "text-[var(--accent)]" : "text-[var(--muted)]"}`}
               />
             ))}
           </div>
-          <p className="text-xs text-[var(--muted)] mt-2">Basé sur 32 évaluations</p>
+          <p className="text-xs text-[var(--muted)] mt-2">Basé sur {stats.totalReviews} avis</p>
         </CardContent>
       </Card>
-
       <Card className="bg-[var(--card)]/95 backdrop-blur-xl">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Temps de réponse</CardTitle>
-          <FaClock className="h-4 w-4 text-[var(--success)]" />
+          <CardTitle className="text-sm font-medium">Clients différents</CardTitle>
+          <FaUsers className="h-4 w-4 text-[var(--primary)]" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">2h</div>
-          <Progress value={90} className="mt-2" />
-          <p className="text-xs text-[var(--muted)] mt-2">Moyenne de réponse</p>
+          <div className="text-2xl font-bold">{stats.totalClients}</div>
+          <p className="text-xs text-[var(--muted)] mt-2">Temps de réponse moyen : {stats.averageResponseTime}h</p>
         </CardContent>
       </Card>
-    </motion.div>
+      {/* Réseaux sociaux */}
+      <Card className="bg-[var(--card)]/95 backdrop-blur-xl col-span-1 md:col-span-2 lg:col-span-3 flex flex-row items-center gap-4 p-4">
+        {profile?.github && (
+          <a href={profile.github} target="_blank" rel="noopener noreferrer" className="text-gray-700 dark:text-white hover:text-black dark:hover:text-[var(--primary)] transition-colors">
+            <FaGithub className="h-7 w-7" />
+          </a>
+        )}
+        {profile?.linkedIn && (
+          <a href={profile.linkedIn} target="_blank" rel="noopener noreferrer" className="text-blue-700 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 transition-colors">
+            <FaLinkedin className="h-7 w-7" />
+          </a>
+        )}
+      </Card>
+      {/* Reviews */}
+      <Card className="bg-[var(--card)]/95 backdrop-blur-xl col-span-1 md:col-span-2 lg:col-span-3">
+        <CardHeader>
+          <CardTitle className="text-sm font-medium flex items-center gap-2">
+            <FaCommentDots /> Avis des clients ({reviews.length})
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {reviews.length === 0 ? (
+            <div className="text-[var(--muted)]">Aucun avis pour ce freelancer.</div>
+          ) : (
+            <ul className="divide-y divide-gray-200 dark:divide-gray-700">
+              {reviews.map((review, idx) => (
+                <li key={idx} className="py-3">
+                  <div className="flex items-center gap-2 mb-1">
+                    <FaStar className="text-yellow-400" />
+                    <span className="font-semibold">{review.rating}/5</span>
+                    <span className="text-xs text-[var(--muted)] ml-2">par {review.client?.username || "Client"}</span>
+                    {review.post?.title && (
+                      <span className="text-xs text-[var(--primary)] ml-2">Projet : {review.post.title}</span>
+                    )}
+                  </div>
+                  <div className="text-[var(--text)] italic">{review.comment}</div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
@@ -177,10 +227,16 @@ export const ProfilePage = () => {
           username={profile.username}
           profilePicture={profile.profile.profilePicture}
           isFreelancer={profile.isFreelancer}
+          github={profile.profile.github}
+          linkedIn={profile.profile.linkedIn}
         />
         
         {/* Statistiques spécifiques selon le type d'utilisateur */}
-        {profile.isFreelancer ? <FreelancerStats /> : <ClientStats username={profile.username} />}
+        {profile.isFreelancer ? (
+          <FreelancerStats username={profile.username} profile={profile.profile} id={profile.id} />
+        ) : (
+          <ClientStats username={profile.username} />
+        )}
         
         <ProfileInfo 
           profile={profile.profile as ProfileData} 

@@ -128,3 +128,12 @@ export interface ReviewResponse {
   message: string;
   review?: ReviewData;
 }
+
+export interface FreelancerStats {
+  totalProjects: number;
+  completedProjects: number;
+  satisfactionRate: number;
+  totalReviews: number;
+  averageResponseTime: number;
+  totalClients: number;
+}

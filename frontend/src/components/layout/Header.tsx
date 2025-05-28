@@ -31,7 +31,7 @@ export const Header = () => {
   const { profile: userProfile, username: userUsername } = useProfile({ redirectToLogin: false });
 
   const menuItems = isAuthenticated
-    ? getMenuItems(navigate, false)
+    ? getMenuItems(navigate, isFreelancer)
     : [{ text: 'Accueil', icon: null, action: () => navigate('/'), description: 'Page principale' }];
 
   useEffect(() => {

@@ -53,7 +53,7 @@ export const getMenuItems = (navigate: (path: string) => void, isFreelancer: boo
   ];
 
   return allItems.filter((item) => {
-    if (item.restrictedTo === "client" && isFreelancer) {
+    if (isFreelancer && item.restrictedTo === "client") {
       return false;
     }
     return true;

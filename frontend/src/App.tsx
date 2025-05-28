@@ -29,6 +29,7 @@ import ProjectFinalization from './pages/ProjectFinalization';
 import PaymentPage from "./pages/payment/PaymentPage";
 import PaymentHistoryPage from "./pages/payment/PaymentHistoryPage";
 import ReviewPage from "./pages/ReviewPage";
+import { AIAssistant } from "./components/common/AIAssistant";
 
 function AppContent() {
   const location = useLocation();
@@ -86,6 +87,7 @@ function App() {
         <ThemeProvider>
           <ToastProvider />
           <AppContent />
+          <AIAssistant />
         </ThemeProvider>
       </PostProvider>
     </Router>

@@ -8,6 +8,7 @@ import { useProfile } from "../../hooks/useProfile";
 import { Loader } from "../../components/common/Loader";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { AIAssistant } from "../../components/common/AIAssistant";
 
 export const Home = () => {
   const { loading, isAuthenticated, isFreelancer } = useProfile({ redirectToLogin: false });
@@ -41,6 +42,7 @@ export const Home = () => {
         <InspirationSection isFreelancer={isFreelancer} />
         <CallToActionSection />
       </motion.div>
+      <AIAssistant />
     </div>
   );
 };

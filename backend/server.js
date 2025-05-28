@@ -9,6 +9,7 @@ import categoryRoutes from "./routes/categoryRoutes.js"
 import notificationRoutes from "./routes/notificationRoutes.js"
 import statsRoutes from "./routes/statsRoutes.js"
 import paymentRoutes from "./routes/paymentRoutes.js"
+import aiRoutes from "./routes/aiRoutes.js"
 import { ENV_VARS } from "./config/envVars.js";
 import { connectDB } from "./config/db.js";
 import passport from "passport";
@@ -58,6 +59,7 @@ app.use("/api/v1/category",categoryRoutes);
 app.use("/api/v1/notification",notificationRoutes);
 app.use("/api/v1/stats", statsRoutes);
 app.use("/api/v1/payment", paymentRoutes);
+app.use("/api/v1/ai", aiRoutes);
 
 console.log("GOOGLE_CLIENT_ID:", process.env.GOOGLE_CLIENT_ID);
 console.log("GOOGLE_CLIENT_SECRET:", process.env.GOOGLE_CLIENT_SECRET);

@@ -98,7 +98,7 @@ const PaymentHistoryList: React.FC<PaymentHistoryListProps> = ({ payments, isFre
               </motion.div>
               <button
                 className="mt-2 px-4 py-1 rounded-lg bg-[var(--primary)] text-white font-semibold text-xs shadow hover:bg-[var(--secondary)] transition-colors"
-                onClick={() => downloadPaymentReceipt(p, isFreelancer)}
+                onClick={() => downloadPaymentReceipt(p)}
                 aria-label="Télécharger le reçu PDF"
               >
                 Télécharger

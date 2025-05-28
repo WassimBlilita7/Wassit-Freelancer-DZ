@@ -4,7 +4,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { downloadPaymentReceiptFromServer } from "@/api/api";
 
-export async function downloadPaymentReceipt(payment: PaymentData, isFreelancer: boolean) {
+export async function downloadPaymentReceipt(payment: PaymentData) {
   // Try to use backend endpoint if payment._id exists
   if (payment._id) {
     try {

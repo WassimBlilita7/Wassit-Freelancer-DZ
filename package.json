@@ -11,6 +11,7 @@
   "type": "module",
   "license": "ISC",
   "dependencies": {
+    "@types/react-helmet": "^6.1.11",
     "axios": "^1.7.9",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^1.41.3",
@@ -34,11 +35,15 @@
     "passport-google-oauth20": "^2.0.0",
     "pdfkit": "^0.17.1",
     "qrcode": "^1.5.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-helmet-async": "^2.0.5",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
+    "@types/react": "^18.3.23",
+    "@types/react-dom": "^18.3.7",
     "nodemon": "^3.1.9"
   }
 }

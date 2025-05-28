@@ -8,6 +8,8 @@ import { useProfileUpdate } from "../../hooks/useProfileUpdate";
 import { ProfileFields } from "./ProfileFields";
 import { useTheme } from "../../context/ThemeContext";
 import { ChangeEvent } from "react";
+import { UseFormReturn } from "react-hook-form";
+import { ProfileFormData } from "../../schemas/profileSchema";
 
 interface ProfileFormProps {
   initialProfile: ProfileData;
@@ -17,7 +19,15 @@ interface ProfileFormProps {
 
 export const ProfileForm = ({ initialProfile, username, isFreelancer }: ProfileFormProps) => {
   const { theme } = useTheme();
-  const { form, submitting, onSubmit, resetForm, alert, profilePicture, handlePictureUpload } = useProfileUpdate(initialProfile, isFreelancer);
+  const { form, submitting, onSubmit, resetForm, alert, profilePicture, handlePictureUpload } = useProfileUpdate(initialProfile, isFreelancer) as {
+    form: UseFormReturn<ProfileFormData>;
+    submitting: boolean;
+    onSubmit: (data: ProfileFormData) => Promise<void>;
+    resetForm: () => void;
+    alert: any;
+    profilePicture: string | null;
+    handlePictureUpload: (file: File) => Promise<void>;
+  };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {

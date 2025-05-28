@@ -1,6 +1,6 @@
-import { useForm } from "react-hook-form";
+import { useForm,  } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { profileSchema, ProfileFormData, getProfileSchema } from "../schemas/profileSchema";
+import {  ProfileFormData, getProfileSchema } from "../schemas/profileSchema";
 import { updateProfile, updateProfilePicture } from "../api/api";
 import { useState } from "react";
 import { ProfileData } from "../types";

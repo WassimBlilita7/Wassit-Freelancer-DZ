@@ -35,7 +35,7 @@ export const getProfileSchema = (isFreelancer: boolean) => {
           .refine(skills => skills.length > 0, {
             message: "Au moins une compétence est requise"
           })
-      : z.array(z.string()).max(10, "Maximum 10 compétences").optional(),
+      : z.array(z.string()).max(10, "Maximum 10 compétences").optional().default([]),
     github: z.string().url("URL GitHub invalide").optional().or(z.literal("")),
     linkedIn: z.string().url("URL LinkedIn invalide").optional().or(z.literal("")),
   });

@@ -23,7 +23,7 @@ export const useFetchProfile = (username: string) => {
         const response = await getProfileByUsername(username);
         setProfile(response.userData);
       } catch (err: any) {
-        setError(err.response?.data?.message || "Erreur lors de la récupération du profil");
+        setError(err.message || "Erreur lors de la récupération du profil");
       } finally {
         setLoading(false);
       }

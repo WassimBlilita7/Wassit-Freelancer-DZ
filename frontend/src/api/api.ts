@@ -147,9 +147,17 @@ export const applyToPost = async (postId: string, data: FormData): Promise<ApiRe
 };
 
 export const getProfileByUsername = async (username: string) => {
-  const response = await axios.get(`${API_URL}/auth/profile/${username}`);
-  return response.data;
+  try {
+    const response = await axios.get(`${API_URL}/auth/profile/${username}`);
+    return response.data;
+  } catch (err: any) {
+    if (err.response && err.response.data && err.response.data.message) {
+      throw { message: err.response.data.message };
+    }
+    throw err;
+  }
 };
+
 export const updatePost = async (postId: string, data: Partial<CreatePostData>): Promise<{ message: string; post: PostData }> => {
   const formData = new FormData();
   formData.append("title", data.title || "");
@@ -176,6 +184,7 @@ export const markNotificationAsRead = async (notificationId: string) => {
   const response = await api.put(`/notification/${notificationId}/read`);
   return response.data;
 };
+
 export const markAllAsRead = async (notificationIds: string[]) => {
   const response = await api.put("/notification/mark-all-read", { notificationIds });
   return response.data;

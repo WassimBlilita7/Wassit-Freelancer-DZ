@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ApiResponse, Category, PostData, ProfileData , CreatePostData, ReviewData, ReviewResponse} from "@/types"; // Ajout de ProfileData
+import { ApiResponse, Category, PostData, ProfileData , CreatePostData, ReviewData, ReviewResponse, PaymentData} from "@/types"; // Ajout de ProfileData
 import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
@@ -330,4 +330,9 @@ export const getFreelancerStats = async () => {
 export const getFreelancerStatsByUsername = async (username: string) => {
   const response = await api.get(`/stats/freelancer/${username}`);
   return response.data;
+};
+
+export const getPaymentHistory = async (): Promise<PaymentData[]> => {
+  const response = await api.get("/payment/history");
+  return response.data.payments;
 };

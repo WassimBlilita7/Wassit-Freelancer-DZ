@@ -5,18 +5,22 @@ import { Button } from "@/components/ui/button";
 import { toast } from "react-hot-toast";
 import axios from "axios";
 import { PaymentData } from "@/types";
+import { getPaymentHistory } from "@/api/api";
+import { useProfile } from "@/hooks/useProfile";
+import PaymentHistoryList from "./PaymentHistoryList";
 
 const PaymentHistoryPage: React.FC = () => {
   const [payments, setPayments] = useState<PaymentData[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { isFreelancer } = useProfile();
 
   useEffect(() => {
     const fetchPayments = async () => {
       setLoading(true);
       try {
-        const res = await axios.get("/api/v1/payment/history", { withCredentials: true });
-        setPayments(res.data.payments || []);
+        const payments = await getPaymentHistory();
+        setPayments(payments || []);
       } catch (err) {
         toast.error("Erreur lors du chargement des paiements");
       } finally {
@@ -33,21 +37,8 @@ const PaymentHistoryPage: React.FC = () => {
           <h2 className="text-2xl font-bold mb-4">Historique de mes paiements</h2>
           {loading ? (
             <div>Chargement...</div>
-          ) : payments.length === 0 ? (
-            <div>Aucun paiement trouvé.</div>
           ) : (
-            <ul className="divide-y divide-gray-200">
-              {payments.map((p) => (
-                <li key={p._id} className="py-3 flex flex-col md:flex-row md:items-center md:justify-between">
-                  <div>
-                    <div className="font-semibold">Projet : {p.postId}</div>
-                    <div>Montant : <span className="text-[var(--primary)] font-bold">{p.amount.toLocaleString()} DA</span></div>
-                    <div>Status : <span className={p.status === "succeeded" ? "text-green-600" : "text-red-600"}>{p.status}</span></div>
-                  </div>
-                  <div className="text-xs text-gray-500 mt-2 md:mt-0">{new Date(p.createdAt).toLocaleString()}</div>
-                </li>
-              ))}
-            </ul>
+            <PaymentHistoryList payments={payments} isFreelancer={isFreelancer} />
           )}
           <Button variant="ghost" className="w-full mt-4" onClick={() => navigate(-1)}>
             Retour

@@ -99,9 +99,26 @@ export interface ApplyToPostData {
 
 export interface PaymentData {
   _id: string;
-  postId: string;
-  clientId: string;
-  freelancerId: string;
+  postId: string | {
+    _id: string;
+    title: string;
+    budget: number;
+    client?: any;
+    freelancerId?: any;
+    status?: string;
+  };
+  clientId: string | {
+    _id: string;
+    username: string;
+    email?: string;
+    profile?: { profilePicture?: string };
+  };
+  freelancerId: string | {
+    _id: string;
+    username: string;
+    email?: string;
+    profile?: { profilePicture?: string };
+  };
   amount: number;
   status: "pending" | "succeeded" | "failed";
   provider: "stripe" | "paypal" | "mock";

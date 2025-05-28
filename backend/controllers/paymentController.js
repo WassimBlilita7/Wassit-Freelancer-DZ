@@ -98,8 +98,21 @@ export const getPaymentStatus = async (req, res) => {
 
 export const getPaymentHistory = async (req, res) => {
   try {
-    const clientId = req.user.id;
-    const payments = await Payment.find({ clientId }).sort({ createdAt: -1 });
+    const userId = req.user.id;
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "Utilisateur non trouvé" });
+    let payments;
+    if (user.isFreelancer) {
+      payments = await Payment.find({ freelancerId: userId })
+        .populate({ path: 'postId', select: 'title budget client status' })
+        .populate({ path: 'clientId', select: 'username email profile.profilePicture' })
+        .sort({ createdAt: -1 });
+    } else {
+      payments = await Payment.find({ clientId: userId })
+        .populate({ path: 'postId', select: 'title budget freelancerId status' })
+        .populate({ path: 'freelancerId', select: 'username email profile.profilePicture' })
+        .sort({ createdAt: -1 });
+    }
     res.status(200).json({ payments });
   } catch (err) {
     res.status(500).json({ message: "Erreur serveur", error: err.message });

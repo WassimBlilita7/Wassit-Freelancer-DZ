@@ -28,6 +28,7 @@ export const Header = () => {
   const [showAccepted, setShowAccepted] = useState(false);
   const [acceptedPosts, setAcceptedPosts] = useState<any[]>([]);
   const [loadingAccepted, setLoadingAccepted] = useState(false);
+  const { profile: userProfile, username: userUsername } = useProfile({ redirectToLogin: false });
 
   const menuItems = isAuthenticated
     ? getMenuItems(navigate, false)
@@ -202,10 +203,25 @@ export const Header = () => {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="p-2 rounded-full bg-[var(--background)] text-[var(--text)] hover:bg-[var(--primary)] hover:text-white transition-colors duration-200"
-                aria-label="Menu"
+                className="p-1 rounded-full bg-[var(--background)] text-[var(--text)] hover:bg-[var(--primary)] hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+                aria-label="Menu utilisateur"
+                tabIndex={0}
               >
-                {isMenuOpen ? <FaTimes className="w-5 h-5" /> : <FaBars className="w-5 h-5" />}
+                {isMenuOpen ? (
+                  <FaTimes className="w-7 h-7" />
+                ) : userProfile?.profilePicture ? (
+                  <img
+                    src={userProfile.profilePicture}
+                    alt={userUsername || "Profil"}
+                    className="w-8 h-8 rounded-full object-cover border-2 border-[var(--primary)] shadow-sm"
+                  />
+                ) : userUsername ? (
+                  <span className="w-8 h-8 flex items-center justify-center rounded-full bg-[var(--primary)] text-white font-bold text-lg uppercase border-2 border-[var(--primary)] shadow-sm">
+                    {userUsername.charAt(0)}
+                  </span>
+                ) : (
+                  <FaBars className="w-7 h-7" />
+                )}
               </motion.button>
 
               <AnimatePresence>

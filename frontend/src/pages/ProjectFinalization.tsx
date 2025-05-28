@@ -83,7 +83,7 @@ const ProjectFinalization: React.FC = () => {
     try {
       await acceptProjectFinalization(id);
       toast.success('Projet accepté avec succès');
-      navigate(`/post/${id}/review`);
+      navigate(`/post/${id}`);
     } catch (error) {
       console.error('Error accepting project:', error);
       toast.error('Erreur lors de l\'acceptation du projet');

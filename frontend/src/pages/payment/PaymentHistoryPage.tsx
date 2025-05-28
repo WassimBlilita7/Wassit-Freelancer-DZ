@@ -7,7 +7,9 @@ import axios from "axios";
 import { PaymentData } from "@/types";
 import { getPaymentHistory } from "@/api/api";
 import { useProfile } from "@/hooks/useProfile";
-import PaymentHistoryList from "./PaymentHistoryList";
+import PaymentHistoryList from "@/pages/payment/PaymentHistoryList";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 const PaymentHistoryPage: React.FC = () => {
   const [payments, setPayments] = useState<PaymentData[]>([]);

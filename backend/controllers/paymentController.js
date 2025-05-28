@@ -2,6 +2,8 @@ import Payment from "../models/paymentModel.js";
 import Post from "../models/postModel.js";
 import User from "../models/userModel.js";
 import Notification from "../models/notificationModel.js";
+import PDFDocument from "pdfkit";
+import fs from "fs";
 
 // Initie un paiement (mock)
 export const initiatePayment = async (req, res) => {
@@ -114,6 +116,36 @@ export const getPaymentHistory = async (req, res) => {
         .sort({ createdAt: -1 });
     }
     res.status(200).json({ payments });
+  } catch (err) {
+    res.status(500).json({ message: "Erreur serveur", error: err.message });
+  }
+};
+
+export const downloadPaymentReceipt = async (req, res) => {
+  try {
+    const { paymentId } = req.params;
+    const payment = await Payment.findById(paymentId)
+      .populate({ path: 'postId', select: 'title' })
+      .populate({ path: 'clientId', select: 'username email' })
+      .populate({ path: 'freelancerId', select: 'username email' });
+    if (!payment) return res.status(404).json({ message: "Paiement non trouvé" });
+
+    const doc = new PDFDocument();
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="recu_paiement_${payment._id}.pdf"`);
+    doc.pipe(res);
+
+    doc.fontSize(20).text('Reçu de Paiement', { align: 'center' });
+    doc.moveDown();
+    doc.fontSize(12).text(`ID Paiement: ${payment._id}`);
+    doc.text(`Date: ${new Date(payment.createdAt).toLocaleString()}`);
+    doc.text(`Projet: ${payment.postId?.title || payment.postId}`);
+    doc.text(`Montant: ${payment.amount.toLocaleString()} DA`);
+    doc.text(`Statut: ${payment.status}`);
+    doc.text(`Client: ${payment.clientId?.username || payment.clientId}`);
+    doc.text(`Freelancer: ${payment.freelancerId?.username || payment.freelancerId}`);
+    doc.text(`Moyen de paiement: ${payment.provider}`);
+    doc.end();
   } catch (err) {
     res.status(500).json({ message: "Erreur serveur", error: err.message });
   }

@@ -336,3 +336,14 @@ export const getPaymentHistory = async (): Promise<PaymentData[]> => {
   const response = await api.get("/payment/history");
   return response.data.payments;
 };
+
+export const downloadPaymentReceiptFromServer = async (paymentId: string) => {
+  const response = await api.get(`/payment/${paymentId}/receipt`, { responseType: 'blob' });
+  const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+  const link = document.createElement('a');
+  link.href = url;
+  link.setAttribute('download', `recu_paiement_${paymentId}.pdf`);
+  document.body.appendChild(link);
+  link.click();
+  link.parentNode?.removeChild(link);
+};

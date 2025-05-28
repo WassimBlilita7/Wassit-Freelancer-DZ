@@ -1,18 +1,19 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { profileSchema, ProfileFormData } from "../schemas/profileSchema";
+import { profileSchema, ProfileFormData, getProfileSchema } from "../schemas/profileSchema";
 import { updateProfile, updateProfilePicture } from "../api/api";
 import { useState } from "react";
 import { ProfileData } from "../types";
 import toast from "react-hot-toast";
 
-export const useProfileUpdate = (initialProfile: ProfileData) => {
+export const useProfileUpdate = (initialProfile: ProfileData, isFreelancer: boolean) => {
   const [submitting, setSubmitting] = useState(false);
   const [alert, setAlert] = useState<{ type: "success" | "error" | "info"; message: string } | null>(null);
   const [profilePicture, setProfilePicture] = useState<string | null>(initialProfile.profilePicture || null);
 
+  const schema = getProfileSchema(isFreelancer);
   const form = useForm<ProfileFormData>({
-    resolver: zodResolver(profileSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       firstName: initialProfile.firstName || "",
       lastName: initialProfile.lastName || "",
@@ -30,13 +31,15 @@ export const useProfileUpdate = (initialProfile: ProfileData) => {
     setAlert(null);
 
     try {
-      const response = await updateProfile(data);
+      const payload = isFreelancer ? data : { ...data, skills: [] };
+      const response = await updateProfile(payload);
       if (response.userData) {
         setAlert({
           type: "success",
           message: "Profil mis à jour avec succès !",
         });
         toast.success("Profil mis à jour avec succès !");
+        window.location.reload();
       }
     } catch (error) {
       console.error("Erreur lors de la mise à jour du profil:", error);

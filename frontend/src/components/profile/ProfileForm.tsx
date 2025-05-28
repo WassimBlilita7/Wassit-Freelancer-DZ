@@ -17,7 +17,7 @@ interface ProfileFormProps {
 
 export const ProfileForm = ({ initialProfile, username, isFreelancer }: ProfileFormProps) => {
   const { theme } = useTheme();
-  const { form, submitting, onSubmit, resetForm, alert, profilePicture, handlePictureUpload } = useProfileUpdate(initialProfile);
+  const { form, submitting, onSubmit, resetForm, alert, profilePicture, handlePictureUpload } = useProfileUpdate(initialProfile, isFreelancer);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {

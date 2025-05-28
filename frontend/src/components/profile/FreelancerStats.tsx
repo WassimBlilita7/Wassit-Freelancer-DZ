@@ -2,10 +2,13 @@ import { useFreelancerStats } from "../../hooks/useClientStats";
 import { getFreelancerReviews } from "../../api/api";
 import { useEffect, useState } from "react";
 import { FaStar, FaProjectDiagram, FaUsers, FaSmile, FaCommentDots } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 export const FreelancerStats = ({ username, profile, id }: { username: string; profile: any; id: string }) => {
   const { stats, loading, error } = useFreelancerStats(username);
   const [reviews, setReviews] = useState<any[]>([]);
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (id) {
       getFreelancerReviews(id).then(setReviews);
@@ -63,9 +66,26 @@ export const FreelancerStats = ({ username, profile, id }: { username: string; p
                   <span className="inline-flex items-center px-2 py-1 rounded-full bg-[var(--primary)]/80 text-white font-bold text-sm">
                     <FaStar className="text-yellow-300 mr-1" />{review.rating}/5
                   </span>
-                  <span className="text-xs text-[var(--muted)] ml-2">par {review.client?.username || "Client"}</span>
-                  {review.post?.title && (
-                    <span className="text-xs text-[var(--primary)] ml-2">Projet : {review.post.title}</span>
+                  {review.client?.username && (
+                    <button
+                      type="button"
+                      className="text-xs text-[var(--primary)] ml-2 font-semibold hover:underline hover:text-[var(--secondary)] transition-colors cursor-pointer"
+                      onClick={() => navigate(`/profile/${review.client.username}`)}
+                    >
+                      par {review.client.username}
+                    </button>
+                  )}
+                  {!review.client?.username && (
+                    <span className="text-xs text-[var(--muted)] ml-2">par Client</span>
+                  )}
+                  {review.post?.title && review.post?._id && (
+                    <button
+                      type="button"
+                      className="text-xs text-[var(--primary)] ml-2 font-semibold hover:underline hover:text-[var(--secondary)] transition-colors cursor-pointer"
+                      onClick={() => navigate(`/post/${review.post._id}`)}
+                    >
+                      Projet : {review.post.title}
+                    </button>
                   )}
                 </div>
                 <div className="bg-[var(--background)]/80 dark:bg-[var(--card)]/80 rounded-lg px-4 py-2 text-[var(--text)] italic shadow-sm">

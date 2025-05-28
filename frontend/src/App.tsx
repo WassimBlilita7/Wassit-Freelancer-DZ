@@ -47,7 +47,6 @@ function AppContent() {
 
   return (
     <>
-      {/* @ts-expect-error Helmet is a valid JSX component from react-helmet-async */}
       <Helmet>
         <title>Wassit Freelance DZ</title>
         <meta name="description" content="Plateforme de mise en relation entre freelances et clients en Algérie. Trouvez des missions, des freelances, gérez vos projets et plus encore sur Wassit Freelance DZ." />
@@ -58,7 +57,6 @@ function AppContent() {
           <Routes>
             <Route path="/" element={
               <>
-                {/* @ts-expect-error Helmet is a valid JSX component from react-helmet-async */}
                 <Helmet>
                   <title>Wassit Freelance DZ | Plateforme Freelance Algérie</title>
                   <meta name="description" content="Trouvez des missions, des freelances et gérez vos projets sur Wassit Freelance DZ, la plateforme freelance N°1 en Algérie." />

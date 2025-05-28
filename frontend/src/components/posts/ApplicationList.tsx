@@ -96,12 +96,12 @@ export const ApplicationList = ({ post, onApplicationUpdate, filter = "all" }: A
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-full bg-[var(--primary)]/10 flex items-center justify-center overflow-hidden">
-                    {typeof application.freelancer === 'object' && application.freelancer !== null && application.freelancer.profile && application.freelancer.profile.profilePicture ? (
+                    {typeof application.freelancer === 'object' && application.freelancer !== null && (application.freelancer as import('../../types').MinimalUser).profile && (application.freelancer as import('../../types').MinimalUser).profile?.profilePicture ? (
                       <img
-                        src={application.freelancer.profile.profilePicture.startsWith('http')
-                          ? application.freelancer.profile.profilePicture
-                          : `${import.meta.env.VITE_API_URL?.replace(/\/api.*/, '') || 'http://localhost:5000'}/${application.freelancer.profile.profilePicture}`}
-                        alt={application.freelancer.username || 'avatar'}
+                        src={(application.freelancer as import('../../types').MinimalUser).profile?.profilePicture?.startsWith('http')
+                          ? (application.freelancer as import('../../types').MinimalUser).profile?.profilePicture
+                          : `${import.meta.env.VITE_API_URL?.replace(/\/api.*/, '') || 'http://localhost:5000'}/${(application.freelancer as import('../../types').MinimalUser).profile?.profilePicture}`}
+                        alt={typeof application.freelancer === 'object' && 'username' in application.freelancer ? application.freelancer.username : 'avatar'}
                         className="w-12 h-12 rounded-full object-cover"
                       />
                     ) : (

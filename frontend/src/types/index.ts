@@ -67,7 +67,7 @@ export interface PostData {
   createdAt: string;
   updatedAt?: string;
   applications: {
-    freelancer: string;
+    freelancer: string | MinimalUser;
     cv: string;
     coverLetter: string;
     bidAmount: number;
@@ -153,4 +153,11 @@ export interface FreelancerStats {
   totalReviews: number;
   averageResponseTime: number;
   totalClients: number;
+}
+
+export interface MinimalUser {
+  _id: string;
+  username: string;
+  email?: string;
+  profile?: ProfileData;
 }

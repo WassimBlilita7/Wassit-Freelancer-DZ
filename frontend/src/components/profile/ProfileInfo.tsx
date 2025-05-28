@@ -1,6 +1,6 @@
 // src/components/profile/ProfileInfo.tsx
 import { motion } from "framer-motion";
-import { FaBriefcase, FaGlobe, FaInfoCircle, FaTools, FaUser, FaUserCircle, FaGithub, FaLinkedin } from "react-icons/fa";
+import { FaBriefcase, FaGlobe, FaInfoCircle, FaTools, FaUser, FaUserCircle } from "react-icons/fa";
 import { ProfileData } from "../../types";
 
 interface ProfileInfoProps {

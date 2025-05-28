@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { FaStar, FaProjectDiagram, FaUsers, FaSmile, FaCommentDots } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-export const FreelancerStats = ({ username, profile, id }: { username: string; profile: any; id: string }) => {
+export const FreelancerStats = ({ username, id }: { username: string; profile: any; id: string }) => {
   const { stats, loading, error } = useFreelancerStats(username);
   const [reviews, setReviews] = useState<any[]>([]);
   const navigate = useNavigate();

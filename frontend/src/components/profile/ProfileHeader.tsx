@@ -1,6 +1,5 @@
 // src/components/profile/ProfileHeader.tsx
-import { motion } from "framer-motion";
-import { FaUserCircle, FaGithub, FaLinkedin } from "react-icons/fa";
+import { FaGithub, FaLinkedin } from "react-icons/fa";
 
 interface ProfileHeaderProps {
   username: string;

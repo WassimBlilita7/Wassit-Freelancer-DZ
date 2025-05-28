@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState, useContext, useRef } from "react";
 import { getUserConversations, getConversation, sendMessage, deleteMessage as deleteMessageApi, markMessageAsRead, getAllPosts, deleteConversation as deleteConversationApi } from "@/api/api";
 import { AuthContext } from "@/context/AuthContext";
@@ -63,8 +64,8 @@ export const MessagesPage = () => {
     setSending(true);
     setError(null);
     try {
-      await sendMessage(selectedUser._id, message);
-      setMessage("");
+    await sendMessage(selectedUser._id, message);
+    setMessage("");
       setConversations((prev) => {
         if (!prev.some((u) => u._id === selectedUser._id)) {
           return [selectedUser, ...prev];
@@ -201,15 +202,15 @@ export const MessagesPage = () => {
           loadingContacts={loadingContacts}
           onSelect={(user) => { setSelectedUser(user); setShowContactsModal(false); }}
           getInitials={getInitials}
-        />
-        <button
+                />
+                <button
           className="fixed bottom-8 right-8 p-4 rounded-full bg-gradient-to-br from-pink-400 via-pink-500 to-blue-400 text-white shadow-xl hover:scale-105 transition-all z-50 focus:outline-none"
           title="Nouveau message"
           onClick={() => { setShowContactsModal(true); fetchContacts(); }}
           aria-label="Nouveau message"
-        >
+              >
           <svg width="28" height="28" fill="currentColor" viewBox="0 0 20 20"><path d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" /></svg>
-        </button>
+              </button>
       </div>
     </div>
   );

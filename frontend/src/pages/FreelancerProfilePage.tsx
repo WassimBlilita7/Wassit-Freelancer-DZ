@@ -1,7 +1,6 @@
 import { ProfileHeader } from "../components/profile/ProfileHeader";
 import { ProfileInfo } from "../components/profile/ProfileInfo";
 import { FreelancerStats } from "../components/profile/FreelancerStats";
-import { useState } from "react";
 import { ProfileData } from "../types";
 
 interface FreelancerProfilePageProps {

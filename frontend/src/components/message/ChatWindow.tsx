@@ -8,7 +8,7 @@ interface ChatWindowProps {
   currentUserId: string | null;
   getInitials: (username: string) => string;
   onDeleteMessage: (msgId: string) => void;
-  messagesEndRef: React.RefObject<HTMLDivElement>;
+  messagesEndRef: React.RefObject<HTMLDivElement | null>;
   hoveredMsgId: string | null;
   setHoveredMsgId: (id: string | null) => void;
   navigate: (path: string) => void;

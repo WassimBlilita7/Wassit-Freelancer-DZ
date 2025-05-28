@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { PaymentData } from "@/types";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -29,11 +30,11 @@ export async function downloadPaymentReceipt(payment: PaymentData, isFreelancer:
     startY: 44,
     head: [["Détail", "Valeur"]],
     body: [
-      ["Projet", post?.title || payment.postId],
+      ["Projet", post?.title ?? String(payment.postId)],
       ["Montant", `${payment.amount.toLocaleString()} DA`],
       ["Statut", payment.status === "succeeded" ? "Succès" : payment.status],
-      ["Client", client?.username || payment.clientId],
-      ["Freelancer", freelancer?.username || payment.freelancerId],
+      ["Client", client?.username ?? String(payment.clientId)],
+      ["Freelancer", freelancer?.username ?? String(payment.freelancerId)],
       ["Date", new Date(payment.createdAt).toLocaleString()],
       ["Moyen de paiement", payment.provider],
     ],

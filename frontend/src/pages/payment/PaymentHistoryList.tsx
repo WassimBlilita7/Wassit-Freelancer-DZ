@@ -3,7 +3,6 @@ import { PaymentData } from "@/types";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { downloadPaymentReceipt } from "@/components/payment/paymentPdfUtils";
-import { FaFilePdf } from "react-icons/fa";
 
 interface PaymentHistoryListProps {
   payments: PaymentData[];
@@ -51,18 +50,18 @@ const PaymentHistoryList: React.FC<PaymentHistoryListProps> = ({ payments, isFre
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: idx * 0.05 }}
-            className="py-5 px-4 md:px-8 bg-gradient-to-br from-white via-[var(--card)] to-blue-50 dark:from-[#181c2a] dark:via-[#23243a] dark:to-[#23243a] rounded-2xl shadow-lg mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4 hover:shadow-2xl transition-shadow duration-300 border border-[var(--primary)]/20"
+            className="py-5 px-4 md:px-8 bg-gradient-to-br from-white via-[var(--card)] to-blue-50 dark:from-[#23243a] dark:via-[var(--card)] dark:to-blue-950 rounded-2xl shadow-md mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4 hover:shadow-xl transition-shadow duration-300 border border-[var(--primary)]/20"
             style={{ minHeight: 80 }}
           >
             <div className="flex-1 flex flex-col gap-2 min-w-0">
               <div className="flex items-center gap-3 mb-1">
-                <span className="font-bold text-lg text-[var(--primary)] truncate drop-shadow-sm dark:text-blue-200">{post?.title || p.postId}</span>
-                <span className={`ml-2 px-2 py-0.5 rounded-full text-xs font-semibold ${p.status === "succeeded" ? "bg-green-200 text-green-900 dark:bg-green-700/30 dark:text-green-200" : "bg-red-200 text-red-800 dark:bg-red-700/30 dark:text-red-200"}`}>{p.status === "succeeded" ? "Payé" : "En attente"}</span>
+                <span className="font-bold text-lg text-[var(--primary)] truncate">{post?.title ?? String(p.postId)}</span>
+                <span className={`ml-2 px-2 py-0.5 rounded-full text-xs font-semibold ${p.status === "succeeded" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"}`}>{p.status === "succeeded" ? "Payé" : "En attente"}</span>
               </div>
               <div className="flex flex-wrap items-center gap-4 mt-1">
-                <span className="text-[var(--primary)] text-base font-semibold dark:text-blue-200">{p.amount.toLocaleString()} DA</span>
+                <span className="text-[var(--muted)] text-sm">{p.amount.toLocaleString()} DA</span>
                 {!isFreelancer && post?.status && (
-                  <span className="text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-200 rounded-full px-2 py-0.5 ml-2">{post.status}</span>
+                  <span className="text-xs bg-blue-100 text-blue-700 rounded-full px-2 py-0.5 ml-2">{post.status}</span>
                 )}
               </div>
               <div className="flex items-center gap-3 mt-2">
@@ -72,7 +71,7 @@ const PaymentHistoryList: React.FC<PaymentHistoryListProps> = ({ payments, isFre
                     {client?.username ? (
                       <UserLink username={client.username}>{client.username}</UserLink>
                     ) : (
-                      <span className="font-medium text-[var(--text)] dark:text-blue-100">{p.clientId}</span>
+                      <span className="font-medium">{typeof p.clientId === 'string' ? p.clientId : p.clientId?.username ?? ''}</span>
                     )}
                   </>
                 ) : (
@@ -81,31 +80,28 @@ const PaymentHistoryList: React.FC<PaymentHistoryListProps> = ({ payments, isFre
                     {freelancer?.username ? (
                       <UserLink username={freelancer.username}>{freelancer.username}</UserLink>
                     ) : (
-                      <span className="font-medium text-[var(--text)] dark:text-blue-100">{p.freelancerId}</span>
+                      <span className="font-medium">{typeof p.freelancerId === 'string' ? p.freelancerId : p.freelancerId?.username ?? ''}</span>
                     )}
                   </>
                 )}
               </div>
             </div>
             <div className="flex flex-col items-end min-w-[120px] gap-2">
-              <span className="text-xs text-[var(--muted)] mb-1 dark:text-blue-200">{new Date(p.createdAt).toLocaleDateString()}<br />{new Date(p.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+              <span className="text-xs text-[var(--muted)] mb-1">{new Date(p.createdAt).toLocaleDateString()}<br />{new Date(p.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
               <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.4, delay: 0.1 + idx * 0.05 }}
-                className={`px-3 py-1 rounded-full text-xs font-bold shadow ${p.status === "succeeded" ? "bg-green-200 text-green-900 dark:bg-green-700/30 dark:text-green-200" : "bg-red-200 text-red-800 dark:bg-red-700/30 dark:text-red-200"}`}
+                className={`px-3 py-1 rounded-full text-xs font-bold shadow ${p.status === "succeeded" ? "bg-green-200 text-green-800" : "bg-red-200 text-red-800"}`}
               >
                 {p.status === "succeeded" ? "Succès" : "En attente"}
               </motion.div>
               <button
-                className="mt-2 px-4 py-1 rounded-lg bg-[var(--primary)] text-white font-semibold text-xs shadow hover:bg-[var(--secondary)] transition-colors flex items-center gap-2 group relative"
+                className="mt-2 px-4 py-1 rounded-lg bg-[var(--primary)] text-white font-semibold text-xs shadow hover:bg-[var(--secondary)] transition-colors"
                 onClick={() => downloadPaymentReceipt(p, isFreelancer)}
                 aria-label="Télécharger le reçu PDF"
-                title="Télécharger le reçu PDF"
               >
-                <FaFilePdf className="text-red-500 group-hover:scale-110 transition-transform" />
-                <span className="hidden md:inline">Télécharger</span>
-                <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black/80 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">Reçu PDF</span>
+                Télécharger
               </button>
             </div>
           </motion.li>

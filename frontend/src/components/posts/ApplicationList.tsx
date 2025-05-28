@@ -95,8 +95,18 @@ export const ApplicationList = ({ post, onApplicationUpdate, filter = "all" }: A
             <CardHeader className="bg-gradient-to-r from-[var(--primary)]/5 to-[var(--secondary)]/5">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-[var(--primary)]/10 flex items-center justify-center">
-                    <FaUser className="text-[var(--primary)] text-xl" />
+                  <div className="w-12 h-12 rounded-full bg-[var(--primary)]/10 flex items-center justify-center overflow-hidden">
+                    {typeof application.freelancer === 'object' && application.freelancer !== null && application.freelancer.profile && application.freelancer.profile.profilePicture ? (
+                      <img
+                        src={application.freelancer.profile.profilePicture.startsWith('http')
+                          ? application.freelancer.profile.profilePicture
+                          : `${import.meta.env.VITE_API_URL?.replace(/\/api.*/, '') || 'http://localhost:5000'}/${application.freelancer.profile.profilePicture}`}
+                        alt={application.freelancer.username || 'avatar'}
+                        className="w-12 h-12 rounded-full object-cover"
+                      />
+                    ) : (
+                      <FaUser className="text-[var(--primary)] text-xl" />
+                    )}
                   </div>
                   <div>
                     <CardTitle 

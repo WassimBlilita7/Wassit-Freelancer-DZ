@@ -56,7 +56,8 @@ export const ApplicationsPage = () => {
 
   const totalApplications = post.applications.length;
   const pendingApplications = post.applications.filter(app => app.status === "pending").length;
-  const acceptedApplication = post.applications.find(app => app.status === "accepted");
+  const acceptedApplications = post.applications.filter(app => app.status === "accepted");
+  const acceptedApplication = acceptedApplications[0];
   const acceptedFreelancerId = acceptedApplication?.freelancer;
   const rejectedApplications = post.applications.filter(app => app.status === "rejected").length;
   const clientId = post.client?._id;
@@ -149,7 +150,7 @@ export const ApplicationsPage = () => {
           <Card className="shadow-xl border-0 bg-gradient-to-br from-green-100/60 to-green-300/30 dark:from-green-900/40 dark:to-green-700/20 transition-all hover:scale-[1.03]">
             <CardContent className="p-4 flex flex-col items-center">
               <h3 className="text-sm font-medium text-green-700 dark:text-green-200">Acceptées</h3>
-              <p className="text-3xl font-bold text-green-600 dark:text-green-300">1</p>
+              <p className="text-3xl font-bold text-green-600 dark:text-green-300">{acceptedApplications.length}</p>
             </CardContent>
           </Card>
           <Card className="shadow-xl border-0 bg-gradient-to-br from-red-100/60 to-red-300/30 dark:from-red-900/40 dark:to-red-700/20 transition-all hover:scale-[1.03]">

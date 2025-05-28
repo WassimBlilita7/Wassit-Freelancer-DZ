@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { getPostById, initiatePayment, getPaymentStatus } from "@/api/api";
 import { PostData, PaymentStatus } from "@/types";
 import { Card, CardContent } from "@/components/ui/card";
@@ -11,6 +11,7 @@ import CardPaymentForm from "@/components/payment/CardPaymentForm";
 
 const PaymentPage: React.FC = () => {
   const { postId } = useParams<{ postId: string }>();
+  const navigate = useNavigate();
   const [post, setPost] = useState<PostData | null>(null);
   const [loading, setLoading] = useState(true);
   const [paymentStatus, setPaymentStatus] = useState<PaymentStatus | null>(null);
@@ -39,11 +40,19 @@ const PaymentPage: React.FC = () => {
     if (!postId || !post) return;
     try {
       setLoading(true);
-      // Ici, tu pourrais envoyer cardData à un vrai provider
       await initiatePayment(postId, post.budget);
       toast.success("Paiement initié !");
+      // Rafraîchir le statut de paiement et le post
       const status = await getPaymentStatus(postId);
       setPaymentStatus(status);
+      const updatedPost = await getPostById(postId);
+      setPost(updatedPost);
+      // Rediriger vers la page de review si le client n'a pas encore évalué
+      if (status.paid && updatedPost && !updatedPost.reviewed) {
+        setTimeout(() => {
+          navigate(`/post/${postId}/review`, { replace: true });
+        }, 1800); // Laisse l'animation de succès s'afficher un peu
+      }
     } catch (err) {
       toast.error("Erreur lors du paiement");
     } finally {

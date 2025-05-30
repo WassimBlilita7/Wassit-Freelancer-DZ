@@ -46,18 +46,21 @@ cd backend
 npm install
 
 # Installer les dépendances frontend
+````
 cd ../frontend
 npm install
-
+````
 ▶️ Lancer le projet
-Backend : 
+Backend :
+````
 cd backend
 npm run dev
-
-Frontend : 
+````
+Frontend :
+````
 cd frontend
 npm run dev
-
+`````
 📚 API
 L'API est disponible sur :
 http://localhost:PORT/api/v1

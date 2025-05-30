@@ -42,9 +42,10 @@ JWT_SECRET=your_jwt_secret
 ````
 📦 Installation
 # Installer les dépendances backend
+````
 cd backend
 npm install
-
+````
 # Installer les dépendances frontend
 ````
 cd ../frontend
